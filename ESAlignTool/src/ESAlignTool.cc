@@ -1640,9 +1640,9 @@ void ESAlignTool::fill_residual_wRotation_v2(int iz)
     }
     Double_t XDF=PredictionState_resiX[iTrk][a][0];
     Double_t YDF=PredictionState_resiY[iTrk][a][0];
-    Double_t determinant= eF_xx*eF_yy-eF_yx*eF_yx;
-    Double_t derX=(PredictionState_delX[iTrk][a][0]);
-    Double_t derY=(PredictionState_delY[iTrk][a][0]);
+    //Double_t determinant= eF_xx*eF_yy-eF_yx*eF_yx;
+    //Double_t derX=(PredictionState_delX[iTrk][a][0]);
+    //Double_t derY=(PredictionState_delY[iTrk][a][0]);
 
     if(  Selected_idee==0
        || (Selected_idee==1&&_esRecHit_X[indF]-ES_O_X[a][0]>6.1 )
@@ -1696,9 +1696,9 @@ void ESAlignTool::fill_residual_wRotation_v2(int iz)
     }
     Double_t XDR=PredictionState_resiX[iTrk][a][1];
     Double_t YDR=PredictionState_resiY[iTrk][a][1];
-    determinant= eR_xx*eR_yy-eR_yx*eR_yx;
-    derX=(PredictionState_delX[iTrk][a][1]);
-    derY=(PredictionState_delY[iTrk][a][1]);
+    //determinant= eR_xx*eR_yy-eR_yx*eR_yx;
+    //derX=(PredictionState_delX[iTrk][a][1]);
+    //derY=(PredictionState_delY[iTrk][a][1]);
 
     if(  Selected_idee==0
        || (Selected_idee==1&&_esRecHit_Y[indR]-ES_O_Y[a][0]>6.1 )
@@ -1842,9 +1842,9 @@ void ESAlignTool::fill_residual_wRotation(int iz)
     }
     Double_t XDF=PredictionState_resiX[iTrk][a][0];
     Double_t YDF=PredictionState_resiY[iTrk][a][0];
-    Double_t determinant= eF_xx*eF_yy-eF_yx*eF_yx;
-    Double_t derX=(PredictionState_delX[iTrk][a][0]);
-    Double_t derY=(PredictionState_delY[iTrk][a][0]);
+    //Double_t determinant= eF_xx*eF_yy-eF_yx*eF_yx;
+    //Double_t derX=(PredictionState_delX[iTrk][a][0]);
+    //Double_t derY=(PredictionState_delY[iTrk][a][0]);
 
     if(  Selected_idee==0
        || (Selected_idee==1&&_esRecHit_X[indF]-ES_O_X[a][0]>6.1 )
@@ -1898,9 +1898,9 @@ void ESAlignTool::fill_residual_wRotation(int iz)
     }
     Double_t XDR=PredictionState_resiX[iTrk][a][1];
     Double_t YDR=PredictionState_resiY[iTrk][a][1];
-    determinant= eR_xx*eR_yy-eR_yx*eR_yx;
-    derX=(PredictionState_delX[iTrk][a][1]);
-    derY=(PredictionState_delY[iTrk][a][1]);
+    //determinant= eR_xx*eR_yy-eR_yx*eR_yx;
+    //derX=(PredictionState_delX[iTrk][a][1]);
+    //derY=(PredictionState_delY[iTrk][a][1]);
 
     if(  Selected_idee==0
        || (Selected_idee==1&&_esRecHit_Y[indR]-ES_O_Y[a][0]>6.1 )
