@@ -67,6 +67,7 @@ protected:
   void LoadMagFieldonES(Long64_t ,const CaloGeometry *, edm::ESHandle<MagneticField>);
   void PrintPosition(Long64_t , const CaloGeometry *);
   void fill_esRecHit(const CaloGeometry *, edm::Handle<EcalRecHitCollection>);
+  void fill_esRecHit(const CaloGeometry *, edm::Handle<EcalRecHitCollection>);
   void fill_tracks(edm::Handle<reco::TrackCollection>);
   bool pass_TrackSelection(reco::TrackCollection::const_iterator);
   void fill_esRecHitAssociation();

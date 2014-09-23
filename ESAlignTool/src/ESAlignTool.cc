@@ -37,6 +37,7 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 
+#include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
 #include "Geometry/Records/interface/IdealGeometryRecord.h"
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
@@ -56,8 +57,6 @@
 #include "DataFormats/DetId/interface/DetId.h"
 //#include "DataFormats/SiStripDetId/interface/TECDetId.h"
 #include "DataFormats/EcalDetId/interface/ESDetId.h"
-//#include "DataFormats/EcalDetId/interface/EBDetId.h"
-//#include "DataFormats/EcalDetId/interface/EEDetId.h"
 
 #include "DataFormats/Math/interface/deltaR.h"
 //#include "DataFormats/Candidate/interface/Candidate.h"
@@ -320,7 +319,11 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
  
   ESHandle<CaloGeometry> caloGeometry;
   iSetup.get<CaloGeometryRecord>().get(caloGeometry);
-  const CaloGeometry *caloGeom = caloGeometry.product();
+
+  //const CaloGeometry *caloGeom = caloGeometry.product(); //[Alpha]
+  const CaloSubdetectorGeometry *geometry = caloGeometry->getSubdetectorGeometry(DetId::Ecal, EcalPreshower);
+  const CaloSubdetectorGeometry *& geometry_p = geometry;
+  
   ESHandle<MagneticField> theMagField; 
   iSetup.get<IdealMagneticFieldRecord>().get(theMagField); 
   ESHandle<GlobalTrackingGeometry> theTrackingGeometry; 
@@ -332,9 +335,12 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
  
   
   //2.fill es hits
-  edm::Handle<EcalRecHitCollection> PreshowerRecHits;
-  iEvent.getByLabel(InputTag("ecalPreshowerRecHit","EcalRecHitsES"), PreshowerRecHits);
-  fill_esRecHit(caloGeom,PreshowerRecHits);
+  //edm::Handle<EcalRecHitCollection> PreshowerRecHits;	//[Alpha]		
+  //iEvent.getByLabel(InputTag("ecalPreshowerRecHit","EcalRecHitsES"), PreshowerRecHits); //[Alpha]
+  Handle<ESRecHitCollection> PreshowerRecHits;
+  iEvent.getByLabel(InputTag("RecHitLabel"), PreshowerRecHits);
+  //fill_esRecHit(caloGeom,PreshowerRecHits);
+  fill_esRecHit(geometry_p,PreshowerRecHits);
  
  
   //3.fill Track
@@ -602,19 +608,25 @@ void ESAlignTool::PrintPosition(Long64_t _evt_run, const CaloGeometry *caloGeom)
  }}}}}}}
 }
 
-void ESAlignTool::fill_esRecHit(const CaloGeometry *caloGeom, edm::Handle<EcalRecHitCollection> PreshowerRecHits)
+//void ESAlignTool::fill_esRecHit(const CaloGeometry *caloGeom, edm::Handle<EcalRecHitCollection> PreshowerRecHits) //[Alpha]
+void ESAlignTool::fill_esRecHit(const CaloSubdetectorGeometry *& geometry_p, edm::Handle<ESRecHitCollection> PreshowerRecHits)
 {
- const ESRecHitCollection *ESRH = PreshowerRecHits.product();
- EcalRecHitCollection::const_iterator esrh_it;
+ //const ESRecHitCollection *ESRH = PreshowerRecHits.product(); //[Alpha]
+ //EcalRecHitCollection::const_iterator esrh_it; //[Alpha]
+ ESRecHitCollection::const_iterator esrh_it;
 
  for ( esrh_it = ESRH->begin(); esrh_it != ESRH->end(); esrh_it++)
  {
-  Double_t esrh_x = caloGeom->getPosition(esrh_it->id()).x();
-  Double_t esrh_y = caloGeom->getPosition(esrh_it->id()).y();
-  Double_t esrh_z = caloGeom->getPosition(esrh_it->id()).z();
-  Double_t esrh_eta = caloGeom->getPosition(esrh_it->id()).eta();
-  Double_t esrh_phi = caloGeom->getPosition(esrh_it->id()).phi();
   ESDetId esdetid = ESDetId(esrh_it->id());
+  const CaloCellGeometry *esCell = geometry_p->getGeometry();
+  GlobalPoint espoint = esCell->getPosition();
+
+  Double_t esrh_x = espoint.x();
+  Double_t esrh_y = espoint.y();
+  Double_t esrh_z = espoint.z();
+  Double_t esrh_eta = espoint.eta();
+  Double_t esrh_phi = espoint.phi();
+  //ESDetId esdetid = ESDetId(esrh_it->id());
   if(Nesrh>=10000)
   {
    edm::LogWarning("fill_esRecHit")<<"Too many ES RecHits.\n";
