@@ -209,7 +209,7 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
   sprintf(buf,"Iter%i_ESmRdBeta",iterN_idx);   iter_ESmRdBeta[iterN_idx-1]  = MatrixElements_.getParameter<double>(buf);
   sprintf(buf,"Iter%i_ESmRdGamma",iterN_idx);  iter_ESmRdGamma[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
 
-std::cout<<"dX: "<<iter_ESpFdX[iterN_idx-1]<<", dAlpha: "<<iter_ESpFdAlpha[iterN_idx-1]<<std::endl;
+  //std::cout<<"dX: "<<iter_ESpFdX[iterN_idx-1]<<", dAlpha: "<<iter_ESpFdAlpha[iterN_idx-1]<<std::endl;
 
  }
 

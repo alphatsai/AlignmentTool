@@ -29,7 +29,8 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 #                                                           )
 #                                         )
 #process.es_prefer_GlobalPositionDB = cms.ESPrefer("PoolDBESSource", "newGlobalPosition")
-process.GlobalTag.globaltag = 'POSTLS170_V6::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
+#process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
+process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
 ####################################################################################
 
 
@@ -143,7 +144,7 @@ if options.IterN == 1 and options.CalculateESaxes == False:
 	options.CalculateESaxes = True
 
 ### Input parameters
-from AlignmentTool.ESAlignTool.esaligntool_cfi import * #DefaultMatrixElement_Iter 
+from inputMatrixElements_cfi import * #MatrixElementsTmp # Modify inputMatrixElements_cfi.py for Matrix Elements 
 process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
 	RecHitLabel = cms.InputTag(options.RecHitLabel),
 	TrackLabel = cms.InputTag(options.TrackLabel),
@@ -164,7 +165,7 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
     	Selected_idee = cms.uint32(0),
     	Selected_RUNmin = cms.int32(0),
     	Selected_RUNmax = cms.int32(0),
-	MatrixElements = DefaultMatrixElement_Iter.clone(),
+	MatrixElements = MatrixElementsTmp.clone(),
 )
 
 process.p = cms.Path(process.ESAlignmentTool)
