@@ -37,7 +37,6 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 
-#include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
 #include "Geometry/Records/interface/IdealGeometryRecord.h"
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
@@ -57,6 +56,8 @@
 #include "DataFormats/DetId/interface/DetId.h"
 //#include "DataFormats/SiStripDetId/interface/TECDetId.h"
 #include "DataFormats/EcalDetId/interface/ESDetId.h"
+//#include "DataFormats/EcalDetId/interface/EBDetId.h"
+//#include "DataFormats/EcalDetId/interface/EEDetId.h"
 
 #include "DataFormats/Math/interface/deltaR.h"
 //#include "DataFormats/Candidate/interface/Candidate.h"
@@ -171,37 +172,42 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
  Selected_RUNmin = iConfig.getParameter<int>("Selected_RUNmin");
  Selected_RUNmax = iConfig.getParameter<int>("Selected_RUNmax");
 
+ RecHitLabel_ = iConfig.getParameter<edm::InputTag>("RecHitLabel"); 
+ TrackLabel_ = iConfig.getParameter<edm::InputTag>("TrackLabel"); 
+ 
+ MatrixElements_ = iConfig.getParameter<edm::ParameterSet>("MatrixElements");
+
  iterN = iConfig.getParameter<unsigned int>("IterN");
  if(iterN<0||iterN>11) std::cout<<"Error : Out of Range for iterN!!!!\n";
  
  char buf[20];
  for(int iterN_idx=1;iterN_idx<iterN;iterN_idx++)
  {
-  sprintf(buf,"Iter%i_ESpFdX",iterN_idx);  iter_ESpFdX[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpFdY",iterN_idx);  iter_ESpFdY[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpFdZ",iterN_idx);  iter_ESpFdZ[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpRdX",iterN_idx);  iter_ESpRdX[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpRdY",iterN_idx);  iter_ESpRdY[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpRdZ",iterN_idx);  iter_ESpRdZ[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmFdX",iterN_idx);  iter_ESmFdX[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmFdY",iterN_idx);  iter_ESmFdY[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmFdZ",iterN_idx);  iter_ESmFdZ[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmRdX",iterN_idx);  iter_ESmRdX[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmRdY",iterN_idx);  iter_ESmRdY[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmRdZ",iterN_idx);  iter_ESmRdZ[iterN_idx-1] = iConfig.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpFdX",iterN_idx);  iter_ESpFdX[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpFdY",iterN_idx);  iter_ESpFdY[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpFdZ",iterN_idx);  iter_ESpFdZ[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpRdX",iterN_idx);  iter_ESpRdX[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpRdY",iterN_idx);  iter_ESpRdY[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpRdZ",iterN_idx);  iter_ESpRdZ[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmFdX",iterN_idx);  iter_ESmFdX[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmFdY",iterN_idx);  iter_ESmFdY[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmFdZ",iterN_idx);  iter_ESmFdZ[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmRdX",iterN_idx);  iter_ESmRdX[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmRdY",iterN_idx);  iter_ESmRdY[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmRdZ",iterN_idx);  iter_ESmRdZ[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
 
-  sprintf(buf,"Iter%i_ESpFdAlpha",iterN_idx);  iter_ESpFdAlpha[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpFdBeta",iterN_idx);   iter_ESpFdBeta[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpFdGamma",iterN_idx);  iter_ESpFdGamma[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpRdAlpha",iterN_idx);  iter_ESpRdAlpha[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpRdBeta",iterN_idx);   iter_ESpRdBeta[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESpRdGamma",iterN_idx);  iter_ESpRdGamma[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmFdAlpha",iterN_idx);  iter_ESmFdAlpha[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmFdBeta",iterN_idx);   iter_ESmFdBeta[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmFdGamma",iterN_idx);  iter_ESmFdGamma[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmRdAlpha",iterN_idx);  iter_ESmRdAlpha[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmRdBeta",iterN_idx);   iter_ESmRdBeta[iterN_idx-1] = iConfig.getParameter<double>(buf);
-  sprintf(buf,"Iter%i_ESmRdGamma",iterN_idx);  iter_ESmRdGamma[iterN_idx-1] = iConfig.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpFdAlpha",iterN_idx);  iter_ESpFdAlpha[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpFdBeta",iterN_idx);   iter_ESpFdBeta[iterN_idx-1]  = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpFdGamma",iterN_idx);  iter_ESpFdGamma[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpRdAlpha",iterN_idx);  iter_ESpRdAlpha[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpRdBeta",iterN_idx);   iter_ESpRdBeta[iterN_idx-1]  = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESpRdGamma",iterN_idx);  iter_ESpRdGamma[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmFdAlpha",iterN_idx);  iter_ESmFdAlpha[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmFdBeta",iterN_idx);   iter_ESmFdBeta[iterN_idx-1]  = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmFdGamma",iterN_idx);  iter_ESmFdGamma[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmRdAlpha",iterN_idx);  iter_ESmRdAlpha[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmRdBeta",iterN_idx);   iter_ESmRdBeta[iterN_idx-1]  = MatrixElements_.getParameter<double>(buf);
+  sprintf(buf,"Iter%i_ESmRdGamma",iterN_idx);  iter_ESmRdGamma[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
 
  }
 
@@ -319,11 +325,7 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
  
   ESHandle<CaloGeometry> caloGeometry;
   iSetup.get<CaloGeometryRecord>().get(caloGeometry);
-
-  //const CaloGeometry *caloGeom = caloGeometry.product(); //[Alpha]
-  const CaloSubdetectorGeometry *geometry = caloGeometry->getSubdetectorGeometry(DetId::Ecal, EcalPreshower);
-  const CaloSubdetectorGeometry *& geometry_p = geometry;
-  
+  const CaloGeometry *caloGeom = caloGeometry.product();
   ESHandle<MagneticField> theMagField; 
   iSetup.get<IdealMagneticFieldRecord>().get(theMagField); 
   ESHandle<GlobalTrackingGeometry> theTrackingGeometry; 
@@ -335,20 +337,15 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
  
   
   //2.fill es hits
-  //edm::Handle<EcalRecHitCollection> PreshowerRecHits;	//[Alpha]		
-  //iEvent.getByLabel(InputTag("ecalPreshowerRecHit","EcalRecHitsES"), PreshowerRecHits); //[Alpha]
-  Handle<ESRecHitCollection> PreshowerRecHits;
-  iEvent.getByLabel(InputTag("RecHitLabel"), PreshowerRecHits);
-  //fill_esRecHit(caloGeom,PreshowerRecHits);
-  fill_esRecHit(geometry_p,PreshowerRecHits);
+  edm::Handle<EcalRecHitCollection> PreshowerRecHits;
+  iEvent.getByLabel(RecHitLabel_, PreshowerRecHits);
+  fill_esRecHit(caloGeom,PreshowerRecHits);
+  std::cout << " number of reco-hits " << PreshowerRecHits->size() << std::endl;
  
  
   //3.fill Track
   edm::Handle<reco::TrackCollection>   TrackCol;
-  if(b_fromRefitter)
-   iEvent.getByLabel( "TrackRefitter",      TrackCol );
-  else
-   iEvent.getByLabel( "generalTracks",      TrackCol );
+  iEvent.getByLabel( TrackLabel_,      TrackCol );
  
   std::cout << " number of tracks " << TrackCol->size() << std::endl;
  
@@ -608,25 +605,19 @@ void ESAlignTool::PrintPosition(Long64_t _evt_run, const CaloGeometry *caloGeom)
  }}}}}}}
 }
 
-//void ESAlignTool::fill_esRecHit(const CaloGeometry *caloGeom, edm::Handle<EcalRecHitCollection> PreshowerRecHits) //[Alpha]
-void ESAlignTool::fill_esRecHit(const CaloSubdetectorGeometry *& geometry_p, edm::Handle<ESRecHitCollection> PreshowerRecHits)
+void ESAlignTool::fill_esRecHit(const CaloGeometry *caloGeom, edm::Handle<EcalRecHitCollection> PreshowerRecHits)
 {
- //const ESRecHitCollection *ESRH = PreshowerRecHits.product(); //[Alpha]
- //EcalRecHitCollection::const_iterator esrh_it; //[Alpha]
- ESRecHitCollection::const_iterator esrh_it;
+ const ESRecHitCollection *ESRH = PreshowerRecHits.product();
+ EcalRecHitCollection::const_iterator esrh_it;
 
  for ( esrh_it = ESRH->begin(); esrh_it != ESRH->end(); esrh_it++)
  {
+  Double_t esrh_x = caloGeom->getPosition(esrh_it->id()).x();
+  Double_t esrh_y = caloGeom->getPosition(esrh_it->id()).y();
+  Double_t esrh_z = caloGeom->getPosition(esrh_it->id()).z();
+  Double_t esrh_eta = caloGeom->getPosition(esrh_it->id()).eta();
+  Double_t esrh_phi = caloGeom->getPosition(esrh_it->id()).phi();
   ESDetId esdetid = ESDetId(esrh_it->id());
-  const CaloCellGeometry *esCell = geometry_p->getGeometry();
-  GlobalPoint espoint = esCell->getPosition();
-
-  Double_t esrh_x = espoint.x();
-  Double_t esrh_y = espoint.y();
-  Double_t esrh_z = espoint.z();
-  Double_t esrh_eta = espoint.eta();
-  Double_t esrh_phi = espoint.phi();
-  //ESDetId esdetid = ESDetId(esrh_it->id());
   if(Nesrh>=10000)
   {
    edm::LogWarning("fill_esRecHit")<<"Too many ES RecHits.\n";
@@ -662,43 +653,66 @@ void ESAlignTool::fill_esRecHit(const CaloSubdetectorGeometry *& geometry_p, edm
 
 void ESAlignTool::fill_tracks(edm::Handle<reco::TrackCollection> TrackCol)
 {
+	int itrack=0; //[Alpha]
  for(reco::TrackCollection::const_iterator itTrack = TrackCol->begin();
      itTrack != TrackCol->end(); ++itTrack)
  {    
+	//std::cout<<"==== Track "<<itrack<<" ========="<<std::endl; //[Alpha]
   if(Ntrack>=2000)
   {
    edm::LogWarning("fill_tracks")<<"Too many selected tracks.\n";
    continue;
   }
   if ( itTrack->charge()!=0 )
+	//std::cout<<" Has Charge!"<<std::endl; //[Alpha]
   {
    if( pass_TrackSelection(itTrack) )
    {
+	//std::cout<<" Pass selection"<<std::endl; //[Alpha]
+	
+	//std::cout<<" 	pT "<<itTrack->pt()<<std::endl; //[Alpha]
     _TrackPt[Ntrack] = itTrack->pt(); 
+	//std::cout<<" 	eta "<<itTrack->eta()<<std::endl; //[Alpha]
     _TrackEta[Ntrack] = itTrack->eta(); 
+	//std::cout<<" 	phi "<<itTrack->phi()<<std::endl; //[Alpha]
     _TrackPhi[Ntrack] = itTrack->phi(); 
+	//std::cout<<" 	vx "<<itTrack->vx()<<std::endl; //[Alpha]
     _TrackVx[Ntrack] = itTrack->vx(); 
+	//std::cout<<" 	vy "<<itTrack->vy()<<std::endl; //[Alpha]
     _TrackVy[Ntrack] = itTrack->vy(); 
+	//std::cout<<" 	vz "<<itTrack->vz()<<std::endl; //[Alpha]
     _TrackVz[Ntrack] = itTrack->vz(); 
+	//std::cout<<" 	charge "<<itTrack->charge()<<std::endl; //[Alpha]
     _TrackCharge[Ntrack] = itTrack->charge(); 
+	//std::cout<<" 	d0 "<<itTrack->d0()<<std::endl; //[Alpha]
     _Trackd0[Ntrack]=itTrack->d0(); 
+	//std::cout<<" 	N "<<itTrack->found()<<std::endl; //[Alpha]
     _TrackNHit[Ntrack]=itTrack->found(); 
+	//std::cout<<" 	chi2 "<<itTrack->normalizedChi2()<<std::endl; //[Alpha]
     _TrackNChi2[Ntrack]=itTrack->normalizedChi2(); 
+	//std::cout<<" 	ptError "<<itTrack->ptError()<<std::endl; //[Alpha]
     _TrackPtError[Ntrack]=itTrack->ptError();
+	//std::cout<<" 	qualityMask "<<itTrack->qualityMask()<<std::endl; //[Alpha]
     _TrackQuality[Ntrack]=itTrack->qualityMask();
-    _TrackOuterZ[Ntrack]=itTrack->outerZ();
-    _TrackOuterEta[Ntrack]=itTrack->outerEta();
-    _TrackOuterPhi[Ntrack]=itTrack->outerPhi();
+//	std::cout<<" 	outerZ "<<itTrack->outerZ()<<std::endl; //[Alpha]
+//    _TrackOuterZ[Ntrack]=itTrack->outerZ();
+//	std::cout<<" 	outerEta "<<itTrack->outerEta()<<std::endl; //[Alpha]
+//    _TrackOuterEta[Ntrack]=itTrack->outerEta();
+//	std::cout<<" 	outerPhi "<<itTrack->outerPhi()<<std::endl; //[Alpha]
+//    _TrackOuterPhi[Ntrack]=itTrack->outerPhi();
+	//std::cout<<" Finish fill"<<std::endl; //[Alpha]
 
-    if(itTrack->innerOk())
-    {
-     _TrackInnerX[Ntrack] = itTrack->innerPosition().X();
-     _TrackInnerY[Ntrack] = itTrack->innerPosition().Y();
-     _TrackInnerZ[Ntrack] = itTrack->innerPosition().Z();
-    }
+//    if(itTrack->innerOk())
+//    {
+//     _TrackInnerX[Ntrack] = itTrack->innerPosition().X();
+//     _TrackInnerY[Ntrack] = itTrack->innerPosition().Y();
+//     _TrackInnerZ[Ntrack] = itTrack->innerPosition().Z();
+//	std::cout<<" inner done "<<std::endl;
+//    }
     Ntrack++;
    }//end pass_TrackSelection
   }//charge!=0
+	itrack++;
  }//TrackCollection
 }
 
@@ -2089,7 +2103,7 @@ ESAlignTool::beginJob()
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 ESAlignTool::endJob() {
-  std::cout << "In ESAlignTool.endJob\n";
+  std::cout<<std::endl << "In ESAlignTool.endJob\n";
 
   f->cd();
   t_ESAlign->Write(); 
@@ -2204,8 +2218,8 @@ ESAlignTool::endJob() {
   file2<<"\n";
   file2.close();
 */
- t_ESAlign->Delete();
- if(b_DrawMagField)  t_ESField->Delete();
+ //t_ESAlign->Delete();
+ //if(b_DrawMagField)  t_ESField->Delete();
 
  f->Close();
 }

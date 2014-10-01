@@ -1,20 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
-esAlignTool = cms.EDAnalyzer('ESAlignTool',
-
-    DrawMagField = cms.bool(False),
-    PrintPosition = cms.bool(False),
-    withRotation = cms.bool(False),
-    Cal_ESorigin_from_Geometry = cms.bool(True),
-    Cal_ESaxes_from_Geometry = cms.bool(True),
-    Selected_idee = cms.uint32(0),
-    Selected_RUNmin = cms.int32(0),
-    Selected_RUNmax = cms.int32(0),
-    PrintMatrix = cms.bool(False),
-    ReSetRfromOutside = cms.bool(False),
-    Overwrite_RotationMatrix_fromGeometry = cms.bool(False),
- 
-    IterN = cms.uint32(0),
+#esAlignTool = cms.EDAnalyzer('ESAlignTool',
+DefaultMatrixElement_Iter = cms.PSet(
 
     Iter1_ESpFdX = cms.double(0),Iter1_ESpFdY = cms.double(0),Iter1_ESpFdZ = cms.double(0),Iter1_ESpFdAlpha = cms.double(0),Iter1_ESpFdBeta = cms.double(0),Iter1_ESpFdGamma = cms.double(0),
     Iter1_ESpRdX = cms.double(0),Iter1_ESpRdY = cms.double(0),Iter1_ESpRdZ = cms.double(0),Iter1_ESpRdAlpha = cms.double(0),Iter1_ESpRdBeta = cms.double(0),Iter1_ESpRdGamma = cms.double(0),

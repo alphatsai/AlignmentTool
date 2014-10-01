@@ -29,7 +29,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 #                                                           )
 #                                         )
 #process.es_prefer_GlobalPositionDB = cms.ESPrefer("PoolDBESSource", "newGlobalPosition")
-process.GlobalTag.globaltag = 'POSTLS170_V7::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
+process.GlobalTag.globaltag = 'POSTLS170_V6::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
 ####################################################################################
 
 
