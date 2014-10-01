@@ -4,6 +4,7 @@
 <use name=FWCore/Common>
 <use name=Geometry/CaloGeometry>
 <use name=Geometry/Records>
+<use name=CommonTools/UtilAlgos>
 <use name=DataFormats/CaloRecHit>
 <use name=DataFormats/EgammaReco>
 <use name=DataFormats/EcalRecHit>

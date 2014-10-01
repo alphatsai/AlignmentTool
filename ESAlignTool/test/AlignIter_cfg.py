@@ -47,6 +47,11 @@ options.register('MaxEvents', -1,
 	VarParsing.varType.int,
 	"Run events max"
 	)
+options.register('OutFilename', 'AlignmentFile.root',
+	VarParsing.multiplicity.singleton,
+	VarParsing.varType.string,
+	"Output File name"
+	)
 options.register('InputRefitter', True,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
@@ -123,9 +128,14 @@ from inputFiles_cfi import * #FileNames
 process.source = cms.Source("PoolSource",
     #skipEvents = cms.untracked.uint32(0),
     #firstEvent = cms.untracked.uint32(1),
-	#fileNames = cms.untracked.vstring(FileNames)
-	#fileNames = cms.untracked.vstring(FileNames_CSA14Test)
-	fileNames = cms.untracked.vstring(FileNames_PionGunTest)
+    #fileNames = cms.untracked.vstring(FileNames)
+    #fileNames = cms.untracked.vstring(FileNames_CSA14Test)
+    fileNames = cms.untracked.vstring(FileNames_PionGunTest)
+)
+
+### output
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string(options.OutFilename) 
 )
 
 ### Check parameters options

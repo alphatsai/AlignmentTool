@@ -36,52 +36,34 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Common/interface/TriggerNames.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
 #include "Geometry/Records/interface/IdealGeometryRecord.h"
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
 #include "Geometry/CaloEventSetup/interface/CaloTopologyRecord.h"
 
-//#include "DataFormats/EgammaReco/interface/SuperCluster.h"
-//#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
 #include "DataFormats/CaloRecHit/interface/CaloCluster.h"
 #include "DataFormats/CaloRecHit/interface/CaloClusterFwd.h"
 #include "DataFormats/EgammaReco/interface/PreshowerCluster.h"
 #include "DataFormats/EgammaReco/interface/PreshowerClusterFwd.h"
-//#include "DataFormats/EgammaCandidates/interface/Photon.h"
-//#include "DataFormats/EgammaCandidates/interface/PhotonFwd.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
-//#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/DetId/interface/DetId.h"
-//#include "DataFormats/SiStripDetId/interface/TECDetId.h"
 #include "DataFormats/EcalDetId/interface/ESDetId.h"
-//#include "DataFormats/EcalDetId/interface/EBDetId.h"
-//#include "DataFormats/EcalDetId/interface/EEDetId.h"
-
 #include "DataFormats/Math/interface/deltaR.h"
-//#include "DataFormats/Candidate/interface/Candidate.h"
-//#include "DataFormats/Math/interface/LorentzVector.h"
-
-//#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-//#include "RecoEgamma/EgammaIsolationAlgos/interface/EgammaRecHitIsolation.h"
-
-//#include "TrackingTools/TrackAssociator/interface/TrackDetectorAssociator.h"
-//#include "TrackingTools/TrackAssociator/interface/TrackAssociatorParameters.h"
-#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
-
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
+
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 #include "MagneticField/Engine/interface/MagneticField.h"
+
+#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
-//#include "DataFormats/GeometrySurface/interface/BoundPlane.h"
 #include "Geometry/CommonDetUnit/interface/GlobalTrackingGeometry.h"
-//#include "TrackingTools/GeomPropagators/interface/AnalyticalPropagator.h"
 #include "TrackPropagation/SteppingHelixPropagator/interface/SteppingHelixPropagator.h"
-//#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 //ROOT includes
 #include "TMath.h"
 #include <Math/VectorUtil.h>
@@ -1663,31 +1645,6 @@ void ESAlignTool::fill_residual_doRotation_v2(int iz)
      ES_NTracks[a][0] += 1;
     }
 
-    /*
-    Double_t Exx=eF_xx;Double_t Eyx=eF_yx;Double_t Eyy=eF_yy;
-    Double_t Px=PredictionState_Px[iTrk][a][0];
-    Double_t Py=PredictionState_Py[iTrk][a][0];
-    Double_t Pz=PredictionState_Pz[iTrk][a][0];
-    Double_t sPxx=PredictionState_E44[iTrk][a][0];
-    Double_t sPxy=PredictionState_E45[iTrk][a][0];
-    Double_t sPxz=PredictionState_E46[iTrk][a][0];
-    Double_t sPyy=PredictionState_E55[iTrk][a][0];
-    Double_t sPyz=PredictionState_E56[iTrk][a][0];
-    Double_t sPzz=PredictionState_E66[iTrk][a][0];
-    Double_t sE14=PredictionState_E14[iTrk][a][0];
-    Double_t sE15=PredictionState_E15[iTrk][a][0];
-    Double_t sE16=PredictionState_E16[iTrk][a][0];
-    Double_t sE24=PredictionState_E24[iTrk][a][0];
-    Double_t sE25=PredictionState_E25[iTrk][a][0];
-    Double_t sE26=PredictionState_E26[iTrk][a][0];
-    Double_t Rxx=pow(0.055029,2.); Double_t Ryy=pow(1.760918,2.);
-    Double_t Xpre=X0F;  Double_t Ypre=Y0F;
-    Double_t Xrec=X0F-XDF;  Double_t Yrec=Y0F-YDF;
-
-    Cal_MatrixMErr2(iz,1,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz);
-    Cal_VectorPErr2(iz,1,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz,Rxx,Ryy,Xpre,Ypre,Xrec,Yrec,sE14,sE15,sE16,sE24,sE25,sE26,determinant);
-    */
-
     PredictionState_MatchedRec[iTrk][a][1]=indR;
     PredictionState_resiX[iTrk][a][1]=resiXR;
     PredictionState_resiY[iTrk][a][1]=resiYR;
@@ -1718,31 +1675,6 @@ void ESAlignTool::fill_residual_doRotation_v2(int iz)
      Cal_CHI2(iz,2,eR_xx,eR_yx,eR_yy,XDR,YDR);
      ES_NTracks[a][1] += 1;
     }
-
-    /*
-    Exx=eF_xx;Eyx=eF_yx;Eyy=eF_yy;
-    Px=PredictionState_Px[iTrk][a][1];
-    Py=PredictionState_Py[iTrk][a][1];
-    Pz=PredictionState_Pz[iTrk][a][1];
-    sPxx=PredictionState_E44[iTrk][a][1];
-    sPxy=PredictionState_E45[iTrk][a][1];
-    sPxz=PredictionState_E46[iTrk][a][1];
-    sPyy=PredictionState_E55[iTrk][a][1];
-    sPyz=PredictionState_E56[iTrk][a][1];
-    sPzz=PredictionState_E66[iTrk][a][1];
-    sE14=PredictionState_E14[iTrk][a][1];
-    sE15=PredictionState_E15[iTrk][a][1];
-    sE16=PredictionState_E16[iTrk][a][1];
-    sE24=PredictionState_E24[iTrk][a][1];
-    sE25=PredictionState_E25[iTrk][a][1];
-    sE26=PredictionState_E26[iTrk][a][1];
-    Ryy=pow(0.055029,2.); Rxx=pow(1.760918,2.);
-    Xpre=X0F;  Ypre=Y0F;
-    Xrec=X0F-XDF;  Yrec=Y0F-YDF;
-
-    Cal_MatrixMErr2(iz,2,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz);
-    Cal_VectorPErr2(iz,2,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz,Rxx,Ryy,Xpre,Ypre,Xrec,Yrec,sE14,sE15,sE16,sE24,sE25,sE26,determinant);
-    */
 
    }//end if good matching
   }//end for-loop Trk
@@ -1865,31 +1797,6 @@ void ESAlignTool::fill_residual_doRotation(int iz)
      ES_NTracks[a][0] += 1;
     }
 
-    /*
-    Double_t Exx=eF_xx;Double_t Eyx=eF_yx;Double_t Eyy=eF_yy;
-    Double_t Px=PredictionState_Px[iTrk][a][0];
-    Double_t Py=PredictionState_Py[iTrk][a][0];
-    Double_t Pz=PredictionState_Pz[iTrk][a][0];
-    Double_t sPxx=PredictionState_E44[iTrk][a][0];
-    Double_t sPxy=PredictionState_E45[iTrk][a][0];
-    Double_t sPxz=PredictionState_E46[iTrk][a][0];
-    Double_t sPyy=PredictionState_E55[iTrk][a][0];
-    Double_t sPyz=PredictionState_E56[iTrk][a][0];
-    Double_t sPzz=PredictionState_E66[iTrk][a][0];
-    Double_t sE14=PredictionState_E14[iTrk][a][0];
-    Double_t sE15=PredictionState_E15[iTrk][a][0];
-    Double_t sE16=PredictionState_E16[iTrk][a][0];
-    Double_t sE24=PredictionState_E24[iTrk][a][0];
-    Double_t sE25=PredictionState_E25[iTrk][a][0];
-    Double_t sE26=PredictionState_E26[iTrk][a][0];
-    Double_t Rxx=pow(0.055029,2.); Double_t Ryy=pow(1.760918,2.);
-    Double_t Xpre=X0F;  Double_t Ypre=Y0F;
-    Double_t Xrec=X0F-XDF;  Double_t Yrec=Y0F-YDF;
-
-    Cal_MatrixMErr2(iz,1,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz);
-    Cal_VectorPErr2(iz,1,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz,Rxx,Ryy,Xpre,Ypre,Xrec,Yrec,sE14,sE15,sE16,sE24,sE25,sE26,determinant);
-    */
-
     PredictionState_MatchedRec[iTrk][a][1]=indR;
     PredictionState_resiX[iTrk][a][1]=X0R-(_esRecHit_X[indR]-ES_O_X[a][1]);
     PredictionState_resiY[iTrk][a][1]=Y0R-(_esRecHit_Y[indR]-ES_O_Y[a][1]);
@@ -1921,31 +1828,6 @@ void ESAlignTool::fill_residual_doRotation(int iz)
      ES_NTracks[a][1] += 1;
     }
 
-    /*
-    Exx=eF_xx;Eyx=eF_yx;Eyy=eF_yy;
-    Px=PredictionState_Px[iTrk][a][1];
-    Py=PredictionState_Py[iTrk][a][1];
-    Pz=PredictionState_Pz[iTrk][a][1];
-    sPxx=PredictionState_E44[iTrk][a][1];
-    sPxy=PredictionState_E45[iTrk][a][1];
-    sPxz=PredictionState_E46[iTrk][a][1];
-    sPyy=PredictionState_E55[iTrk][a][1];
-    sPyz=PredictionState_E56[iTrk][a][1];
-    sPzz=PredictionState_E66[iTrk][a][1];
-    sE14=PredictionState_E14[iTrk][a][1];
-    sE15=PredictionState_E15[iTrk][a][1];
-    sE16=PredictionState_E16[iTrk][a][1];
-    sE24=PredictionState_E24[iTrk][a][1];
-    sE25=PredictionState_E25[iTrk][a][1];
-    sE26=PredictionState_E26[iTrk][a][1];
-    Ryy=pow(0.055029,2.); Rxx=pow(1.760918,2.);
-    Xpre=X0F;  Ypre=Y0F;
-    Xrec=X0F-XDF;  Yrec=Y0F-YDF;
-
-    Cal_MatrixMErr2(iz,2,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz);
-    Cal_VectorPErr2(iz,2,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz,Rxx,Ryy,Xpre,Ypre,Xrec,Yrec,sE14,sE15,sE16,sE24,sE25,sE26,determinant);
-    */
-
    }//end if good matching
   }//end for-loop Trk
 
@@ -1965,8 +1847,7 @@ ESAlignTool::beginJob()
 {
   std::cout << "In ESAlignTool.beginJob\n";
 
-  f=new TFile("AlignmentFile.root","RECREATE");
-  t_ESAlign = new TTree("ESAlign","tree",0);
+  t_ESAlign = f->make<TTree>("ESAlign","tree");
 
   t_ESAlign->Branch("runNumber", &_runNum, "runNumber/L");
   t_ESAlign->Branch("evtNumber", &_evtNum, "evtNumber/L");
@@ -2087,8 +1968,6 @@ void
 ESAlignTool::endJob() {
   std::cout<<std::endl << "In ESAlignTool.endJob\n";
 
-  f->cd();
-  t_ESAlign->Write(); 
   if(b_DrawMagField)  t_ESField->Write();
 
   ESpF_residualX->Write();  ESpF_residualY->Write();
@@ -2114,96 +1993,6 @@ ESAlignTool::endJob() {
   delete ESpR_residualX;  delete ESpR_residualY;
   delete ESmF_residualX;  delete ESmF_residualY;
   delete ESmR_residualX;  delete ESmR_residualY;
-
-/*
-  cout<<"Alignment on ES+Front :\n";
-  if(GetIteration(1,1,ESpFdX,ESpFdY,ESpFdZ)==1)
-  {
-   cout<<"dX="<<ESpFdX<<", dY="<<ESpFdY<<", dZ="<<ESpFdZ<<"\n";
-   GetIterationError(1,1,ESpFdXerr,ESpFdYerr,ESpFdZerr);
-   cout<<"dXerr="<<ESpFdXerr<<", dYerr="<<ESpFdYerr<<", dZerr="<<ESpFdZerr<<"\n";
-   cout<<"normalized CHI2 before iteration="<<ESpFCHI2/ESpFNTracks<<" ";
-   cout<<"# of Tracks="<<ESpFNTracks<<"\n";
-  }
-  cout<<"Alignment on ES+Rear :\n";
-  if(GetIteration(1,2,ESpRdX,ESpRdY,ESpRdZ)==1)
-  {
-   cout<<"dX="<<ESpRdX<<", dY="<<ESpRdY<<", dZ="<<ESpRdZ<<"\n";
-   GetIterationError(1,2,ESpRdXerr,ESpRdYerr,ESpRdZerr);
-   cout<<"dXerr="<<ESpRdXerr<<", dYerr="<<ESpRdYerr<<", dZerr="<<ESpRdZerr<<"\n";
-   cout<<"normalized CHI2 before iteration="<<ESpRCHI2/ESpRNTracks<<" ";
-   cout<<"# of Tracks="<<ESpRNTracks<<"\n";
-  }
-  cout<<"Alignment on ES-Front :\n";
-  if(GetIteration(-1,1,ESmFdX,ESmFdY,ESmFdZ)==1)
-  {
-   cout<<"dX="<<ESmFdX<<", dY="<<ESmFdY<<", dZ="<<ESmFdZ<<"\n";
-   GetIterationError(-1,1,ESmFdXerr,ESmFdYerr,ESmFdZerr);
-   cout<<"dXerr="<<ESmFdXerr<<", dYerr="<<ESmFdYerr<<", dZerr="<<ESmFdZerr<<"\n";
-   cout<<"normalized CHI2 before iteration="<<ESmFCHI2/ESmFNTracks<<" ";
-   cout<<"# of Tracks="<<ESmFNTracks<<"\n";
-  }
-  cout<<"Alignment on ES-Rear :\n";
-  if(GetIteration(-1,2,ESmRdX,ESmRdY,ESmRdZ)==1)
-  {
-   cout<<"dX="<<ESmRdX<<", dY="<<ESmRdY<<", dZ="<<ESmRdZ<<"\n";
-   GetIterationError(-1,2,ESmRdXerr,ESmRdYerr,ESmRdZerr);
-   cout<<"dXerr="<<ESmRdXerr<<", dYerr="<<ESmRdYerr<<", dZerr="<<ESmRdZerr<<"\n";
-   cout<<"normalized CHI2 before iteration="<<ESmRCHI2/ESmRNTracks<<" ";
-   cout<<"# of Tracks="<<ESmRNTracks<<"\n";
-  }
-*/
-
-
-/*
-  ofstream file;
-  file.open("file.txt",ios::out|ios::app);
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESpFdX = cms.double("<<ESpFdX<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESpFdY = cms.double("<<ESpFdY<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESpFdZ = cms.double("<<ESpFdZ<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESpRdX = cms.double("<<ESpRdX<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESpRdY = cms.double("<<ESpRdY<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESpRdZ = cms.double("<<ESpRdZ<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESmFdX = cms.double("<<ESmFdX<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESmFdY = cms.double("<<ESmFdY<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESmFdZ = cms.double("<<ESmFdZ<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESmRdX = cms.double("<<ESmRdX<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESmRdY = cms.double("<<ESmRdY<<")\n";
-  file<<"process.patAlignTool3.Iter"<<iterN<<"_ESmRdZ = cms.double("<<ESmRdZ<<")\n";
-  file<<"\n";
-  file.close();
-
-  ofstream file2;
-  file2.open("file2.txt",ios::out|ios::app);
-  file2<<"idx="<<iterN-1<<";\n";
-  file2<<"ESpFdX-="<<ESpFdX<<"; ESpFdY-="<<ESpFdY<<"; ESpFdZ-="<<ESpFdZ<<";\n";
-  file2<<"ESpFdXArray[idx]=ESpFdX; ESpFdYArray[idx]=ESpFdY; ESpFdZArray[idx]=ESpFdZ;\n";
-  file2<<"ESpFchisqArray[idx]="<<ESpFCHI2/ESpFNTracks<<"; //";
-  file2<<ESpFNTracks<<"\n";
-
-  file2<<"ESpRdX-="<<ESpRdX<<"; ESpRdY-="<<ESpRdY<<"; ESpRdZ-="<<ESpRdZ<<";\n";
-  file2<<"ESpRdXArray[idx]=ESpRdX; ESpRdYArray[idx]=ESpRdY; ESpRdZArray[idx]=ESpRdZ;\n";
-  file2<<"ESpRchisqArray[idx]="<<ESpRCHI2/ESpRNTracks<<"; //";
-  file2<<ESpRNTracks<<"\n";
-
-  file2<<"ESmFdX-="<<ESmFdX<<"; ESmFdY-="<<ESmFdY<<"; ESmFdZ-="<<ESmFdZ<<";\n";
-  file2<<"ESmFdXArray[idx]=ESmFdX; ESmFdYArray[idx]=ESmFdY; ESmFdZArray[idx]=ESmFdZ;\n";
-  file2<<"ESmFchisqArray[idx]="<<ESmFCHI2/ESmFNTracks<<"; //";
-  file2<<ESmFNTracks<<"\n";
-
-  file2<<"ESmRdX-="<<ESmRdX<<"; ESmRdY-="<<ESmRdY<<"; ESmRdZ-="<<ESmRdZ<<";\n";
-  file2<<"ESmRdXArray[idx]=ESmRdX; ESmRdYArray[idx]=ESmRdY; ESmRdZArray[idx]=ESmRdZ;\n";
-  file2<<"ESmRchisqArray[idx]="<<ESmRCHI2/ESmRNTracks<<"; //";
-  file2<<ESmRNTracks<<"\n";
-
-
-  file2<<"\n";
-  file2.close();
-*/
- //t_ESAlign->Delete();
- //if(b_DrawMagField)  t_ESField->Delete();
-
- f->Close();
 }
 
 //define this as a plug-in

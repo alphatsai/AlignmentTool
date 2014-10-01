@@ -21,6 +21,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "DataFormats/EcalDetId/interface/ESDetId.h"
@@ -109,7 +110,7 @@ protected:
   Double_t _TrackPtError[2000]; 
   Int_t _TrackQuality[2000]; 
 
-  TFile *f;
+  edm::Service<TFileService> f;
   TTree *t_ESAlign;
   TTree *t_ESField;
 
