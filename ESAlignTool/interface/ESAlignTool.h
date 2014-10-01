@@ -67,7 +67,6 @@ protected:
   void LoadMagFieldonES(Long64_t ,const CaloGeometry *, edm::ESHandle<MagneticField>);
   void PrintPosition(Long64_t , const CaloGeometry *);
   void fill_esRecHit(const CaloGeometry *, edm::Handle<EcalRecHitCollection>);
-  void fill_esRecHit(const CaloGeometry *, edm::Handle<EcalRecHitCollection>);
   void fill_tracks(edm::Handle<reco::TrackCollection>);
   bool pass_TrackSelection(reco::TrackCollection::const_iterator);
   void fill_esRecHitAssociation();
@@ -77,10 +76,10 @@ protected:
   void Overwrite_RotationMatrix(int);
   void normalize(Double_t &, Double_t &, Double_t &);
   void fill_PredictionState(int, int, int, edm::Handle<reco::TrackCollection>, edm::ESHandle<MagneticField>, edm::ESHandle<GlobalTrackingGeometry>);
-  void fill_PredictionState_wRotation(int, int, int, edm::Handle<reco::TrackCollection>, edm::ESHandle<MagneticField>, edm::ESHandle<GlobalTrackingGeometry>);
+  void fill_PredictionState_doRotation(int, int, int, edm::Handle<reco::TrackCollection>, edm::ESHandle<MagneticField>, edm::ESHandle<GlobalTrackingGeometry>);
   void fill_residual(int);
-  void fill_residual_wRotation(int);
-  void fill_residual_wRotation_v2(int);
+  void fill_residual_doRotation(int);
+  void fill_residual_doRotation_v2(int);
  
   // The main sub-object which does the real work
   // Verbosity
@@ -215,9 +214,9 @@ private:
   int BadSensor(int,int,int,int);
 
   void Cal_MatrixM(int,int,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t);
-  void Cal_MatrixM_wRotation(int,int,int,Double_t,Double_t,Double_t);
+  void Cal_MatrixM_doRotation(int,int,int,Double_t,Double_t,Double_t);
   void Cal_VectorP(int,int,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t);
-  void Cal_VectorP_wRotation(int,int,int,Double_t,Double_t,Double_t);
+  void Cal_VectorP_doRotation(int,int,int,Double_t,Double_t,Double_t);
   void Cal_CHI2(int,int,Double_t,Double_t,Double_t,Double_t,Double_t);
   void Cal_MatrixMErr2(int,int,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t);
   void Cal_VectorPErr2(int,int,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t);
@@ -240,10 +239,10 @@ private:
 
   int iterN;
 
-  bool b_wRotation;
+  bool b_doRotation;
   bool b_DrawMagField;   bool b_PrintPosition;
   bool b_PrintMatrix; bool b_ReSetRfromOutside;
-  bool b_fromRefitter;
+  bool b_InputRefitter;
   int ESpF_Printed;  int ESpR_Printed;
   int ESmF_Printed;  int ESmR_Printed;
   bool Cal_ESorigin_from_Geometry;
@@ -251,6 +250,11 @@ private:
   bool b_Overwrite_RotationMatrix_fromGeometry;
   int Selected_idee;
   int Selected_RUNmin;  int Selected_RUNmax;
+
+  edm::InputTag RecHitLabel_;
+  edm::InputTag TrackLabel_;
+ 
+  edm::ParameterSet MatrixElements_; 
 };
 
 #endif

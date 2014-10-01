@@ -157,15 +157,15 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
  e_yxlimit = iConfig.getParameter<double>("e_yxlimit");
  winlimit = iConfig.getParameter<double>("winlimit");
 
- b_wRotation = iConfig.getParameter<bool>("withRotation");
+ b_doRotation = iConfig.getParameter<bool>("doRotation");
  b_DrawMagField = iConfig.getParameter<bool>("DrawMagField");
  b_PrintPosition = iConfig.getParameter<bool>("PrintPosition");
  b_ReSetRfromOutside = iConfig.getParameter<bool>("ReSetRfromOutside");
- b_fromRefitter = iConfig.getParameter<bool>("fromRefitter");
+ b_InputRefitter = iConfig.getParameter<bool>("InputRefitter");
 
- Cal_ESorigin_from_Geometry = iConfig.getParameter<bool>("Cal_ESorigin_from_Geometry");
- Cal_ESaxes_from_Geometry = iConfig.getParameter<bool>("Cal_ESaxes_from_Geometry");
- b_Overwrite_RotationMatrix_fromGeometry = iConfig.getParameter<bool>("Overwrite_RotationMatrix_fromGeometry");
+ Cal_ESorigin_from_Geometry = iConfig.getParameter<bool>("CalculateESorigin");
+ Cal_ESaxes_from_Geometry = iConfig.getParameter<bool>("CalculateESaxes");
+ b_Overwrite_RotationMatrix_fromGeometry = iConfig.getParameter<bool>("OverwriteRotationM");
 
  b_PrintMatrix = iConfig.getParameter<bool>("PrintMatrix");
  Selected_idee = iConfig.getParameter<unsigned int>("Selected_idee");
@@ -208,6 +208,8 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
   sprintf(buf,"Iter%i_ESmRdAlpha",iterN_idx);  iter_ESmRdAlpha[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
   sprintf(buf,"Iter%i_ESmRdBeta",iterN_idx);   iter_ESmRdBeta[iterN_idx-1]  = MatrixElements_.getParameter<double>(buf);
   sprintf(buf,"Iter%i_ESmRdGamma",iterN_idx);  iter_ESmRdGamma[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
+
+std::cout<<"dX: "<<iter_ESpFdX[iterN_idx-1]<<", dAlpha: "<<iter_ESpFdAlpha[iterN_idx-1]<<std::endl;
 
  }
 
@@ -346,6 +348,8 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //3.fill Track
   edm::Handle<reco::TrackCollection>   TrackCol;
   iEvent.getByLabel( TrackLabel_,      TrackCol );
+  //const reco::TrackCollection *track = Tracks.product();
+	
  
   std::cout << " number of tracks " << TrackCol->size() << std::endl;
  
@@ -362,34 +366,35 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
  
   //5.fill PredictionState on ES
   int iz=-1; int ip=1; int idee=0; //dee=1 -X/Y ; dee=2 +X/Y
-  if(!b_wRotation)
+  if(!b_doRotation)
   {
    iz=1;ip=1;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
    iz=1;ip=2;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
    iz=-1;ip=1;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
    iz=-1;ip=2;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
   }
-  if(b_wRotation)
+  if(b_doRotation)
   {
-   iz=1;ip=1;idee=0; fill_PredictionState_wRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
-   iz=1;ip=2;idee=0; fill_PredictionState_wRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
-   iz=-1;ip=1;idee=0; fill_PredictionState_wRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
-   iz=-1;ip=2;idee=0; fill_PredictionState_wRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
+   iz=1;ip=1;idee=0; fill_PredictionState_doRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
+   iz=1;ip=2;idee=0; fill_PredictionState_doRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
+   iz=-1;ip=1;idee=0; fill_PredictionState_doRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
+   iz=-1;ip=2;idee=0; fill_PredictionState_doRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
   }
  
   //6.Residual and Calculation
-  if(!b_wRotation)
+  if(!b_doRotation)
   {
    iz=1; fill_residual(iz);
    iz=-1; fill_residual(iz);
   }
  
-  if(b_wRotation)
+  if(b_doRotation)
   {
    //iz=1; fill_residual(iz);
-   //iz=-1; fill_residual(iz);
-   iz=1; fill_residual_wRotation_v2(iz);
-   iz=-1; fill_residual_wRotation_v2(iz);
+   iz=1; //std::cout<<"======================== iz "<<iz<<" ==========================="<std::endl; 
+	fill_residual_doRotation_v2(iz);
+   iz=-1;//std::cout<<"======================== iz "<<iz<<" ==========================="<std::endl; 
+	fill_residual_doRotation_v2(iz);
   }
  
   t_ESAlign->Fill();
@@ -653,66 +658,43 @@ void ESAlignTool::fill_esRecHit(const CaloGeometry *caloGeom, edm::Handle<EcalRe
 
 void ESAlignTool::fill_tracks(edm::Handle<reco::TrackCollection> TrackCol)
 {
-	int itrack=0; //[Alpha]
  for(reco::TrackCollection::const_iterator itTrack = TrackCol->begin();
      itTrack != TrackCol->end(); ++itTrack)
  {    
-	//std::cout<<"==== Track "<<itrack<<" ========="<<std::endl; //[Alpha]
   if(Ntrack>=2000)
   {
    edm::LogWarning("fill_tracks")<<"Too many selected tracks.\n";
    continue;
   }
   if ( itTrack->charge()!=0 )
-	//std::cout<<" Has Charge!"<<std::endl; //[Alpha]
   {
    if( pass_TrackSelection(itTrack) )
    {
-	//std::cout<<" Pass selection"<<std::endl; //[Alpha]
-	
-	//std::cout<<" 	pT "<<itTrack->pt()<<std::endl; //[Alpha]
     _TrackPt[Ntrack] = itTrack->pt(); 
-	//std::cout<<" 	eta "<<itTrack->eta()<<std::endl; //[Alpha]
     _TrackEta[Ntrack] = itTrack->eta(); 
-	//std::cout<<" 	phi "<<itTrack->phi()<<std::endl; //[Alpha]
     _TrackPhi[Ntrack] = itTrack->phi(); 
-	//std::cout<<" 	vx "<<itTrack->vx()<<std::endl; //[Alpha]
     _TrackVx[Ntrack] = itTrack->vx(); 
-	//std::cout<<" 	vy "<<itTrack->vy()<<std::endl; //[Alpha]
     _TrackVy[Ntrack] = itTrack->vy(); 
-	//std::cout<<" 	vz "<<itTrack->vz()<<std::endl; //[Alpha]
     _TrackVz[Ntrack] = itTrack->vz(); 
-	//std::cout<<" 	charge "<<itTrack->charge()<<std::endl; //[Alpha]
     _TrackCharge[Ntrack] = itTrack->charge(); 
-	//std::cout<<" 	d0 "<<itTrack->d0()<<std::endl; //[Alpha]
     _Trackd0[Ntrack]=itTrack->d0(); 
-	//std::cout<<" 	N "<<itTrack->found()<<std::endl; //[Alpha]
     _TrackNHit[Ntrack]=itTrack->found(); 
-	//std::cout<<" 	chi2 "<<itTrack->normalizedChi2()<<std::endl; //[Alpha]
     _TrackNChi2[Ntrack]=itTrack->normalizedChi2(); 
-	//std::cout<<" 	ptError "<<itTrack->ptError()<<std::endl; //[Alpha]
     _TrackPtError[Ntrack]=itTrack->ptError();
-	//std::cout<<" 	qualityMask "<<itTrack->qualityMask()<<std::endl; //[Alpha]
     _TrackQuality[Ntrack]=itTrack->qualityMask();
-//	std::cout<<" 	outerZ "<<itTrack->outerZ()<<std::endl; //[Alpha]
-//    _TrackOuterZ[Ntrack]=itTrack->outerZ();
-//	std::cout<<" 	outerEta "<<itTrack->outerEta()<<std::endl; //[Alpha]
-//    _TrackOuterEta[Ntrack]=itTrack->outerEta();
-//	std::cout<<" 	outerPhi "<<itTrack->outerPhi()<<std::endl; //[Alpha]
-//    _TrackOuterPhi[Ntrack]=itTrack->outerPhi();
-	//std::cout<<" Finish fill"<<std::endl; //[Alpha]
+    _TrackOuterZ[Ntrack]=itTrack->outerZ();
+    _TrackOuterEta[Ntrack]=itTrack->outerEta();
+    _TrackOuterPhi[Ntrack]=itTrack->outerPhi();
 
-//    if(itTrack->innerOk())
-//    {
-//     _TrackInnerX[Ntrack] = itTrack->innerPosition().X();
-//     _TrackInnerY[Ntrack] = itTrack->innerPosition().Y();
-//     _TrackInnerZ[Ntrack] = itTrack->innerPosition().Z();
-//	std::cout<<" inner done "<<std::endl;
-//    }
+    if(itTrack->innerOk())
+    {
+     _TrackInnerX[Ntrack] = itTrack->innerPosition().X();
+     _TrackInnerY[Ntrack] = itTrack->innerPosition().Y();
+     _TrackInnerZ[Ntrack] = itTrack->innerPosition().Z();
+    }
     Ntrack++;
    }//end pass_TrackSelection
   }//charge!=0
-	itrack++;
  }//TrackCollection
 }
 
@@ -1241,7 +1223,7 @@ void ESAlignTool::fill_PredictionState(int iz, int ip, int idee, edm::Handle<rec
  }//if one of 4 planes
 }
 
-void ESAlignTool::fill_PredictionState_wRotation(int iz, int ip, int idee, edm::Handle<reco::TrackCollection> TrackCol, edm::ESHandle<MagneticField> theMagField, edm::ESHandle<GlobalTrackingGeometry> theTrackingGeometry)
+void ESAlignTool::fill_PredictionState_doRotation(int iz, int ip, int idee, edm::Handle<reco::TrackCollection> TrackCol, edm::ESHandle<MagneticField> theMagField, edm::ESHandle<GlobalTrackingGeometry> theTrackingGeometry)
 {
  PositionType *ES_Oap;
  RotationType *ES_Rotation;
@@ -1554,7 +1536,7 @@ void ESAlignTool::fill_residual(int iz)
  }//iz==1 or -1
 }
 
-void ESAlignTool::fill_residual_wRotation_v2(int iz)
+void ESAlignTool::fill_residual_doRotation_v2(int iz)
 {
  if(iz==1||iz==-1)
  {
@@ -1628,7 +1610,7 @@ void ESAlignTool::fill_residual_wRotation_v2(int iz)
    }//end for-loop ESrechit
    Double_t disR=(winlimit*winlimit); int indR=-1;
    for(int irec=0;irec<Nesrh;irec++)
-   {
+   {	
     if(_esRecHit_siZ[irec]!=iz||_esRecHit_siP[irec]!=2) continue;
     if(_esRecHit_X[irec]==0.&&_esRecHit_Y[irec]==0.) continue;
     if(_esRecHit_MatchedTrk_fromOuter[irec]!=iTrk) continue;
@@ -1675,8 +1657,8 @@ void ESAlignTool::fill_residual_wRotation_v2(int iz)
        || (Selected_idee==2&&_esRecHit_X[indF]-ES_O_X[a][0]<-6.1 )
       )
     {
-     Cal_MatrixM_wRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
-     Cal_VectorP_wRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
+     Cal_MatrixM_doRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
+     Cal_VectorP_doRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
      Cal_CHI2(iz,1,eF_xx,eF_yx,eF_yy,XDF,YDF);
      ES_NTracks[a][0] += 1;
     }
@@ -1731,8 +1713,8 @@ void ESAlignTool::fill_residual_wRotation_v2(int iz)
        || (Selected_idee==2&&_esRecHit_Y[indR]-ES_O_Y[a][0]<-6.1 )
       )
     {
-     Cal_MatrixM_wRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
-     Cal_VectorP_wRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
+     Cal_MatrixM_doRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
+     Cal_VectorP_doRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
      Cal_CHI2(iz,2,eR_xx,eR_yx,eR_yy,XDR,YDR);
      ES_NTracks[a][1] += 1;
     }
@@ -1768,7 +1750,7 @@ void ESAlignTool::fill_residual_wRotation_v2(int iz)
  }//iz==1 or -1
 }
 
-void ESAlignTool::fill_residual_wRotation(int iz)
+void ESAlignTool::fill_residual_doRotation(int iz)
 {
  if(iz==1||iz==-1)
  {
@@ -1877,8 +1859,8 @@ void ESAlignTool::fill_residual_wRotation(int iz)
        || (Selected_idee==2&&_esRecHit_X[indF]-ES_O_X[a][0]<-6.1 )
       )
     {
-     Cal_MatrixM_wRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
-     Cal_VectorP_wRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
+     Cal_MatrixM_doRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
+     Cal_VectorP_doRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
      Cal_CHI2(iz,1,eF_xx,eF_yx,eF_yy,XDF,YDF);
      ES_NTracks[a][0] += 1;
     }
@@ -1933,8 +1915,8 @@ void ESAlignTool::fill_residual_wRotation(int iz)
        || (Selected_idee==2&&_esRecHit_Y[indR]-ES_O_Y[a][0]<-6.1 )
       )
     {
-     Cal_MatrixM_wRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
-     Cal_VectorP_wRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
+     Cal_MatrixM_doRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
+     Cal_VectorP_doRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
      Cal_CHI2(iz,2,eR_xx,eR_yx,eR_yy,XDR,YDR);
      ES_NTracks[a][1] += 1;
     }

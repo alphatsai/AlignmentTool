@@ -249,7 +249,7 @@ void ESAlignTool::Cal_JacobianMatrix_forHuman(int iz,int ip,Double_t e_xx,Double
 */
 
 /*
-void ESAlignTool::Cal_MatrixM_wRotation_forHuman(int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy,Double_t derX,Double_t derY,Double_t determinant,Double_t J11,Double_t J12,Double_t J21,Double_t J22,Double_t J31,Double_t J32,Double_t J41,Double_t J42,Double_t J51,Double_t J52,Double_t J61,Double_t J62)
+void ESAlignTool::Cal_MatrixM_doRotation_forHuman(int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy,Double_t derX,Double_t derY,Double_t determinant,Double_t J11,Double_t J12,Double_t J21,Double_t J22,Double_t J31,Double_t J32,Double_t J41,Double_t J42,Double_t J51,Double_t J52,Double_t J61,Double_t J62)
 {
  int a,b;
  if( (iz==1||iz==-1) && (ip==1||ip==2) )
@@ -335,7 +335,7 @@ void ESAlignTool::Cal_MatrixM_wRotation_forHuman(int iz,int ip,Double_t e_xx,Dou
 */
 
 /*
-void ESAlignTool::Cal_VectorP_wRotation_forHuman(int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy,Double_t derX,Double_t derY,Double_t determinant,Double_t XD,Double_t YD,Double_t J11,Double_t J12,Double_t J21,Double_t J22,Double_t J31,Double_t J32,Double_t J41,Double_t J42,Double_t J51,Double_t J52,Double_t J61,Double_t J62)
+void ESAlignTool::Cal_VectorP_doRotation_forHuman(int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy,Double_t derX,Double_t derY,Double_t determinant,Double_t XD,Double_t YD,Double_t J11,Double_t J12,Double_t J21,Double_t J22,Double_t J31,Double_t J32,Double_t J41,Double_t J42,Double_t J51,Double_t J52,Double_t J61,Double_t J62)
 {
  int a,b;
  if( (iz==1||iz==-1) && (ip==1||ip==2) )
@@ -370,7 +370,7 @@ void ESAlignTool::Cal_VectorP_wRotation_forHuman(int iz,int ip,Double_t e_xx,Dou
 */
 
 /*
-void ESAlignTool::Cal_MatrixM_wRotation(int iTrk,int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy)
+void ESAlignTool::Cal_MatrixM_doRotation(int iTrk,int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy)
 {
  int a,b;
  if( (iz==1||iz==-1) && (ip==1||ip==2) )
@@ -533,7 +533,7 @@ void ESAlignTool::Cal_MatrixM_wRotation(int iTrk,int iz,int ip,Double_t e_xx,Dou
  }//end if (iz ip initialized )
 }
 
-void ESAlignTool::Cal_VectorP_wRotation(int iTrk,int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy)
+void ESAlignTool::Cal_VectorP_doRotation(int iTrk,int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy)
 {
  int a,b;
  if( (iz==1||iz==-1) && (ip==1||ip==2) )
@@ -651,7 +651,7 @@ void ESAlignTool::Cal_VectorP_wRotation(int iTrk,int iz,int ip,Double_t e_xx,Dou
 }
 */
 
-void ESAlignTool::Cal_MatrixM_wRotation(int iTrk,int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy)
+void ESAlignTool::Cal_MatrixM_doRotation(int iTrk,int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy)
 {
  int a,b;
  if( (iz==1||iz==-1) && (ip==1||ip==2) )
@@ -741,7 +741,7 @@ void ESAlignTool::Cal_MatrixM_wRotation(int iTrk,int iz,int ip,Double_t e_xx,Dou
  }
 }
 
-void ESAlignTool::Cal_VectorP_wRotation(int iTrk,int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy)
+void ESAlignTool::Cal_VectorP_doRotation(int iTrk,int iz,int ip,Double_t e_xx,Double_t e_yx,Double_t e_yy)
 {
  int a,b;
  if( (iz==1||iz==-1) && (ip==1||ip==2) )

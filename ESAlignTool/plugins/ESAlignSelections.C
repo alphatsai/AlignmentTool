@@ -1,5 +1,4 @@
 bool ESAlignTool::pass_TrackSelection(reco::TrackCollection::const_iterator itTrack)
-//bool ESAlignTool::pass_TrackSelection(reco::Track *itTrack)
 {
  bool res=false;
  if(   itTrack->pt()>1.5

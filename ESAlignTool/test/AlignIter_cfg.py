@@ -36,7 +36,7 @@ process.GlobalTag.globaltag = 'POSTLS170_V6::All'  #https://twiki.cern.ch/twiki/
 # Default Parameter options
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('python')
-options.register('IterNum', 1,
+options.register('IterN', 1,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.int,
 	"Alignment iteration number"
@@ -46,12 +46,12 @@ options.register('MaxEvents', -1,
 	VarParsing.varType.int,
 	"Run events max"
 	)
-options.register('InputRefit', True,
+options.register('InputRefitter', True,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Input with refit-files"
 	)
-options.register('ConsiderRotation', True,
+options.register('doRotation', True,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Consider  Rotation in alignment"
@@ -71,12 +71,12 @@ options.register('PrintMatrix', False,
 	VarParsing.varType.bool,
 	"Print Matrix"
 	)
-options.register('CalculateESorigin', True,
+options.register('CalculateESorigin', False,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Calulate ES origin from Geometry"
 	)
-options.register('CalculateESaxes', True,
+options.register('CalculateESaxes', False,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Calulate ES Axes from Geometry"
@@ -112,7 +112,7 @@ process.MessageLogger = cms.Service("MessageLogger",
     ESAlignmentTool = cms.untracked.PSet(
       threshold = cms.untracked.string('INFO'),  
       ), 
-    #suppressInfo = cms.untracked.vstring('ABCD'),
+    #suppressInfo = cms.untracked.vstring('ESAlignmentTool'),
     )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.MaxEvents) )
@@ -122,38 +122,40 @@ from inputFiles_cfi import * #FileNames
 process.source = cms.Source("PoolSource",
     #skipEvents = cms.untracked.uint32(0),
     #firstEvent = cms.untracked.uint32(1),
-	fileNames = cms.untracked.vstring(FileNames)
+	#fileNames = cms.untracked.vstring(FileNames)
+	#fileNames = cms.untracked.vstring(FileNames_CSA14Test)
+	fileNames = cms.untracked.vstring(FileNames_PionGunTest)
 )
 
 ### Check parameters options
-if options.InputRefit == False and options.TrackLabel == 'TrackRefitter':
+if options.InputRefitter == False and options.TrackLabel == 'TrackRefitter':
 	print 'WARNING: Not using Refit files, options.TrackLabel = generalTracks'
 	options.TrackLabel = 'generalTracks'	
 print 'Load lables:'
 print ' options.RecHitLabel = '+options.RecHitLabel
 print ' options.TrackLabel = '+options.TrackLabel
 
-if options.IterNum != 1 and options.CalculateESorigin != False:
-	print 'WARING: Not first iter, options.CalculateESorigin = False' 
-	options.CalculateESorigin = False
-if options.IterNum != 1 and options.CalculateESaxes != False:
-	print 'WARING: Not first iter, options.CalculateESaxes = False' 
-	options.CalculateESaxes = False
+if options.IterN == 1 and options.CalculateESorigin == False:
+	print 'WARNING: First iter, options.CalculateESorigin = True' 
+	options.CalculateESorigin = True 
+if options.IterN == 1 and options.CalculateESaxes == False:
+	print 'WARNING: First iter, options.CalculateESaxes = True' 
+	options.CalculateESaxes = True
 
 ### Input parameters
 from AlignmentTool.ESAlignTool.esaligntool_cfi import * #DefaultMatrixElement_Iter 
 process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
 	RecHitLabel = cms.InputTag(options.RecHitLabel),
 	TrackLabel = cms.InputTag(options.TrackLabel),
-	IterN = cms.uint32(options.IterNum),
-	fromRefitter = cms.bool(options.InputRefit),
-	withRotation = cms.bool(options.ConsiderRotation),
+	IterN = cms.uint32(options.IterN),
+	InputRefitter = cms.bool(options.InputRefitter),
+	doRotation = cms.bool(options.doRotation),
 	DrawMagField = cms.bool(options.DrawMagField),
 	PrintPosition = cms.bool(options.PrintPosition),
     	PrintMatrix = cms.bool(options.PrintMatrix),
-	Cal_ESorigin_from_Geometry = cms.bool(options.CalculateESorigin),
-	Cal_ESaxes_from_Geometry = cms.bool(options.CalculateESaxes),
-    	Overwrite_RotationMatrix_fromGeometry = cms.bool(options.OverwriteRotationM),
+	CalculateESorigin = cms.bool(options.CalculateESorigin),
+	CalculateESaxes = cms.bool(options.CalculateESaxes),
+    	OverwriteRotationM = cms.bool(options.OverwriteRotationM),
     	ReSetRfromOutside = cms.bool(options.ReSetRfromOutside),
 	e_xxlimit = cms.double(1.),
 	e_yylimit = cms.double(1.),
