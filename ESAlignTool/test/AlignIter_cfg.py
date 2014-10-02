@@ -29,8 +29,8 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 #                                                           )
 #                                         )
 #process.es_prefer_GlobalPositionDB = cms.ESPrefer("PoolDBESSource", "newGlobalPosition")
-#process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
-process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
+process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
+#process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
 ####################################################################################
 
 
@@ -77,12 +77,14 @@ options.register('PrintMatrix', False,
 	VarParsing.varType.bool,
 	"Print Matrix"
 	)
-options.register('CalculateESorigin', False,
+#options.register('CalculateESorigin', False,
+options.register('CalculateESorigin', True,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Calulate ES origin from Geometry"
 	)
-options.register('CalculateESaxes', False,
+#options.register('CalculateESaxes', False,
+options.register('CalculateESaxes', True,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Calulate ES Axes from Geometry"
@@ -146,12 +148,12 @@ print 'Load lables:'
 print ' options.RecHitLabel = '+options.RecHitLabel
 print ' options.TrackLabel = '+options.TrackLabel
 
-if options.IterN == 1 and options.CalculateESorigin == False:
-	print 'WARNING: First iter, options.CalculateESorigin = True' 
-	options.CalculateESorigin = True 
-if options.IterN == 1 and options.CalculateESaxes == False:
-	print 'WARNING: First iter, options.CalculateESaxes = True' 
-	options.CalculateESaxes = True
+#if options.IterN == 1 and options.CalculateESorigin == False:
+#	print 'WARNING: First iter, options.CalculateESorigin = True' 
+#	options.CalculateESorigin = True 
+if options.IterN == 1 and options.OverwriteRotationM == False:
+	print 'WARNING: First iter, options.OverwriteRotationM = True' 
+	options.OverwriteRotationM = True
 
 ### Input parameters
 from inputMatrixElements_cfi import * #MatrixElementsTmp # Modify inputMatrixElements_cfi.py for Matrix Elements 
