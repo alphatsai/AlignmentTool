@@ -1,26 +1,30 @@
-void fitResidual(TH1F* h1, string xName, Color_t color=2){
-	TF1* gaus1_ = new TF1("gaus1_","gaus", -3., 3.); 
-	h1->Fit("gaus1_","WR"); 
-	cout<<endl;
+void fitResidual(TH1D* h1, string xName, Color_t color=2){
+	TF1* gaus1_ = new TF1("gaus1_","gaus", -3., 3.);
+	gaus1_->SetLineColor(color); 
+	h1->Fit("gaus1_","WR"); cout<<endl;
 	double Mean = gaus1_->GetParameter(1);
 	double Width = gaus1_->GetParameter(2);
 	gaus1_->SetRange(Mean-1.5*Width,Mean+1.5*Width);
 	h1->Fit("gaus1_", "WR");
-
 	h1->SetMarkerColor(1);
 	h1->SetXTitle(xName.c_str());
 	h1->SetYTitle("Yields");
 }
 
-void drawResidual( TFile* f1, string savePath, Color_t color=2 ){
-	cout<<"#############################################################################################"<<endl;
-	cout<<"############################### Total Residual:"<<outputName<<" ###################################"<<endl;
-	cout<<"#############################################################################################"<<endl;
+void drawResidual( TFile* f1, TCanvas* c1, string savePath, Color_t color=2 ){
 	CMSstyle();
-	TH1F* pF = (TH1F*)f1->Get("ESpF_residualX"); 
-	TH1F* pR = (TH1F*)f1->Get("ESpR_residualY"); 
-	TH1F* mF = (TH1F*)f1->Get("ESmF_residualX"); 
-	TH1F* mR = (TH1F*)f1->Get("ESmR_residualY"); 
+	gStyle->SetOptFit(101);
+	gStyle->SetFitFormat("3.3g");
+	gStyle->SetStatX(0.4);      // Set x-position (fraction of pad size)
+	//gStyle->SetStatY(0.9);      // Set y-position (fraction of pad size)
+	gStyle->SetStatW(0.18);      // Set width of stat-box (fraction of pad size)
+	//gStyle->SetStatH(0.2);      // Set height of stat-box (fraction of pad size)
+	//
+	
+	TH1D* pF = (TH1D*)f1->Get("ESAlignmentTool/ESpF_residualX");  
+	TH1D* pR = (TH1D*)f1->Get("ESAlignmentTool/ESpR_residualY"); 
+	TH1D* mF = (TH1D*)f1->Get("ESAlignmentTool/ESmF_residualX"); 
+	TH1D* mR = (TH1D*)f1->Get("ESAlignmentTool/ESmR_residualY"); 
 
 	cout<<"=============== +Front, X-Residual ================="<<endl;	fitResidual(pF,"+Front, X-Residual(cm)",color);	cout<<endl;
 	cout<<"=============== +Rear, X-Residual  ================="<<endl;	fitResidual(pR,"+Rear, Y-Residual(cm)",color);	cout<<endl;
@@ -31,7 +35,7 @@ void drawResidual( TFile* f1, string savePath, Color_t color=2 ){
 	mF->UseCurrentStyle(); mF->GetXaxis()->SetRangeUser(-3,3);
 	mR->UseCurrentStyle(); mR->GetXaxis()->SetRangeUser(-3,3);
 
-	TCanvas* c1 = new TCanvas("c1", "", 850,700);
+	c1->Clear();
 	c1->Divide(2,2);
 	c1->cd(1);
 		pF->Draw("pe");
@@ -79,10 +83,10 @@ void draw4CorResidual( TFile* f1, string outputName, int plan, Color_t color=2 )
 	string bottom	= "h_"+planName+"_Bottom";	string xNameB = "Bottom, "+DirctionOfResi+"(cm)";
 	string left	= "h_"+planName+"_Left";	string xNameL = "Left, "+DirctionOfResi+"(cm)";
 	string right	= "h_"+planName+"_Right";	string xNameR = "Right, "+DirctionOfResi+"(cm)";
-	TH1F* TOP 	= (TH1F*)f1->Get(top.c_str()); 
-	TH1F* BOTTOM 	= (TH1F*)f1->Get(bottom.c_str()); 
-	TH1F* LEFT 	= (TH1F*)f1->Get(left.c_str()); 
-	TH1F* RIGHT 	= (TH1F*)f1->Get(right.c_str()); 
+	TH1D* TOP 	= (TH1D*)f1->Get(top.c_str()); 
+	TH1D* BOTTOM 	= (TH1D*)f1->Get(bottom.c_str()); 
+	TH1D* LEFT 	= (TH1D*)f1->Get(left.c_str()); 
+	TH1D* RIGHT 	= (TH1D*)f1->Get(right.c_str()); 
 	string savePath = "png/Residual_4Corner_"+outputName+"_"+planName+".png";
 
 	cout<<"=============== Top, "<<DirctionOfResi<<" ================="<<endl;	fitResidual(TOP, xNameT, color);	cout<<endl;
