@@ -71,7 +71,7 @@ cd $1
 		set killedNum=`echo $killedJobs | wc -w `
 		set abNum=`echo $abJobs | wc -w `
 		#set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/bprimeTobH_\(.*\)\.root/\1/g'` 
-		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/bprimeTobH_BkgABCDMethod_\(.*\)\.root/\1/g'` 
+		set doneJobs=`ls -l $sample/output | grep root | awk '{print $9}' | sed 's/AlignmentFile_\(.*\)\.root/\1/g'` 
 		set doneNum=`echo $doneJobs | wc -w`	
 		set realdoneNum=`echo $doneNum'-'$killedNum'-'$abNum'-'$kCPUNum2'-'$kCPUNum3'-'$ksegNum'-'$kbadallocNum | bc`
 		echo "Num Log Files $lognum/$jobNum"	
@@ -90,7 +90,7 @@ cd $1
 						set done=1
 						#echo "error $i $done"	
 					endif	
-				#echo $i "'"$job"'" $done
+					#echo $i "'"$job"'" $done
 				end
 				if ( $done == 0 ) then
 					#echo $i
@@ -134,7 +134,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $killedNum != 0 ) then
 			foreach kn($killedJobs)
 				mv $nowPath/$sample/output/job_$kn.log $nowPath/$sample
-				rm -f $sample/output/bprimeTobH_BkgABCDMethod_$kn.root
+				rm -f $sample/output/AlignmentFile_$kn.root
 				echo resubmit job_$kn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kn.log source $nowPath/$sample/input/job_$kn.sh
 			end	
@@ -142,7 +142,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $kCPUNum2 != 0 ) then
 			foreach kcn($kCPUJobs2)
 				mv $nowPath/$sample/output/job_$kcn.log $nowPath/$sample
-				rm -f $sample/output/bprimeTobH_BkgABCDMethod_$kcn.root
+				rm -f $sample/output/AlignmentFile_$kcn.root
 				echo resubmit job_$kcn.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn.log source $nowPath/$sample/input/job_$kcn.sh
 			end	
@@ -150,7 +150,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $kCPUNum3 != 0 ) then
 			foreach kcn3($kCPUJobs3)
 				mv $nowPath/$sample/output/job_$kcn3.log $nowPath/$sample
-				rm -f $sample/output/bprimeTobH_BkgABCDMethod_$kcn3.root
+				rm -f $sample/output/AlignmentFile_$kcn3.root
 				echo resubmit job_$kcn3.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$kcn3.log source $nowPath/$sample/input/job_$kcn3.sh
 			end	
@@ -158,7 +158,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $abNum != 0 ) then
 			foreach an($abJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/bprimeTobH_BkgABCDMethod_$an.root
+				rm -f $sample/output/AlignmentFile_$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	
@@ -166,7 +166,7 @@ cd $1
 		if ( $2 == 'reSubmit' && $kbadallocNum != 0 ) then
 			foreach an($kbadallocJobs)
 				mv $nowPath/$sample/output/job_$an.log $nowPath/$sample
-				rm -f $sample/output/bprimeTobH_BkgABCDMethod_$an.root
+				rm -f $sample/output/AlignmentFile_$an.root
 				echo resubmit job_$an.sh...
 				bsub -q $sq -o $nowPath/$sample/output/job_$an.log source $nowPath/$sample/input/job_$an.sh
 			end	
