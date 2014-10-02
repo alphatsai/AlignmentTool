@@ -15,9 +15,9 @@ void drawResidual( TFile* f1, TCanvas* c1, string savePath, Color_t color=2 ){
 	CMSstyle();
 	gStyle->SetOptFit(101);
 	gStyle->SetFitFormat("3.3g");
-	gStyle->SetStatX(0.4);      // Set x-position (fraction of pad size)
+	//gStyle->SetStatX(0.4);      // Set x-position (fraction of pad size)
 	//gStyle->SetStatY(0.9);      // Set y-position (fraction of pad size)
-	gStyle->SetStatW(0.18);      // Set width of stat-box (fraction of pad size)
+	//gStyle->SetStatW(0.18);      // Set width of stat-box (fraction of pad size)
 	//gStyle->SetStatH(0.2);      // Set height of stat-box (fraction of pad size)
 	//
 	
@@ -30,10 +30,10 @@ void drawResidual( TFile* f1, TCanvas* c1, string savePath, Color_t color=2 ){
 	cout<<"=============== +Rear, X-Residual  ================="<<endl;	fitResidual(pR,"+Rear, Y-Residual(cm)",color);	cout<<endl;
 	cout<<"=============== -Front, X-Residual ================="<<endl;	fitResidual(mF,"-Front, X-Residual(cm)",color);	cout<<endl;
 	cout<<"=============== -Rear, X-Residual  ================="<<endl;	fitResidual(mR,"-Rear, Y-Residual(cm)",color);	cout<<endl;
-	pF->UseCurrentStyle(); pF->GetXaxis()->SetRangeUser(-3,3);
-	pR->UseCurrentStyle(); pR->GetXaxis()->SetRangeUser(-3,3);
-	mF->UseCurrentStyle(); mF->GetXaxis()->SetRangeUser(-3,3);
-	mR->UseCurrentStyle(); mR->GetXaxis()->SetRangeUser(-3,3);
+	pF->UseCurrentStyle(); pF->GetXaxis()->SetRangeUser(-3,3); pF->GetYaxis()->SetRangeUser(0,pF->GetMaximum()+(pF->GetMaximum())/2);
+	pR->UseCurrentStyle(); pR->GetXaxis()->SetRangeUser(-3,3); pR->GetYaxis()->SetRangeUser(0,pR->GetMaximum()+(pR->GetMaximum())/2);
+	mF->UseCurrentStyle(); mF->GetXaxis()->SetRangeUser(-3,3); mF->GetYaxis()->SetRangeUser(0,mF->GetMaximum()+(mF->GetMaximum())/2);
+	mR->UseCurrentStyle(); mR->GetXaxis()->SetRangeUser(-3,3); mR->GetYaxis()->SetRangeUser(0,mR->GetMaximum()+(mR->GetMaximum())/2);
 
 	c1->Clear();
 	c1->Divide(2,2);
