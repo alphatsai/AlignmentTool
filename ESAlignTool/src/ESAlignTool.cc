@@ -195,7 +195,7 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
 
  }
 
- for(int iterN_idx=1;iterN_idx<=iterN;iterN_idx++)
+ for(int iterN_idx=1;iterN_idx<iterN;iterN_idx++)
  {
   ES_dX[0][0] -= iter_ESmFdX[iterN_idx-1]; ES_dY[0][0] -= iter_ESmFdY[iterN_idx-1]; ES_dZ[0][0] -= iter_ESmFdZ[iterN_idx-1];
   ES_dX[0][1] -= iter_ESmRdX[iterN_idx-1]; ES_dY[0][1] -= iter_ESmRdY[iterN_idx-1]; ES_dZ[0][1] -= iter_ESmRdZ[iterN_idx-1];
