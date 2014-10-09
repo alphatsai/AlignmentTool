@@ -398,6 +398,21 @@ void ESAlignTool::init_perEvent()
    _esRecHit_Noisy[i]=0; _esRecHit_MatchedTrk_fromOuter[i]=-1;
  }//end init esRecHit
 
+ for(int i=0;i<2;i++){
+	for(int j=0;j<2;j++){
+		ES_CHI2[i][j]=0;
+		ES_NTracks[i][j]=0;
+		ES_M11[i][j]=0; ES_M12[i][j]=0; ES_M13[i][j]=0; ES_M14[i][j]=0; ES_M15[i][j]=0; ES_M16[i][j]=0;
+		ES_M22[i][j]=0; ES_M23[i][j]=0; ES_M24[i][j]=0; ES_M25[i][j]=0; ES_M26[i][j]=0;
+		ES_M33[i][j]=0; ES_M34[i][j]=0; ES_M35[i][j]=0; ES_M36[i][j]=0;
+		ES_M44[i][j]=0; ES_M45[i][j]=0; ES_M46[i][j]=0;
+		ES_M55[i][j]=0; ES_M56[i][j]=0;
+		ES_M66[i][j]=0; ES_P1[i][j]=0; ES_P2[i][j]=0; ES_P3[i][j]=0; ES_P4[i][j]=0; ES_P5[i][j]=0; ES_P6[i][j]=0;
+		ES_M31Err2[i][j]=0; ES_M32Err2[i][j]=0; ES_M33Err2[i][j]=0;
+		ES_P1Err2[i][j]=0; ES_P2Err2[i][j]=0; ES_P3Err2[i][j]=0;
+	}//end plan
+ }//end z
+
  for ( int i=0; i<2000; i++ )
  {
   _TrackPt[i] = _TrackEta[i] = _TrackPhi[i] =0.; _TrackCharge[i] = 0;
@@ -1847,7 +1862,7 @@ ESAlignTool::beginJob()
 {
   std::cout << "In ESAlignTool.beginJob\n";
 
-  t_ESAlign = f->make<TTree>("ESAlign","tree");
+  t_ESAlign = f->make<TTree>("tree","");
 
   t_ESAlign->Branch("runNumber", &_runNum, "runNumber/L");
   t_ESAlign->Branch("evtNumber", &_evtNum, "evtNumber/L");
