@@ -1538,7 +1538,7 @@ void ESAlignTool::fill_residual_doRotation_v2(int iz)
  if(iz==1||iz==-1)
  {
   int a; iz==-1 ? a=0 : a=1;
-  for(int iTrk=0;iTrk<Ntrack;iTrk++)
+  for(int iTrk=0;iTrk<Ntrack;iTrk++)// Predicted hits from global to local
   {
    if(PredictionState_valid[iTrk][a][0]!=1) continue; //ES+/- F
    if(PredictionState_valid[iTrk][a][1]!=1) continue; //ES+/- R
@@ -1587,7 +1587,7 @@ void ESAlignTool::fill_residual_doRotation_v2(int iz)
    Double_t disF=(winlimit*winlimit); int indF=-1;
    Double_t resiXF,resiYF,resiXR,resiYR;
    resiXF=30.; resiYF=30.; resiXR=30.; resiYR=30.;
-   for(int irec=0;irec<Nesrh;irec++)
+   for(int irec=0;irec<Nesrh;irec++)// recoHits from global to local, for first plane
    {
     if(_esRecHit_siZ[irec]!=iz||_esRecHit_siP[irec]!=1) continue;
     if(_esRecHit_X[irec]==0.&&_esRecHit_Y[irec]==0.) continue;
@@ -1602,11 +1602,11 @@ void ESAlignTool::fill_residual_doRotation_v2(int iz)
     if( fabs(X-X0F)>winlimit ) continue;
     if( fabs(Y-Y0F)>winlimit ) continue;
     Double_t buf = pow(X-X0F,2.)+pow(Y-Y0F,2.);
-    if(buf<disF)
+    if(buf<disF) //Find the cloest predicted hit one in local coordinate
     { indF=irec; disF=buf; resiXF=X0F-X; resiYF=Y0F-Y; }
    }//end for-loop ESrechit
    Double_t disR=(winlimit*winlimit); int indR=-1;
-   for(int irec=0;irec<Nesrh;irec++)
+   for(int irec=0;irec<Nesrh;irec++)// recoHits from global to local, for second plane
    {	
     if(_esRecHit_siZ[irec]!=iz||_esRecHit_siP[irec]!=2) continue;
     if(_esRecHit_X[irec]==0.&&_esRecHit_Y[irec]==0.) continue;
@@ -1621,7 +1621,7 @@ void ESAlignTool::fill_residual_doRotation_v2(int iz)
     if( fabs(X-X0R)>winlimit) continue;
     if( fabs(Y-Y0R)>winlimit) continue;
     Double_t buf = pow(X-X0R,2.)+pow(Y-Y0R,2.);
-    if(buf<disR)
+    if(buf<disR)//Find the cloest predicted hit one in local coordinate
     { indR=irec; disR=buf; resiXR=X0R-X; resiYR=Y0R-Y; }
    }//end for-loop ESrechita
 
