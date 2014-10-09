@@ -20,8 +20,6 @@ class CalIter_wRotation
    Double_t GetIterBeta(int,int);
    Double_t GetIterGamma(int,int);
    Int_t GetIteration(Int_t,Int_t,Double_t &,Double_t &,Double_t &,Double_t &,Double_t &,Double_t &);
-   //void setInvMError(Int_t,Int_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t,Double_t);
-   //Int_t GetIterationError(Int_t,Int_t,Double_t &,Double_t &,Double_t &);
    Double_t detM33(Double_t [][3]);
    void InvM33(Double_t [][3],Double_t [][3]);
    void DotM33(Double_t [][3],Double_t [][3],Double_t [][3]);
@@ -40,10 +38,6 @@ class CalIter_wRotation
    Long64_t ES_bNTracks[2][2];
    Double_t ES_dX[2][2],ES_dY[2][2],ES_dZ[2][2];
    Double_t ES_dAlpha[2][2],ES_dBeta[2][2],ES_dGamma[2][2];
-   //Double_t ES_dXerr[2][2],ES_dYerr[2][2],ES_dZerr[2][2];
-   //Double_t ES_M31Err2[2][2],ES_M32Err2[2][2],ES_M33Err2[2][2];
-   //Double_t ES_P1Err2[2][2],ES_P2Err2[2][2],ES_P3Err2[2][2];
-   //Double_t ES_InvM11Err2[2][2],ES_InvM12Err2[2][2],ES_InvM13Err2[2][2],ES_InvM22Err2[2][2],ES_InvM23Err2[2][2],ES_InvM33Err2[2][2];
 };
 void CalIter_wRotation::registerESMatrix(TTree* tree){
 	tree->SetBranchAddress("ES_M11", &ES_bM11[0][0]);	
@@ -146,8 +140,6 @@ void CalIter_wRotation::run()
   {
    cout<<"dX="<<ES_dX[1][0]<<", dY="<<ES_dY[1][0]<<", dZ="<<ES_dZ[1][0]<<"\n";
    cout<<"dAlpha="<<ES_dAlpha[1][0]<<", dBeta="<<ES_dBeta[1][0]<<", dGamma="<<ES_dGamma[1][0]<<"\n";
-   //GetIterationError(1,1,ES_dXerr[1][0],ES_dYerr[1][0],ES_dZerr[1][0]);
-   //cout<<"dXerr="<<ES_dXerr[1][0]<<", dYerr="<<ES_dYerr[1][0]<<", dZerr="<<ES_dZerr[1][0]<<"\n";
    cout<<"normalized CHI2 before iteration="<<ES_CHI2[1][0]/ES_NTracks[1][0]<<" ";
    cout<<"# of Tracks="<<ES_NTracks[1][0]<<"\n";
   }
@@ -156,8 +148,6 @@ void CalIter_wRotation::run()
   {
    cout<<"dX="<<ES_dX[1][1]<<", dY="<<ES_dY[1][1]<<", dZ="<<ES_dZ[1][1]<<"\n";
    cout<<"dAlpha="<<ES_dAlpha[1][1]<<", dBeta="<<ES_dBeta[1][1]<<", dGamma="<<ES_dGamma[1][1]<<"\n";
-   //GetIterationError(1,2,ES_dXerr[1][1],ES_dYerr[1][1],ES_dZerr[1][1]);
-   //cout<<"dXerr="<<ES_dXerr[1][1]<<", dYerr="<<ES_dYerr[1][1]<<", dZerr="<<ES_dZerr[1][1]<<"\n";
    cout<<"normalized CHI2 before iteration="<<ES_CHI2[1][1]/ES_NTracks[1][1]<<" ";
    cout<<"# of Tracks="<<ES_NTracks[1][1]<<"\n";
   }
@@ -166,8 +156,6 @@ void CalIter_wRotation::run()
   {
    cout<<"dX="<<ES_dX[0][0]<<", dY="<<ES_dY[0][0]<<", dZ="<<ES_dZ[0][0]<<"\n";
    cout<<"dAlpha="<<ES_dAlpha[0][0]<<", dBeta="<<ES_dBeta[0][0]<<", dGamma="<<ES_dGamma[0][0]<<"\n";
-   //GetIterationError(-1,1,ES_dXerr[0][0],ES_dYerr[0][0],ES_dZerr[0][0]);
-   //cout<<"dXerr="<<ES_dXerr[0][0]<<", dYerr="<<ES_dYerr[0][0]<<", dZerr="<<ES_dZerr[0][0]<<"\n";
    cout<<"normalized CHI2 before iteration="<<ES_CHI2[0][0]/ES_NTracks[0][0]<<" ";
    cout<<"# of Tracks="<<ES_NTracks[0][0]<<"\n";
   }
@@ -176,8 +164,6 @@ void CalIter_wRotation::run()
   {
    cout<<"dX="<<ES_dX[0][1]<<", dY="<<ES_dY[0][1]<<", dZ="<<ES_dZ[0][1]<<"\n";
    cout<<"dAlpha="<<ES_dAlpha[0][1]<<", dBeta="<<ES_dBeta[0][1]<<", dGamma="<<ES_dGamma[0][1]<<"\n";
-   //GetIterationError(-1,2,ES_dXerr[0][1],ES_dYerr[0][1],ES_dZerr[0][1]);
-   //cout<<"dXerr="<<ES_dXerr[0][1]<<", dYerr="<<ES_dYerr[0][1]<<", dZerr="<<ES_dZerr[0][1]<<"\n";
    cout<<"normalized CHI2 before iteration="<<ES_CHI2[0][1]/ES_NTracks[0][1]<<" ";
    cout<<"# of Tracks="<<ES_NTracks[0][1]<<"\n";
   }
@@ -277,9 +263,6 @@ Double_t CalIter_wRotation::detSym(int iz,int ip)
  if( (iz==1||iz==-1) && (ip==1||ip==2) )
  {
   iz==-1 ? a=0 : a=1; b=ip-1;
-  // M={ {A B}, {C D} } B^T=C
-  // A={ {M11,M12,M13}, {M12,M22,M23}, {M13,M23,M33} }
-  // B={ {M14,M15,M16}, {M24,M25,M26}, {M34,M35,M36} }
   Double_t M11=ES_M11[a][b];
   Double_t M12=ES_M12[a][b];
   Double_t M13=ES_M13[a][b];
@@ -326,7 +309,6 @@ Double_t CalIter_wRotation::detSym(int iz,int ip)
  
   Double_t InvA[3][3],tmpCInvA[3][3],tmpCInvAB[3][3];
   Double_t InvMA[3][3],InvMB[3][3],InvMC[3][3],InvMD[3][3];
-    //result of Inverse MatrixM
   Double_t tempK[3][3]; //K = D-C.InvA.B
   Double_t temp1[3][3],temp2[3][3];
   Double_t zero[3][3];
@@ -353,10 +335,6 @@ Double_t CalIter_wRotation::detSym(int iz,int ip)
   DotM33(temp1,InvMB,C);
   DotM33(temp2,temp1,InvA);
   AddM33(InvMA,InvA,temp2,-1.); //result InvMA
-
-  //std::cout<<"P4="<<ES_P4[a][b]<<" ";
-  //std::cout<<"P5="<<ES_P5[a][b]<<" ";
-  //std::cout<<"P6="<<ES_P6[a][b]<<"\n";
 
   for(int i=0;i<3;i++)
   {
@@ -454,93 +432,6 @@ Double_t CalIter_wRotation::GetIterGamma(int iz,int ip)
  }
  return res;
 }
-
-/*
-Int_t CalIter_wRotation::GetIterationError(Int_t iz,Int_t ip,Double_t &Xerr,Double_t &Yerr,Double_t &Zerr)
-{
- Int_t res=0; int a,b;
- if( (iz==1||iz==-1) && (ip==1||ip==2) )
- {
-  iz==-1 ? a=0 : a=1; b=ip-1;
-  if( detSym(ES_M11[a][b],ES_M12[a][b],ES_M13[a][b],ES_M22[a][b],ES_M23[a][b],ES_M33[a][b])!=0 )
-  {
-   setInvMError(iz,ip,ES_M11[a][b],ES_M12[a][b],ES_M13[a][b],ES_M22[a][b],ES_M23[a][b],ES_M33[a][b],ES_M31Err2[a][b],ES_M32Err2[a][b],ES_M33Err2[a][b]);
-   Xerr = ES_InvM11Err2[a][b] * ES_P1Err2[a][b] + ES_InvM12Err2[a][b] * ES_P2Err2[a][b] + ES_InvM13Err2[a][b] * ES_P3Err2[a][b] ;
-   Yerr = ES_InvM12Err2[a][b] * ES_P1Err2[a][b] + ES_InvM22Err2[a][b] * ES_P2Err2[a][b] + ES_InvM23Err2[a][b] * ES_P3Err2[a][b] ;
-   Zerr = ES_InvM13Err2[a][b] * ES_P1Err2[a][b] + ES_InvM23Err2[a][b] * ES_P2Err2[a][b] + ES_InvM33Err2[a][b] * ES_P3Err2[a][b] ;
-   Xerr=sqrt(Xerr); Yerr=sqrt(Yerr); Zerr=sqrt(Zerr);
-   res=1;
- }}
-
- return res;
-}
-*/
-/*
-void CalIter_wRotation::setInvMError(Int_t iz,Int_t ip,Double_t M11,Double_t M12,Double_t M13,Double_t M22,Double_t M23,Double_t M33,Double_t M31Err2,Double_t M32Err2,Double_t M33Err2)
-{
- Double_t det=detSym(M11,M12,M13,M22,M23,M33);
- Double_t InvM11Err2=0.;Double_t InvM12Err2=0.;Double_t InvM13Err2=0.;
- Double_t InvM22Err2=0.;Double_t InvM23Err2=0.;Double_t InvM33Err2=0.;
-  InvM11Err2
-  = ( 4*pow(M13*M22 - M12*M23,2.)*(pow(M23,4.)*M31Err2
-     + M13*M13*M23*M23*M32Err2 - 2*M23*(M22*M23*M31Err2 + M12*M13*M32Err2)*M33
-     + (M22*M22*M31Err2 + M12*M12*M32Err2)*M33*M33)
-     + pow(M13*M22 - M12*M23,4.)*M33Err2
-    )/pow(det,4.);
-  InvM12Err2
-  = ( M31Err2*pow(M13*M13*M22*M23 - M11*M23*M23*M23 - 2.*M12*M13*M22*M33
-                  + (M12*M12 + M11*M22)*M23*M33,2.)
-     + M32Err2*pow(M13*M13*M13*M22 + 2.*M11*M12*M23*M33
-                   - M13*(M12*M12*M33 + M11*(M23*M23 + M22*M33)),2.)
-     + pow(M12*M13 - M11*M23,2.)*pow(M13*M22 - M12*M23,2.)*M33Err2
-    )/pow(det,4.);
-  InvM13Err2
-  = (M31Err2
-     *pow(-(M13*M13*M22*M22) + 2.*M12*M13*M22*M23
-          +M11*M22*(M23*M23 - M22*M33) + M12*M12*(-2.*M23*M23 + M22*M33)
-      ,2.)
-     +M32Err2
-     *pow(2.*M11*M13*M22*M23 + M12*M12*M12*M33
-          - M12*(M13*M13*M22 + M11*(M23*M23 + M22*M33))
-      ,2.)
-     +pow((M12*M12 - M11*M22)*(M13*M22 - M12*M23),2.)*M33Err2
-    )/pow(det,4.);
-  InvM22Err2
-  = ( 4.*pow(M12*M13 - M11*M23,2.)*(M13*M13*M23*M23*M31Err2
-     + pow(M13,4.)*M32Err2
-     - 2.*M13*(M12*M23*M31Err2 + M11*M13*M32Err2)*M33
-     + (M12*M12*M31Err2 + M11*M11*M32Err2)*M33*M33)
-     + pow(M12*M13 - M11*M23,4.)*M33Err2
-    )/pow(det,4.);
-  InvM23Err2
-  = ( 4*M31Err2
-      *pow(-(M12*M23*(M13*M13 + M11*M23)) + M12*M12*M13*M33
-           +M11*M13*(M23*(M22 + M23) - M22*M33)
-       ,2.)
-     +M32Err2
-      *pow(-2*M12*M13*M13*M13 + M11*M12*M12*M33
-           +M11*(M13*M13*(M22 + 2.*M23) - M11*(M23*M23 + M22*M33))
-       ,2.)
-     +pow((M12*M12 - M11*M22)*(M13*M13 - M11*M23),2.)*M33Err2
-    )/pow(det,4.);
-  InvM33Err2
-  = ( 4.*pow(M12*M12 - M11*M22,2.)*(pow(M13*M22 - M12*M23,2.)*M31Err2
-     +pow(M12*M13 - M11*M23,2.)*M32Err2) + pow(M12*M12 - M11*M22,4.)*M33Err2
-    )/pow(det,4.);
-
-  int a,b;
-  if( (iz==1||iz==-1) && (ip==1||ip==2) )
-  {
-   iz==-1 ? a=0 : a=1; b=ip-1;
-   ES_InvM11Err2[a][b]=InvM11Err2;
-   ES_InvM12Err2[a][b]=InvM12Err2;
-   ES_InvM13Err2[a][b]=InvM13Err2;
-   ES_InvM22Err2[a][b]=InvM22Err2;
-   ES_InvM23Err2[a][b]=InvM23Err2;
-   ES_InvM33Err2[a][b]=InvM33Err2;
-  }
-}
-*/
 
 Double_t CalIter_wRotation::detM33(Double_t M33[3][3])
 {
