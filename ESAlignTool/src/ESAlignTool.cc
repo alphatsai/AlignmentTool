@@ -117,8 +117,6 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
    ES_dAlpha[i][j]=0.; ES_dBeta[i][j]=0.; ES_dGamma[i][j]=0.;
    ES_dAlphaerr[i][j]=0.; ES_dBetaerr[i][j]=0.; ES_dGammaerr[i][j]=0.;
 
-   ES_O_Alpha[i][j]=0.; ES_O_Beta[i][j]=0.; ES_O_Gamma[i][j]=0.;
-
    ES_M31Err2[i][j]=0.; ES_M32Err2[i][j]=0.; ES_M33Err2[i][j]=0.;
    ES_P1Err2[i][j]=0.; ES_P2Err2[i][j]=0.; ES_P3Err2[i][j]=0.;
 
@@ -132,6 +130,9 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
    ES_O_R11[i][j]=1.; ES_O_R12[i][j]=0.; ES_O_R13[i][j]=0.;
    ES_O_R21[i][j]=0.; ES_O_R22[i][j]=1.; ES_O_R23[i][j]=0.;
    ES_O_R31[i][j]=0.; ES_O_R32[i][j]=0.; ES_O_R33[i][j]=1.;
+
+   ES_Alpha[i][j]=0.; ES_Beta[i][j]=0.; ES_Gamma[i][j]=0;
+   ES_O_Alpha[i][j]=0.; ES_O_Beta[i][j]=0.; ES_O_Gamma[i][j]=0;
  }}
 
  e_xxlimit = iConfig.getParameter<double>("e_xxlimit");
@@ -157,11 +158,36 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
  RecHitLabel_ = iConfig.getParameter<edm::InputTag>("RecHitLabel"); 
  TrackLabel_ = iConfig.getParameter<edm::InputTag>("TrackLabel"); 
  
- MatrixElements_ = iConfig.getParameter<edm::ParameterSet>("MatrixElements");
-
  iterN = iConfig.getParameter<unsigned int>("IterN");
  if(iterN<0||iterN>11) std::cout<<"Error : Out of Range for iterN!!!!\n";
+
+ DefaultESLocation_ = iConfig.getParameter<edm::ParameterSet>("DefaultESLocation");
+ ESpF_defaultX = DefaultESLocation_.getParameter<double>("ESpF_X");
+ ESpF_defaultY = DefaultESLocation_.getParameter<double>("ESpF_Y");
+ ESpF_defaultZ = DefaultESLocation_.getParameter<double>("ESpF_Z");
+ ESpF_defaultAlpha = DefaultESLocation_.getParameter<double>("ESpF_Alpha");
+ ESpF_defaultBeta  = DefaultESLocation_.getParameter<double>("ESpF_Beta");
+ ESpF_defaultGamma = DefaultESLocation_.getParameter<double>("ESpF_Gamma");
+ ESmF_defaultX = DefaultESLocation_.getParameter<double>("ESmF_X");
+ ESmF_defaultY = DefaultESLocation_.getParameter<double>("ESmF_Y");
+ ESmF_defaultZ = DefaultESLocation_.getParameter<double>("ESmF_Z");
+ ESmF_defaultAlpha = DefaultESLocation_.getParameter<double>("ESmF_Alpha");
+ ESmF_defaultBeta  = DefaultESLocation_.getParameter<double>("ESmF_Beta");
+ ESmF_defaultGamma = DefaultESLocation_.getParameter<double>("ESmF_Gamma");
+ ESpR_defaultX = DefaultESLocation_.getParameter<double>("ESpR_X");
+ ESpR_defaultY = DefaultESLocation_.getParameter<double>("ESpR_Y");
+ ESpR_defaultZ = DefaultESLocation_.getParameter<double>("ESpR_Z");
+ ESpR_defaultAlpha = DefaultESLocation_.getParameter<double>("ESpR_Alpha");
+ ESpR_defaultBeta  = DefaultESLocation_.getParameter<double>("ESpR_Beta");
+ ESpR_defaultGamma = DefaultESLocation_.getParameter<double>("ESpR_Gamma");
+ ESmR_defaultX = DefaultESLocation_.getParameter<double>("ESmR_X");
+ ESmR_defaultY = DefaultESLocation_.getParameter<double>("ESmR_Y");
+ ESmR_defaultZ = DefaultESLocation_.getParameter<double>("ESmR_Z");
+ ESmR_defaultAlpha = DefaultESLocation_.getParameter<double>("ESmR_Alpha");
+ ESmR_defaultBeta  = DefaultESLocation_.getParameter<double>("ESmR_Beta");
+ ESmR_defaultGamma = DefaultESLocation_.getParameter<double>("ESmR_Gamma");
  
+ MatrixElements_ = iConfig.getParameter<edm::ParameterSet>("MatrixElements");
  char buf[20];
  for(int iterN_idx=1;iterN_idx<iterN;iterN_idx++)
  {
@@ -190,9 +216,6 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
   sprintf(buf,"Iter%i_ESmRdAlpha",iterN_idx);  iter_ESmRdAlpha[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
   sprintf(buf,"Iter%i_ESmRdBeta",iterN_idx);   iter_ESmRdBeta[iterN_idx-1]  = MatrixElements_.getParameter<double>(buf);
   sprintf(buf,"Iter%i_ESmRdGamma",iterN_idx);  iter_ESmRdGamma[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
-
-  //std::cout<<"dX: "<<iter_ESpFdX[iterN_idx-1]<<", dAlpha: "<<iter_ESpFdAlpha[iterN_idx-1]<<std::endl;
-
  }
 
  for(int iterN_idx=1;iterN_idx<iterN;iterN_idx++)
@@ -209,45 +232,42 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
  }
 
   _evt_run = 0;
+  woRotate=new RotationType(); //defualt
+  ESpF_O=new PositionType( ESpF_defaultX, ESpF_defaultY, ESpF_defaultZ); //default
+  ESpR_O=new PositionType( ESpR_defaultX, ESpR_defaultY, ESpR_defaultZ); //default
+  ESmF_O=new PositionType( ESmF_defaultX, ESmF_defaultY, ESmF_defaultZ); //default 
+  ESmR_O=new PositionType( ESmR_defaultX, ESmR_defaultY, ESmR_defaultZ); //default
+  ESpF_Oap=new PositionType( ESpF_defaultX+ES_dX[1][0], ESpF_defaultY+ES_dY[1][0], ESpF_defaultZ+ES_dZ[1][0]); //default
+  ESpR_Oap=new PositionType( ESpR_defaultX+ES_dX[1][1], ESpR_defaultY+ES_dY[1][1], ESpR_defaultZ+ES_dZ[1][1]); //default
+  ESmF_Oap=new PositionType( ESmF_defaultX+ES_dX[0][0], ESmF_defaultY+ES_dY[0][0], ESmF_defaultZ+ES_dZ[0][0]); //default 
+  ESmR_Oap=new PositionType( ESmR_defaultX+ES_dX[0][1], ESmR_defaultY+ES_dY[0][1], ESmR_defaultZ+ES_dZ[0][1]); //default
+  std::cout<<"ESmR_defaultX+ES_dZ[0][1] "<<ESmR_defaultX<<" + "<<ES_dZ[0][1]<<std::endl; 
+  UnAligned_Original( 1, 0, ESpF_O);  Aligned_Original( 1, 0, ESpF_Oap);
+  UnAligned_Original( 1, 1, ESpR_O);  Aligned_Original( 1, 1, ESpR_Oap);
+  UnAligned_Original( 0, 0, ESmF_O);  Aligned_Original( 0, 0, ESmF_Oap);
+  UnAligned_Original( 0, 1, ESmR_O);  Aligned_Original( 0, 1, ESmR_Oap);
 
-  woRotate=new RotationType();
-  //ESpF_O=new PositionType(0.,0.,303.376+ESpFdZ);
-  //ESpR_O=new PositionType(0.,0.,307.836+ESpRdZ);
-  //ESmF_O=new PositionType(0.,0.,-303.376+ESmFdZ);
-  //ESmR_O=new PositionType(0.,0.,-307.836+ESmRdZ);
-  ESpF_O=new PositionType(0.,0.,304.186); //default
-  ESpR_O=new PositionType(0.,0.,308.646); //default
-  ESmF_O=new PositionType(0.,0.,-304.316);//default 
-  ESmR_O=new PositionType(0.,0.,-308.776);//default
-  ESpF_Oap=new PositionType(ES_dX[1][0],ES_dY[1][0],304.186+ES_dZ[1][0]); //default
-  ESpR_Oap=new PositionType(ES_dX[1][1],ES_dY[1][1],308.646+ES_dZ[1][1]); //default
-  ESmF_Oap=new PositionType(ES_dX[0][0],ES_dY[0][0],-304.316+ES_dZ[0][0]);//default 
-  ESmR_Oap=new PositionType(ES_dX[0][1],ES_dY[0][1],-308.776+ES_dZ[0][1]);//default
+  if(b_ReSetRfromOutside) std::cout<<"Nothing to do"<<std::endl;
 
-  init_RotationMatrices();
-  //init_RotationMatrices(0);
-
-  if(b_ReSetRfromOutside)
-  {
-   ES_R21[0][0]=-0.00225996; ES_R22[0][0]=0.999996;  ES_R23[0][0]=0.00159956;
-   ES_R31[0][0]=0.000904; ES_R32[0][0]=-0.001598; ES_R33[0][0]=0.999998;
-
-   ES_R11[0][1]=0.999998; ES_R12[0][1]=0.00173077;  ES_R13[0][1]=-0.000499602;
-   ES_R21[0][1]=-0.00173008; ES_R22[0][1]=0.999997;  ES_R23[0][1]=0.00169866;
-   ES_R31[0][1]=0.000503; ES_R32[0][1]=-0.001698; ES_R33[0][1]=0.999998;
-
-   ES_R11[1][0]=0.999999; ES_R12[1][0]=0.00164022;  ES_R13[1][0]=0.;
-   ES_R21[1][0]=-0.00164007; ES_R22[1][0]=0.999997;  ES_R23[1][0]=-0.00169612;
-   ES_R31[1][0]=-0.000003; ES_R32[1][0]=0.001700; ES_R33[1][0]=0.999999;
-
-   ES_R11[1][1]=0.999999; ES_R12[1][1]=0.00137978;  ES_R13[1][1]=0.0001500904;
-   ES_R21[1][1]=-0.00138015; ES_R22[1][1]=0.999998;  ES_R23[1][1]=-0.00169865;
-   ES_R31[1][1]=-0.000152; ES_R32[1][1]=0.001698; ES_R33[1][1]=0.999999;
-  } 
-  ESpF_wRotateap=new RotationType(ES_R11[1][0],ES_R12[1][0],ES_R13[1][0],ES_R21[1][0],ES_R22[1][0],ES_R23[1][0],ES_R31[1][0],ES_R32[1][0],ES_R33[1][0]);
-  ESpR_wRotateap=new RotationType(ES_R11[1][1],ES_R12[1][1],ES_R13[1][1],ES_R21[1][1],ES_R22[1][1],ES_R23[1][1],ES_R31[1][1],ES_R32[1][1],ES_R33[1][1]);
-  ESmF_wRotateap=new RotationType(ES_R11[0][0],ES_R12[0][0],ES_R13[0][0],ES_R21[0][0],ES_R22[0][0],ES_R23[0][0],ES_R31[0][0],ES_R32[0][0],ES_R33[0][0]);
-  ESmR_wRotateap=new RotationType(ES_R11[0][1],ES_R12[0][1],ES_R13[0][1],ES_R21[0][1],ES_R22[0][1],ES_R23[0][1],ES_R31[0][1],ES_R32[0][1],ES_R33[0][1]);
+  ES_O_Alpha[1][0]=ESpF_defaultAlpha; ES_O_Beta[1][0]=ESpF_defaultBeta; ES_O_Gamma[1][0]=ESpF_defaultGamma;
+  ES_O_Alpha[1][1]=ESpR_defaultAlpha; ES_O_Beta[1][1]=ESpR_defaultBeta; ES_O_Gamma[1][1]=ESpR_defaultGamma;
+  ES_O_Alpha[0][0]=ESmF_defaultAlpha; ES_O_Beta[0][0]=ESmF_defaultBeta; ES_O_Gamma[0][0]=ESmF_defaultGamma;
+  ES_O_Alpha[0][1]=ESmR_defaultAlpha; ES_O_Beta[0][1]=ESmR_defaultBeta; ES_O_Gamma[0][1]=ESmR_defaultGamma;
+  for(int i=0;i<2;i++)
+  {for(int j=0;j<2;j++)
+   {
+    ES_Alpha[i][j]=ES_dAlpha[i][j]+ES_O_Alpha[i][j]; 
+    ES_Beta[i][j] =ES_dBeta[i][j] +ES_O_Beta[i][j]; 
+    ES_Gamma[i][j]=ES_dGamma[i][j]+ES_O_Gamma[i][j];
+    Aligned_RotationMatrices(i, j, ES_Alpha[i][j], ES_Beta[i][j], ES_Gamma[i][j]);
+    UnAligned_RotationMatrices(i, j, ES_O_Alpha[i][j], ES_O_Beta[i][j], ES_O_Gamma[i][j]);
+  }}
+  //init_RotationMatrices( ESpF_defaultAlpha, ESpF_defaultBeta, ESpF_defaultGamma, ESpR_defaultAlpha, ESpR_defaultBeta, ESpR_defaultGamma, 
+  //			 ESmF_defaultAlpha, ESmF_defaultBeta, ESmF_defaultGamma, ESmR_defaultAlpha, ESmR_defaultBeta, ESmR_defaultGamma); //defualt
+  //ESpF_wRotateap=new RotationType(ES_R11[1][0],ES_R12[1][0],ES_R13[1][0],ES_R21[1][0],ES_R22[1][0],ES_R23[1][0],ES_R31[1][0],ES_R32[1][0],ES_R33[1][0]);
+  //ESpR_wRotateap=new RotationType(ES_R11[1][1],ES_R12[1][1],ES_R13[1][1],ES_R21[1][1],ES_R22[1][1],ES_R23[1][1],ES_R31[1][1],ES_R32[1][1],ES_R33[1][1]);
+  //ESmF_wRotateap=new RotationType(ES_R11[0][0],ES_R12[0][0],ES_R13[0][0],ES_R21[0][0],ES_R22[0][0],ES_R23[0][0],ES_R31[0][0],ES_R32[0][0],ES_R33[0][0]);
+  //ESmR_wRotateap=new RotationType(ES_R11[0][1],ES_R12[0][1],ES_R13[0][1],ES_R21[0][1],ES_R22[0][1],ES_R23[0][1],ES_R31[0][1],ES_R32[0][1],ES_R33[0][1]);
 
 
   ESpF_residualX=f->make<TH1D>("ESpF_residualX","ES+Front residualX",300,-15,15); 
@@ -260,24 +280,56 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
   ESmR_residualY=f->make<TH1D>("ESmR_residualY","ES-Rear residualY",300,-15,15);
 
 }
+void ESAlignTool::UnAligned_Original( int iz, int ip, PositionType* plan){
+  ES_O_X[iz][ip]=plan->x(); 
+  ES_O_Y[iz][ip]=plan->y(); 
+  ES_O_Z[iz][ip]=plan->z();
+}
+void ESAlignTool::Aligned_Original( int iz, int ip, PositionType* plan){
+  ES_Oap_X[iz][ip]=plan->x(); 
+  ES_Oap_Y[iz][ip]=plan->y(); 
+  ES_Oap_Z[iz][ip]=plan->z();
+}
+void ESAlignTool::UnAligned_RotationMatrices( int iz, int ip, double Alpha, double Beta, double Gamma){
+    ES_O_R11[iz][ip] = cos(Beta)*cos(Gamma) - sin(Alpha)*sin(Beta)*sin(Gamma);
+    ES_O_R12[iz][ip] = cos(Beta)*sin(Gamma) + sin(Alpha)*sin(Beta)*cos(Gamma);
+    ES_O_R13[iz][ip] = -cos(Alpha)*sin(Beta);
+    ES_O_R21[iz][ip] = -cos(Alpha)*sin(Gamma);
+    ES_O_R22[iz][ip] = cos(Alpha)*cos(Gamma);
+    ES_O_R23[iz][ip] = sin(Alpha);
+    ES_O_R31[iz][ip] = sin(Beta)*cos(Gamma) + sin(Alpha)*cos(Beta)*sin(Gamma);
+    ES_O_R32[iz][ip] = sin(Beta)*sin(Gamma) - sin(Alpha)*cos(Beta)*cos(Gamma);
+    ES_O_R33[iz][ip] = cos(Alpha)*cos(Beta);
+}
+void ESAlignTool::Aligned_RotationMatrices( int iz, int ip, double Alpha, double Beta, double Gamma){
+    ES_R11[iz][ip] = cos(Beta)*cos(Gamma) - sin(Alpha)*sin(Beta)*sin(Gamma);
+    ES_R12[iz][ip] = cos(Beta)*sin(Gamma) + sin(Alpha)*sin(Beta)*cos(Gamma);
+    ES_R13[iz][ip] = -cos(Alpha)*sin(Beta);
+    ES_R21[iz][ip] = -cos(Alpha)*sin(Gamma);
+    ES_R22[iz][ip] = cos(Alpha)*cos(Gamma);
+    ES_R23[iz][ip] = sin(Alpha);
+    ES_R31[iz][ip] = sin(Beta)*cos(Gamma) + sin(Alpha)*cos(Beta)*sin(Gamma);
+    ES_R32[iz][ip] = sin(Beta)*sin(Gamma) - sin(Alpha)*cos(Beta)*cos(Gamma);
+    ES_R33[iz][ip] = cos(Alpha)*cos(Beta);
+}
 
-void ESAlignTool::init_RotationMatrices()
+/*void ESAlignTool::init_RotationMatrices(double ESpF_A, double ESpF_B, double ESpF_G, double ESpR_A, double ESpR_B, double ESpR_G,double ESmF_A, double ESmF_B, double ESmF_G, double ESmR_A, double ESmR_B, double ESmR_G)
 {
+  ES_O_Alpha[1][0]=ESpF_A; ES_O_Beta[1][0]=ESpF_B; ES_O_Gamma[1][0]=ESpF_G;
+  ES_O_Alpha[1][1]=ESpR_A; ES_O_Beta[1][1]=ESpR_B; ES_O_Gamma[1][1]=ESpR_G;
+  ES_O_Alpha[0][0]=ESmF_A; ES_O_Beta[0][0]=ESmF_B; ES_O_Gamma[0][0]=ESmF_G;
+  ES_O_Alpha[0][1]=ESmR_A; ES_O_Beta[0][1]=ESmR_B; ES_O_Gamma[0][1]=ESmR_G;
+
   for(int i=0;i<2;i++)
   {for(int j=0;j<2;j++)
    {
-    ES_R11[i][j] = cos(ES_dBeta[i][j])*cos(ES_dGamma[i][j]) - sin(ES_dAlpha[i][j])*sin(ES_dBeta[i][j])*sin(ES_dGamma[i][j]);
-    ES_R12[i][j] = cos(ES_dBeta[i][j])*sin(ES_dGamma[i][j]) + sin(ES_dAlpha[i][j])*sin(ES_dBeta[i][j])*cos(ES_dGamma[i][j]);
-    ES_R13[i][j] = -cos(ES_dAlpha[i][j])*sin(ES_dBeta[i][j]);
-    ES_R21[i][j] = -cos(ES_dAlpha[i][j])*sin(ES_dGamma[i][j]);
-    ES_R22[i][j] = cos(ES_dAlpha[i][j])*cos(ES_dGamma[i][j]);
-    ES_R23[i][j] = sin(ES_dAlpha[i][j]);
-    ES_R31[i][j] = sin(ES_dBeta[i][j])*cos(ES_dGamma[i][j]) + sin(ES_dAlpha[i][j])*cos(ES_dBeta[i][j])*sin(ES_dGamma[i][j]);
-    ES_R32[i][j] = sin(ES_dBeta[i][j])*sin(ES_dGamma[i][j]) - sin(ES_dAlpha[i][j])*cos(ES_dBeta[i][j])*cos(ES_dGamma[i][j]);
-    ES_R33[i][j] = cos(ES_dAlpha[i][j])*cos(ES_dBeta[i][j]);
+    ES_Alpha[i][j]=ES_dAlpha[i][j]+ES_O_Alpha[i][j]; 
+    ES_Beta[i][j] =ES_dBeta[i][j] +ES_O_Beta[i][j]; 
+    ES_Gamma[i][j]=ES_dGamma[i][j]+ES_O_Gamma[i][j];
+    Aligned_RotationMatrices(i, j, ES_Alpha[i][j], ES_Beta[i][j], ES_Gamma[i][j]);
+    UnAligned_RotationMatrices(i, j, ES_O_Alpha[i][j], ES_O_Beta[i][j], ES_O_Gamma[i][j]);
   }}
- 
-}
+}*/
 
 //
 // member functions
@@ -344,6 +396,29 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   set_ESorigin(_evt_run,caloGeom);
   set_ESaxes(_evt_run,caloGeom);
   if(b_Overwrite_RotationMatrix_fromGeometry) Overwrite_RotationMatrix(_evt_run);
+ 
+  if( _evt_run == 1 ){ 
+   std::cout<<std::endl;
+   std::cout<<"UnAligned, P"<<std::endl;
+   std::cout<<"-F X: "<<ES_O_X[0][0]<<", Y: "<<ES_O_Y[0][0]<<", Z: "<<ES_O_Z[0][0]<<std::endl;
+   std::cout<<"-R X: "<<ES_O_X[0][1]<<", Y: "<<ES_O_Y[0][1]<<", Z: "<<ES_O_Z[0][1]<<std::endl;
+   std::cout<<"+F X: "<<ES_O_X[1][0]<<", Y: "<<ES_O_Y[1][0]<<", Z: "<<ES_O_Z[1][0]<<std::endl;
+   std::cout<<"+R X: "<<ES_O_X[1][1]<<", Y: "<<ES_O_Y[1][1]<<", Z: "<<ES_O_Z[1][1]<<std::endl;
+   std::cout<<"-F Alpha: "<<ES_O_Alpha[0][0]<<", Beta: "<<ES_O_Beta[0][0]<<", Gamma: "<<ES_O_Gamma[0][0]<<std::endl;
+   std::cout<<"-R Alpha: "<<ES_O_Alpha[0][1]<<", Beta: "<<ES_O_Beta[0][1]<<", Gamma: "<<ES_O_Gamma[0][1]<<std::endl;
+   std::cout<<"+F Alpha: "<<ES_O_Alpha[1][0]<<", Beta: "<<ES_O_Beta[1][0]<<", Gamma: "<<ES_O_Gamma[1][0]<<std::endl;
+   std::cout<<"+R Alpha: "<<ES_O_Alpha[1][1]<<", Beta: "<<ES_O_Beta[1][1]<<", Gamma: "<<ES_O_Gamma[1][1]<<std::endl;
+   std::cout<<std::endl;
+   std::cout<<"Aligned, P-dP"<<std::endl; 
+   std::cout<<"-F X: "<<ES_Oap_X[0][0]<<", Y: "<<ES_Oap_Y[0][0]<<", Z: "<<ES_Oap_Z[0][0]<<std::endl;
+   std::cout<<"-R X: "<<ES_Oap_X[0][1]<<", Y: "<<ES_Oap_Y[0][1]<<", Z: "<<ES_Oap_Z[0][1]<<std::endl;
+   std::cout<<"+F X: "<<ES_Oap_X[1][0]<<", Y: "<<ES_Oap_Y[1][0]<<", Z: "<<ES_Oap_Z[1][0]<<std::endl;
+   std::cout<<"+R X: "<<ES_Oap_X[1][1]<<", Y: "<<ES_Oap_Y[1][1]<<", Z: "<<ES_Oap_Z[1][1]<<std::endl;
+   std::cout<<"-F Alpha: "<<ES_Alpha[0][0]<<", Beta: "<<ES_Beta[0][0]<<", Gamma: "<<ES_Gamma[0][0]<<std::endl;
+   std::cout<<"-R Alpha: "<<ES_Alpha[0][1]<<", Beta: "<<ES_Beta[0][1]<<", Gamma: "<<ES_Gamma[0][1]<<std::endl;
+   std::cout<<"+F Alpha: "<<ES_Alpha[1][0]<<", Beta: "<<ES_Beta[1][0]<<", Gamma: "<<ES_Gamma[1][0]<<std::endl;
+   std::cout<<"+R Alpha: "<<ES_Alpha[1][1]<<", Beta: "<<ES_Beta[1][1]<<", Gamma: "<<ES_Gamma[1][1]<<std::endl;
+  }
  
  
   //5.fill PredictionState on ES
@@ -883,18 +958,19 @@ void ESAlignTool::set_ESorigin(int _evt_run, const CaloGeometry *caloGeom)
 //  ESpR_O_X=ESpR_O->x(); ESpR_O_Y=ESpR_O->y(); ESpR_O_Z=ESpR_O->z();
 //  ESpR_Oap_X=ESpR_Oap->x(); ESpR_Oap_Y=ESpR_Oap->y(); ESpR_Oap_Z=ESpR_Oap->z();
   std::cout<<"\n\n";
- }//if( Cal_ESorigin_from_Geometry && _evt_run==1)
 
- if( _evt_run==1)
- {
-  ES_O_X[0][0]=ESmF_O->x(); ES_O_Y[0][0]=ESmF_O->y(); ES_O_Z[0][0]=ESmF_O->z();
+  UnAligned_Original( 1, 0, ESpF_O);  Aligned_Original( 1, 0, ESpF_Oap);
+  UnAligned_Original( 1, 1, ESpR_O);  Aligned_Original( 1, 1, ESpR_Oap);
+  UnAligned_Original( 0, 0, ESmF_O);  Aligned_Original( 0, 0, ESmF_Oap);
+  UnAligned_Original( 0, 1, ESmR_O);  Aligned_Original( 0, 1, ESmR_Oap);
+ /* ES_O_X[0][0]=ESmF_O->x(); ES_O_Y[0][0]=ESmF_O->y(); ES_O_Z[0][0]=ESmF_O->z();
   ES_Oap_X[0][0]=ESmF_Oap->x(); ES_Oap_Y[0][0]=ESmF_Oap->y(); ES_Oap_Z[0][0]=ESmF_Oap->z();
   ES_O_X[0][1]=ESmR_O->x(); ES_O_Y[0][1]=ESmR_O->y(); ES_O_Z[0][1]=ESmR_O->z();
   ES_Oap_X[0][1]=ESmR_Oap->x(); ES_Oap_Y[0][1]=ESmR_Oap->y(); ES_Oap_Z[0][1]=ESmR_Oap->z();
   ES_O_X[1][0]=ESpF_O->x(); ES_O_Y[1][0]=ESpF_O->y(); ES_O_Z[1][0]=ESpF_O->z();
   ES_Oap_X[1][0]=ESpF_Oap->x(); ES_Oap_Y[1][0]=ESpF_Oap->y(); ES_Oap_Z[1][0]=ESpF_Oap->z();
   ES_O_X[1][1]=ESpR_O->x(); ES_O_Y[1][1]=ESpR_O->y(); ES_O_Z[1][1]=ESpR_O->z();
-  ES_Oap_X[1][1]=ESpR_Oap->x(); ES_Oap_Y[1][1]=ESpR_Oap->y(); ES_Oap_Z[1][1]=ESpR_Oap->z();
+  ES_Oap_X[1][1]=ESpR_Oap->x(); ES_Oap_Y[1][1]=ESpR_Oap->y(); ES_Oap_Z[1][1]=ESpR_Oap->z();*/
  }
 }
 
@@ -907,6 +983,8 @@ void ESAlignTool::set_ESaxes(int _evt_run, const CaloGeometry *caloGeom)
  ESDetId esid;
  if( Cal_ESaxes_from_Geometry && _evt_run==1)
  {
+  //double ES_Alpha[2][2], ES_Beta[2][2], ES_Gamma[2][2];	
+  //double ES_O_Alpha[2][2], ES_O_Beta[2][2], ES_O_Gamma[2][2];	
   std::cout<<"\nSetting ES local axes... \n";
   ip=1; iz=-1; //ES-Front
   X1=0.;  Y1=0.;  Z1=0.;  X2=0.;  Y2=0.;  Z2=0.;
@@ -960,6 +1038,11 @@ void ESAlignTool::set_ESaxes(int _evt_run, const CaloGeometry *caloGeom)
   std::cout<<ES_O_R21[0][0]<<", "<<ES_O_R22[0][0]<<", "<<ES_O_R23[0][0]<<")\n";
   std::cout<<ES_O_R31[0][0]<<", "<<ES_O_R32[0][0]<<", "<<ES_O_R33[0][0]<<")\n";
 
+  ES_O_Alpha[0][0]= asin(ES_O_R23[0][0]); 
+  ES_O_Beta[0][0] = -1*ES_O_R13[0][0]/cos(ES_O_Alpha[0][0]);	
+  ES_O_Gamma[0][0]= -1*ES_O_R21[0][0]/cos(ES_O_Alpha[0][0]);	
+  std::cout<<"dAlpha: "<<ES_O_Alpha[0][0]<<", dBeta: "<<ES_O_Beta[0][0]<<", dGamma: "<<ES_O_Gamma[0][0]<<std::endl;
+
   ip=2; iz=-1; //ES-Rear
   X1=0.;  Y1=0.;  Z1=0.;  X2=0.;  Y2=0.;  Z2=0.;
   ix=1;iy=16;is=1;  esid=ESDetId(is,ix,iy,ip,iz);
@@ -1011,6 +1094,11 @@ void ESAlignTool::set_ESaxes(int _evt_run, const CaloGeometry *caloGeom)
   std::cout<<ES_O_R11[0][1]<<", "<<ES_O_R12[0][1]<<", "<<ES_O_R13[0][1]<<")\n";
   std::cout<<ES_O_R21[0][1]<<", "<<ES_O_R22[0][1]<<", "<<ES_O_R23[0][1]<<")\n";
   std::cout<<ES_O_R31[0][1]<<", "<<ES_O_R32[0][1]<<", "<<ES_O_R33[0][1]<<")\n";
+  
+  ES_O_Alpha[0][1]= asin(ES_O_R23[0][1]); 
+  ES_O_Beta[0][1] = -1*ES_O_R13[0][1]/cos(ES_O_Alpha[0][1]);	
+  ES_O_Gamma[0][1]= -1*ES_O_R21[0][1]/cos(ES_O_Alpha[0][1]);	
+  std::cout<<"dAlpha: "<<ES_O_Alpha[0][1]<<", dBeta: "<<ES_O_Beta[0][1]<<", dGamma: "<<ES_O_Gamma[0][1]<<std::endl;
 
   ip=1; iz=1; //ES+Front
   X1=0.;  Y1=0.;  Z1=0.;  X2=0.;  Y2=0.;  Z2=0.;
@@ -1064,6 +1152,11 @@ void ESAlignTool::set_ESaxes(int _evt_run, const CaloGeometry *caloGeom)
   std::cout<<ES_O_R21[1][0]<<", "<<ES_O_R22[1][0]<<", "<<ES_O_R23[1][0]<<")\n";
   std::cout<<ES_O_R31[1][0]<<", "<<ES_O_R32[1][0]<<", "<<ES_O_R33[1][0]<<")\n";
 
+  ES_O_Alpha[1][0]= asin(ES_O_R23[1][0]); 
+  ES_O_Beta[1][0] = -1*ES_O_R13[1][0]/cos(ES_O_Alpha[1][0]);	
+  ES_O_Gamma[1][0]= -1*ES_O_R21[1][0]/cos(ES_O_Alpha[1][0]);	
+  std::cout<<"dAlpha: "<<ES_O_Alpha[1][0]<<", dBeta: "<<ES_O_Beta[1][0]<<", dGamma: "<<ES_O_Gamma[1][0]<<std::endl;
+
   ip=2; iz=1; //ES+Rear
   X1=0.;  Y1=0.;  Z1=0.;  X2=0.;  Y2=0.;  Z2=0.;
   ix=1;iy=16;is=1;  esid=ESDetId(is,ix,iy,ip,iz);
@@ -1116,6 +1209,20 @@ void ESAlignTool::set_ESaxes(int _evt_run, const CaloGeometry *caloGeom)
   std::cout<<ES_O_R21[1][1]<<", "<<ES_O_R22[1][1]<<", "<<ES_O_R23[1][1]<<")\n";
   std::cout<<ES_O_R31[1][1]<<", "<<ES_O_R32[1][1]<<", "<<ES_O_R33[1][1]<<")\n";
 
+  ES_O_Alpha[1][1]= asin(ES_O_R23[1][1]); 
+  ES_O_Beta[1][1] = -1*ES_O_R13[1][1]/cos(ES_O_Alpha[1][1]);	
+  ES_O_Gamma[1][1]= -1*ES_O_R21[1][1]/cos(ES_O_Alpha[1][1]);	
+  std::cout<<"dAlpha: "<<ES_O_Alpha[1][1]<<", dBeta: "<<ES_O_Beta[1][1]<<", dGamma: "<<ES_O_Gamma[1][1]<<std::endl;
+
+  //Set the roation after alignment 	
+  ES_Alpha[1][0]=ES_dAlpha[1][0]+ES_O_Alpha[1][0]; ES_Beta[1][0]=ES_dBeta[1][0]+ES_O_Beta[1][0], ES_Gamma[1][0]=ES_dGamma[1][0]+ES_O_Gamma[1][0];
+  ES_Alpha[1][1]=ES_dAlpha[1][1]+ES_O_Alpha[1][1]; ES_Beta[1][1]=ES_dBeta[1][1]+ES_O_Beta[1][1], ES_Gamma[1][1]=ES_dGamma[1][1]+ES_O_Gamma[1][1];
+  ES_Alpha[0][0]=ES_dAlpha[0][0]+ES_O_Alpha[0][0]; ES_Beta[0][0]=ES_dBeta[0][0]+ES_O_Beta[0][0], ES_Gamma[0][0]=ES_dGamma[0][0]+ES_O_Gamma[0][0];
+  ES_Alpha[0][1]=ES_dAlpha[0][1]+ES_O_Alpha[0][1]; ES_Beta[0][1]=ES_dBeta[0][1]+ES_O_Beta[0][1], ES_Gamma[0][1]=ES_dGamma[0][1]+ES_O_Gamma[0][1];
+  Aligned_RotationMatrices(1, 0, ES_Alpha[1][0], ES_Beta[1][0], ES_Gamma[1][0]);
+  Aligned_RotationMatrices(1, 1, ES_Alpha[1][1], ES_Beta[1][1], ES_Gamma[1][1]);
+  Aligned_RotationMatrices(0, 0, ES_Alpha[0][0], ES_Beta[0][0], ES_Gamma[0][0]);
+  Aligned_RotationMatrices(0, 1, ES_Alpha[0][1], ES_Beta[0][1], ES_Gamma[0][1]);
  }
 }
 
@@ -1999,8 +2106,8 @@ ESAlignTool::endJob() {
 
 
   delete woRotate;
-  delete ESpF_wRotateap; delete ESpR_wRotateap;
-  delete ESmF_wRotateap; delete ESmR_wRotateap;
+  //delete ESpF_wRotateap; delete ESpR_wRotateap;
+ // delete ESmF_wRotateap; delete ESmR_wRotateap;
   delete ESpF_O;  delete ESpR_O;  delete ESmF_O;  delete ESmR_O;
   delete ESpF_Oap;  delete ESpR_Oap;  delete ESmF_Oap;  delete ESmR_Oap;
  

@@ -62,9 +62,16 @@ public:
 
 
 protected:
+  typedef Surface::PositionType                  PositionType;
+  typedef Surface::RotationType                  RotationType;
+
   void initAllPara(const edm::ParameterSet & );
   void init_perEvent();
-  void init_RotationMatrices();
+  //void init_RotationMatrices(double ESpF_A, double ESpF_B, double ESpF_G, double ESpR_A, double ESpR_B, double ESpR_G,double ESmF_A, double ESmF_B, double ESmF_G, double ESmR_A, double ESmR_B, double ESmR_G);
+  void Aligned_Original( int iz, int ip, PositionType* plan);
+  void Aligned_RotationMatrices( int iz, int ip, double Alpha, double Beta, double Gamma);
+  void UnAligned_Original( int iz, int ip, PositionType* plan);
+  void UnAligned_RotationMatrices( int iz, int ip, double Alpha, double Beta, double Gamma);
   void LoadMagFieldonES(Long64_t ,const CaloGeometry *, edm::ESHandle<MagneticField>);
   void PrintPosition(Long64_t , const CaloGeometry *);
   void fill_esRecHit(const CaloGeometry *, edm::Handle<EcalRecHitCollection>);
@@ -169,14 +176,11 @@ protected:
   Double_t ES_dXerr[2][2],ES_dYerr[2][2],ES_dZerr[2][2];
   Double_t ES_dAlpha[2][2],ES_dBeta[2][2],ES_dGamma[2][2];
   Double_t ES_dAlphaerr[2][2],ES_dBetaerr[2][2],ES_dGammaerr[2][2];
-  Double_t ES_O_Alpha[2][2],ES_O_Beta[2][2],ES_O_Gamma[2][2];
   Double_t ES_M31Err2[2][2],ES_M32Err2[2][2],ES_M33Err2[2][2];
   Double_t ES_P1Err2[2][2],ES_P2Err2[2][2],ES_P3Err2[2][2];
   Double_t ES_InvM11Err2[2][2],ES_InvM12Err2[2][2],ES_InvM13Err2[2][2],ES_InvM22Err2[2][2],ES_InvM23Err2[2][2],ES_InvM33Err2[2][2];
 
 
-  typedef Surface::PositionType                  PositionType;
-  typedef Surface::RotationType                  RotationType;
   RotationType *woRotate;
   PositionType *ESpF_O,*ESpR_O,*ESmF_O,*ESmR_O;
   PositionType *ESpF_Oap,*ESpR_Oap,*ESmF_Oap,*ESmR_Oap;
@@ -189,7 +193,8 @@ protected:
   Double_t ES_O_R11[2][2],ES_O_R12[2][2],ES_O_R13[2][2];
   Double_t ES_O_R21[2][2],ES_O_R22[2][2],ES_O_R23[2][2];
   Double_t ES_O_R31[2][2],ES_O_R32[2][2],ES_O_R33[2][2];
-
+  Double_t ES_Alpha[2][2], ES_Beta[2][2], ES_Gamma[2][2];
+  Double_t ES_O_Alpha[2][2], ES_O_Beta[2][2], ES_O_Gamma[2][2];
 
   Double_t ES_O_X[2][2];  Double_t ES_O_Y[2][2];  Double_t ES_O_Z[2][2];
   Double_t ES_Oap_X[2][2];  Double_t ES_Oap_Y[2][2];  Double_t ES_Oap_Z[2][2];
@@ -227,6 +232,15 @@ private:
   Double_t e_yxlimit;
   Double_t winlimit;
 
+  Double_t ESpF_defaultX, ESpF_defaultY, ESpF_defaultZ;
+  Double_t ESpR_defaultX, ESpR_defaultY, ESpR_defaultZ;
+  Double_t ESmF_defaultX, ESmF_defaultY, ESmF_defaultZ;
+  Double_t ESmR_defaultX, ESmR_defaultY, ESmR_defaultZ;
+  Double_t ESpF_defaultAlpha, ESpF_defaultBeta, ESpF_defaultGamma;
+  Double_t ESpR_defaultAlpha, ESpR_defaultBeta, ESpR_defaultGamma;
+  Double_t ESmF_defaultAlpha, ESmF_defaultBeta, ESmF_defaultGamma;
+  Double_t ESmR_defaultAlpha, ESmR_defaultBeta, ESmR_defaultGamma;
+
   Double_t iter_ESpFdX[11], iter_ESpFdY[11], iter_ESpFdZ[11];
   Double_t iter_ESpRdX[11], iter_ESpRdY[11], iter_ESpRdZ[11];
   Double_t iter_ESmFdX[11], iter_ESmFdY[11], iter_ESmFdZ[11];
@@ -255,6 +269,7 @@ private:
   edm::InputTag RecHitLabel_;
   edm::InputTag TrackLabel_;
  
+  edm::ParameterSet DefaultESLocation_; 
   edm::ParameterSet MatrixElements_; 
 };
 

@@ -77,13 +77,11 @@ options.register('PrintMatrix', False,
 	VarParsing.varType.bool,
 	"Print Matrix"
 	)
-#options.register('CalculateESorigin', False,
 options.register('CalculateESorigin', True,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Calulate ES origin from Geometry"
 	)
-#options.register('CalculateESaxes', False,
 options.register('CalculateESaxes', True,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
@@ -156,6 +154,7 @@ if options.IterN == 1 and options.OverwriteRotationM == False:
 	options.OverwriteRotationM = True
 
 ### Input parameters
+from AlignmentTool.ESAlignTool.DefaultESLocation_cfi import *  
 from inputMatrixElements_cfi import * #MatrixElementsTmp # Modify inputMatrixElements_cfi.py for Matrix Elements 
 process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
 	RecHitLabel = cms.InputTag(options.RecHitLabel),
@@ -177,6 +176,7 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
     	Selected_idee = cms.uint32(0),
     	Selected_RUNmin = cms.int32(0),
     	Selected_RUNmax = cms.int32(0),
+	DefaultESLocation = DefaultESLocation.clone(),
 	MatrixElements = MatrixElementsTmp.clone(),
 )
 
