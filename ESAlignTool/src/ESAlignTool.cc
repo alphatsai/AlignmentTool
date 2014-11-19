@@ -92,6 +92,8 @@ ESAlignTool::~ESAlignTool()
 
 void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
 {
+ std::cout<<"Initializing All Parameters..."<<std::endl;
+
  ESpF_Printed=0; ESpR_Printed=0;
  ESmF_Printed=0; ESmR_Printed=0;
 
@@ -217,7 +219,6 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
   sprintf(buf,"Iter%i_ESmRdBeta",iterN_idx);   iter_ESmRdBeta[iterN_idx-1]  = MatrixElements_.getParameter<double>(buf);
   sprintf(buf,"Iter%i_ESmRdGamma",iterN_idx);  iter_ESmRdGamma[iterN_idx-1] = MatrixElements_.getParameter<double>(buf);
  }
-
  for(int iterN_idx=1;iterN_idx<iterN;iterN_idx++)
  {
   ES_dX[0][0] -= iter_ESmFdX[iterN_idx-1]; ES_dY[0][0] -= iter_ESmFdY[iterN_idx-1]; ES_dZ[0][0] -= iter_ESmFdZ[iterN_idx-1];
@@ -231,6 +232,7 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
   ES_dAlpha[1][1] -= iter_ESpRdAlpha[iterN_idx-1]; ES_dBeta[1][1] -= iter_ESpRdBeta[iterN_idx-1]; ES_dGamma[1][1] -= iter_ESpRdGamma[iterN_idx-1];
  }
 
+  // All default will be repalce by re-caculate axes or position, if you open the option.
   _evt_run = 0;
   woRotate=new RotationType(); //defualt
   ESpF_O=new PositionType( ESpF_defaultX, ESpF_defaultY, ESpF_defaultZ); //default
@@ -241,7 +243,6 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
   ESpR_Oap=new PositionType( ESpR_defaultX+ES_dX[1][1], ESpR_defaultY+ES_dY[1][1], ESpR_defaultZ+ES_dZ[1][1]); //default
   ESmF_Oap=new PositionType( ESmF_defaultX+ES_dX[0][0], ESmF_defaultY+ES_dY[0][0], ESmF_defaultZ+ES_dZ[0][0]); //default 
   ESmR_Oap=new PositionType( ESmR_defaultX+ES_dX[0][1], ESmR_defaultY+ES_dY[0][1], ESmR_defaultZ+ES_dZ[0][1]); //default
-  std::cout<<"ESmR_defaultX+ES_dZ[0][1] "<<ESmR_defaultX<<" + "<<ES_dZ[0][1]<<std::endl; 
   UnAligned_Original( 1, 0, ESpF_O);  Aligned_Original( 1, 0, ESpF_Oap);
   UnAligned_Original( 1, 1, ESpR_O);  Aligned_Original( 1, 1, ESpR_Oap);
   UnAligned_Original( 0, 0, ESmF_O);  Aligned_Original( 0, 0, ESmF_Oap);
@@ -249,11 +250,11 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
 
   if(b_ReSetRfromOutside) std::cout<<"Nothing to do"<<std::endl;
 
-  ES_O_Alpha[1][0]=ESpF_defaultAlpha; ES_O_Beta[1][0]=ESpF_defaultBeta; ES_O_Gamma[1][0]=ESpF_defaultGamma;
-  ES_O_Alpha[1][1]=ESpR_defaultAlpha; ES_O_Beta[1][1]=ESpR_defaultBeta; ES_O_Gamma[1][1]=ESpR_defaultGamma;
-  ES_O_Alpha[0][0]=ESmF_defaultAlpha; ES_O_Beta[0][0]=ESmF_defaultBeta; ES_O_Gamma[0][0]=ESmF_defaultGamma;
-  ES_O_Alpha[0][1]=ESmR_defaultAlpha; ES_O_Beta[0][1]=ESmR_defaultBeta; ES_O_Gamma[0][1]=ESmR_defaultGamma;
-  for(int i=0;i<2;i++)
+  ES_O_Alpha[1][0]=ESpF_defaultAlpha; ES_O_Beta[1][0]=ESpF_defaultBeta; ES_O_Gamma[1][0]=ESpF_defaultGamma; //default
+  ES_O_Alpha[1][1]=ESpR_defaultAlpha; ES_O_Beta[1][1]=ESpR_defaultBeta; ES_O_Gamma[1][1]=ESpR_defaultGamma; //default
+  ES_O_Alpha[0][0]=ESmF_defaultAlpha; ES_O_Beta[0][0]=ESmF_defaultBeta; ES_O_Gamma[0][0]=ESmF_defaultGamma; //default
+  ES_O_Alpha[0][1]=ESmR_defaultAlpha; ES_O_Beta[0][1]=ESmR_defaultBeta; ES_O_Gamma[0][1]=ESmR_defaultGamma; //default
+  for(int i=0;i<2;i++) //default
   {for(int j=0;j<2;j++)
    {
     ES_Alpha[i][j]=ES_dAlpha[i][j]+ES_O_Alpha[i][j]; 
@@ -261,7 +262,7 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
     ES_Gamma[i][j]=ES_dGamma[i][j]+ES_O_Gamma[i][j];
     Aligned_RotationMatrices(i, j, ES_Alpha[i][j], ES_Beta[i][j], ES_Gamma[i][j]);
     UnAligned_RotationMatrices(i, j, ES_O_Alpha[i][j], ES_O_Beta[i][j], ES_O_Gamma[i][j]);
-  }}
+  }} //default
   //init_RotationMatrices( ESpF_defaultAlpha, ESpF_defaultBeta, ESpF_defaultGamma, ESpR_defaultAlpha, ESpR_defaultBeta, ESpR_defaultGamma, 
   //			 ESmF_defaultAlpha, ESmF_defaultBeta, ESmF_defaultGamma, ESmR_defaultAlpha, ESmR_defaultBeta, ESmR_defaultGamma); //defualt
   //ESpF_wRotateap=new RotationType(ES_R11[1][0],ES_R12[1][0],ES_R13[1][0],ES_R21[1][0],ES_R22[1][0],ES_R23[1][0],ES_R31[1][0],ES_R32[1][0],ES_R33[1][0]);
@@ -342,8 +343,8 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   using namespace edm;
 
  //1.initialize for each events
- std::cout << "In ESAlignTool.analyze\n";
- std::cout << "ESAlignTool:: in analyze().\n";
+ std::cout << "\nIn ESAlignTool.analyze()\n";
+ std::cout << "Event : "<<_evt_run<<"\n";
  
  _runNum = iEvent.id().run();
  _evtNum = iEvent.id().event();
@@ -351,8 +352,7 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
  int Run = iEvent.id().run();
  int RunMin=Selected_RUNmin;
- int RunMax=Selected_RUNmax;
- //std::cout<<"RunMin="<<RunMin<<", RunMax="<<RunMax<<", Run="<<Run<<"\n";
+ int RunMax=Selected_RUNmax; //std::cout<<"RunMin="<<RunMin<<", RunMax="<<RunMax<<", Run="<<Run<<"\n";
  if(  Selected_RUNmin==0 || Selected_RUNmax==0
     || ( RunMin!=0 && RunMax!=0 && Run >= RunMin && Run <= RunMax )
    )   

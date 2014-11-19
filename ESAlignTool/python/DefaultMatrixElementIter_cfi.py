@@ -1,6 +1,5 @@
 import FWCore.ParameterSet.Config as cms
 
-#esAlignTool = cms.EDAnalyzer('ESAlignTool',
 DefaultMatrixElementIter = cms.PSet(
 
     Iter1_ESpFdX = cms.double(0),Iter1_ESpFdY = cms.double(0),Iter1_ESpFdZ = cms.double(0),Iter1_ESpFdAlpha = cms.double(0),Iter1_ESpFdBeta = cms.double(0),Iter1_ESpFdGamma = cms.double(0),
@@ -51,6 +50,5 @@ DefaultMatrixElementIter = cms.PSet(
     Iter10_ESpFdX = cms.double(0),Iter10_ESpFdY = cms.double(0),Iter10_ESpFdZ = cms.double(0),Iter10_ESpFdAlpha = cms.double(0),Iter10_ESpFdBeta = cms.double(0),Iter10_ESpFdGamma = cms.double(0),
     Iter10_ESpRdX = cms.double(0),Iter10_ESpRdY = cms.double(0),Iter10_ESpRdZ = cms.double(0),Iter10_ESpRdAlpha = cms.double(0),Iter10_ESpRdBeta = cms.double(0),Iter10_ESpRdGamma = cms.double(0),
     Iter10_ESmFdX = cms.double(0),Iter10_ESmFdY = cms.double(0),Iter10_ESmFdZ = cms.double(0),Iter10_ESmFdAlpha = cms.double(0),Iter10_ESmFdBeta = cms.double(0),Iter10_ESmFdGamma = cms.double(0),
-    Iter10_ESmRdX = cms.double(0),Iter10_ESmRdY = cms.double(0),Iter10_ESmRdZ = cms.double(0),Iter10_ESmRdAlpha = cms.double(0),Iter10_ESmRdBeta = cms.double(0),Iter10_ESmRdGamma = cms.double(0)
-
+    Iter10_ESmRdX = cms.double(0),Iter10_ESmRdY = cms.double(0),Iter10_ESmRdZ = cms.double(0),Iter10_ESmRdAlpha = cms.double(0),Iter10_ESmRdBeta = cms.double(0),Iter10_ESmRdGamma = cms.double(0),
 )
