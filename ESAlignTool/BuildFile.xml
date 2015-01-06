@@ -19,6 +19,6 @@
 <use   name="TrackingTools/Records"/>
 <use   name="Geometry/CommonDetUnit"/>
 <use   name="TrackPropagation/SteppingHelixPropagator"/>
-<use   name="RecoCaloTools/MetaCollections"/>
+#<use   name="RecoCaloTools/MetaCollections"/>
 <use   name="root"/>
 <flags   EDM_PLUGIN="1"/>
