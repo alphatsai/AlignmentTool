@@ -29,8 +29,8 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 #                                                           )
 #                                         )
 #process.es_prefer_GlobalPositionDB = cms.ESPrefer("PoolDBESSource", "newGlobalPosition")
-process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
-#process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
+#process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
+process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
 ####################################################################################
 
 
@@ -130,6 +130,7 @@ process.source = cms.Source("PoolSource",
     #firstEvent = cms.untracked.uint32(1),
     #fileNames = cms.untracked.vstring(FileNames_CSA14Test)
     #fileNames = cms.untracked.vstring(FileNames_PionGunTest)
+    #fileNames = cms.untracked.vstring(FileNames_Skim721)
     fileNames = cms.untracked.vstring(FileNames)
 )
 

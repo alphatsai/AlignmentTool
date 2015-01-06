@@ -1,6 +1,6 @@
 # Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
 
 #/Jet/Run2012A-22Jan2013-v1/AOD                 5 /eos/cms/store/user/devdatta/NtuplesBprimeTobH_v1/Data_bugfix/Jet_Run2012A MaxEvents=1
-/job_SinglePionGun_GEN_SIM_v1/tdoan-job_SinglePionGun_RECO_v1-a2645d794d4263c6295ef839881df757/USER  10  /eos/cms/store/user/jtsai/ESAlignment/SinglePionGun_RECO_POSTLS170_V5_MaxEvents1M InputRefitter=False
-
+#/job_SinglePionGun_GEN_SIM_v1/tdoan-job_SinglePionGun_RECO_v1-a2645d794d4263c6295ef839881df757/USER  10  /eos/cms/store/user/jtsai/ESAlignment/SinglePionGun_RECO_POSTLS170_V5_MaxEvents1M InputRefitter=False
+/job_SinglePionGun_GEN_SIM_v1/tdoan-job_SinglePionGun_RECO_v1-a2645d794d4263c6295ef839881df757/USER  10  /eos/cms/store/user/jtsai/ESAlignment/SkimRefit_SinglePionGun_RECO_POSTLS170_V5_MaxEvents1M 
 
