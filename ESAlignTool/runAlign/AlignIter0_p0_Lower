@@ -1,2 +1,0 @@
-
-process.p = cms.Path(process.esAlignTool)
