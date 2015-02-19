@@ -1,7 +1,0 @@
-Run without refitter files
-	cmsRun AlignIter_cfg.py InputRefitter=False MaxEvents=3
-Run with limited events
-	cmsRun AlignIter_cfg.py MaxEvents=3
-Run with other iterator (default=1)
-	cmsRun AlignIter_cfg.py IterN=3
-test
