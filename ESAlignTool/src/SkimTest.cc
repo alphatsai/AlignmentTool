@@ -158,7 +158,6 @@ SkimTest::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			  delete hit;
 		  }
 		  std::cout<<"   Num validated hits, by checking each hit "<<nValidHit<<std::endl;
-		  Ntrack++;
 	  }
 	  std::cout<<"    Num tacks in endcap "<<NtrackEndCap<<"/"<<Ntrack<<std::endl;
 	  std::cout<<"    Num tacks is good in endcap "<<NtrackGood<<"/"<<NtrackEndCap<<std::endl;
