@@ -27,6 +27,11 @@ options.register('InputRefitter', False,
 	VarParsing.varType.bool,
 	"Input with refit-files"
 	)
+options.register('InputReducer', False,
+	VarParsing.multiplicity.singleton,
+	VarParsing.varType.bool,
+	"Input with reduce-files"
+	)
 options.register('RecHitLabel', 'ecalPreshowerRecHit:EcalRecHitsES',
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.string,
@@ -64,7 +69,8 @@ process.source = cms.Source("PoolSource",
     #fileNames = cms.untracked.vstring(FileNames_Skim721)
     #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_0_7_master/src/SkimTool/ESHitSkimLoose/test/ESRedSkim.root")
     #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_0_7_master/src/SkimTool/ESHitSkimLoose/test/Refitter.root")
-    fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/generateSamples/CMSSW_7_4_0_pre6/src/DoubleElectron-Run2012D/reco_RAW2DIGI_RECO.root")
+    fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESRedSkim.root")
+    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/generateSamples/CMSSW_7_4_0_pre6/src/DoubleElectron-Run2012D/reco_RAW2DIGI_RECO_100.root")
     #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_0_7_master/src/SkimTool/ESHitSkimLoose/test/ESRedSkimtestDone.root")
     #fileNames = cms.untracked.vstring(FileNames)
 )
@@ -77,7 +83,7 @@ process.TFileService = cms.Service("TFileService",
 ### Check parameters options
 if options.InputRefitter == True and options.TrackLabel == 'generalTracks':
 	print 'WARNING: Using Refit files, options.TrackLabel = TrackRefitter'
-	options.TrackLabel = 'TrackRefitter'	
+	options.TrackLabel = 'TrackRefitter'
 print 'Load lables:'
 print ' options.RecHitLabel = '+options.RecHitLabel
 print ' options.TrackLabel = '+options.TrackLabel
