@@ -137,7 +137,7 @@ SkimTest::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   int NtrackEndCap=0;
   int NtrackGood=0;
-  int Ntrack = TrackCol->size();
+  int Ntrack =0 ;
   if( TrackCol.isValid() ){ 
 	  for( reco::TrackCollection::const_iterator itTrack = TrackCol->begin(); itTrack != TrackCol->end(); ++itTrack){
 		  if( isEndCapTrack(*itTrack) ) NtrackEndCap++;
@@ -158,6 +158,7 @@ SkimTest::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			  delete hit;
 		  }
 		  std::cout<<"   Num validated hits, by checking each hit "<<nValidHit<<std::endl;
+		  Ntrack++;
 	  }
 	  std::cout<<"    Num tacks in endcap "<<NtrackEndCap<<"/"<<Ntrack<<std::endl;
 	  std::cout<<"    Num tacks is good in endcap "<<NtrackGood<<"/"<<NtrackEndCap<<std::endl;
