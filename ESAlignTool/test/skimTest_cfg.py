@@ -6,8 +6,9 @@ process.load('Configuration.StandardSequences.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
-process.GlobalTag.globaltag = 'GR_R_74_V1A::All'  #for RECO data CMSSW_7_4_0_pre6 with condition=auto::run2_data
+#process.GlobalTag.globaltag = 'GR_R_74_V1A::All'  #for RECO data CMSSW_7_4_0_pre6 with condition=auto::run2_data
 #process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
+process.GlobalTag.globaltag = 'MCRUN2_74_V1::All'  #https://twiki.cern.ch/twiki/bin/viewauth/CMS/RelValGT
 
 
 # Default Parameter options
@@ -66,15 +67,14 @@ process.source = cms.Source("PoolSource",
     #skipEvents = cms.untracked.uint32(0),
     #firstEvent = cms.untracked.uint32(1),
     #fileNames = cms.untracked.vstring(FileNames_CSA14Test)
-    #fileNames = cms.untracked.vstring(FileNames_PionGunTest)
     #fileNames = cms.untracked.vstring(FileNames_Skim721)
-    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_0_7_master/src/SkimTool/ESHitSkimLoose/test/ESRedSkim.root")
-    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_0_7_master/src/SkimTool/ESHitSkimLoose/test/Refitter.root")
+    #fileNames = cms.untracked.vstring(FileNames_PionGunTest)
     #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESRedSkim.root")
-    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/generateSamples/CMSSW_7_4_0_pre6/src/DoubleElectron-Run2012D/reco_RAW2DIGI_RECO_100.root")
-    fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/generateSamples/CMSSW_7_4_0_pre6/src/DoubleElectron-Run2012D/reco_RAW2DIGI_RECO_400.root")
-    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_0_7_master/src/SkimTool/ESHitSkimLoose/test/ESRedSkimtestDone.root")
-    #fileNames = cms.untracked.vstring(FileNames)
+    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/Refitter_400.root")
+    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESRedSkim.root")
+    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESRedSkim_doubleEle400.root")
+    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/generateSamples/CMSSW_7_4_0_pre6/src/PionGun_RECO/pionGun_DIGI_L1_DIGI2RAW_RAW2DIGI_RECO.root")
+    fileNames = cms.untracked.vstring(FileNames)
 )
 
 ### output
@@ -83,9 +83,21 @@ process.TFileService = cms.Service("TFileService",
 )
 
 ### Check parameters options
-if options.InputRefitter == True and options.TrackLabel == 'generalTracks':
-	print 'WARNING: Using Refit files, options.TrackLabel = TrackRefitter'
+if   options.TrackLabel != 'generalTracks' and options.TrackLabel != 'TrackRefitter' and options.TrackLabel != 'ESTracksReducer' and options.InputRefitter == False and options.InputRefitter == False:
+	print '[NOTE] Using additional track label, options.TrackLabel = '+options.TrackLabel
+elif options.InputRefitter == True and options.InputReducer == True:
+	print '[ERROR]: Should not make InputRefitter and InputReducer are True!'
+elif options.InputRefitter == True and options.TrackLabel == 'ESTracksReducer':
+	print '[ERROR]: Should not make InputRefitter is True and TrackLabel=ESTracksReducer '
+elif options.InputReducer == True and options.TrackLabel == 'TrackRefitter':
+	print '[ERROR]: Should not make InputReducer is True and TrackLabel=TrackRefitter '
+elif options.TrackLabel == 'TrackRefitter' or options.InputRefitter == True and options.InputReducer == False:
+	print '[NOTE]: Using Refitted files, options.TrackLabel = TrackRefitter'
 	options.TrackLabel = 'TrackRefitter'
+elif options.TrackLabel == 'ESTracksReducer' or options.InputRefitter == False and options.InputReducer == True:
+	print '[NOTE]: Using Reduced files, options.TrackLabel = ESTracksReducer'
+	options.TrackLabel = 'ESTracksReducer'
+
 print 'Load lables:'
 print ' options.RecHitLabel = '+options.RecHitLabel
 print ' options.TrackLabel = '+options.TrackLabel
