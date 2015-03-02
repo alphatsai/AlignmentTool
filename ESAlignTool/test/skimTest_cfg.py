@@ -66,15 +66,9 @@ from inputFiles_cfi import * #FileNames
 process.source = cms.Source("PoolSource",
     #skipEvents = cms.untracked.uint32(0),
     #firstEvent = cms.untracked.uint32(1),
-    #fileNames = cms.untracked.vstring(FileNames_CSA14Test)
-    #fileNames = cms.untracked.vstring(FileNames_Skim721)
     #fileNames = cms.untracked.vstring(FileNames_PionGunTest)
-    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESRedSkim.root")
-    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/Refitter_400.root")
-    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESRedSkim.root")
-    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESRedSkim_doubleEle400.root")
+    fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESSkim.root")
     #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/generateSamples/CMSSW_7_4_0_pre6/src/PionGun_RECO/pionGun_DIGI_L1_DIGI2RAW_RAW2DIGI_RECO.root")
-    fileNames = cms.untracked.vstring(FileNames)
 )
 
 ### output
@@ -83,20 +77,20 @@ process.TFileService = cms.Service("TFileService",
 )
 
 ### Check parameters options
-if   options.TrackLabel != 'generalTracks' and options.TrackLabel != 'TrackRefitter' and options.TrackLabel != 'ESTracksReducer' and options.InputRefitter == False and options.InputRefitter == False:
+if   options.TrackLabel != 'generalTracks' and options.TrackLabel != 'TrackRefitter' and options.TrackLabel != 'esGeneralTracks' and options.InputRefitter == False and options.InputRefitter == False:
 	print '[NOTE] Using additional track label, options.TrackLabel = '+options.TrackLabel
 elif options.InputRefitter == True and options.InputReducer == True:
 	print '[ERROR]: Should not make InputRefitter and InputReducer are True!'
-elif options.InputRefitter == True and options.TrackLabel == 'ESTracksReducer':
-	print '[ERROR]: Should not make InputRefitter is True and TrackLabel=ESTracksReducer '
+elif options.InputRefitter == True and options.TrackLabel == 'esGeneralTracks':
+	print '[ERROR]: Should not make InputRefitter is True and TrackLabel=esGeneralTracks '
 elif options.InputReducer == True and options.TrackLabel == 'TrackRefitter':
 	print '[ERROR]: Should not make InputReducer is True and TrackLabel=TrackRefitter '
 elif options.TrackLabel == 'TrackRefitter' or options.InputRefitter == True and options.InputReducer == False:
 	print '[NOTE]: Using Refitted files, options.TrackLabel = TrackRefitter'
 	options.TrackLabel = 'TrackRefitter'
-elif options.TrackLabel == 'ESTracksReducer' or options.InputRefitter == False and options.InputReducer == True:
-	print '[NOTE]: Using Reduced files, options.TrackLabel = ESTracksReducer'
-	options.TrackLabel = 'ESTracksReducer'
+elif options.TrackLabel == 'esGeneralTracks' or options.InputRefitter == False and options.InputReducer == True:
+	print '[NOTE]: Using Reduced files, options.TrackLabel = esGeneralTracks'
+	options.TrackLabel = 'esGeneralTracks'  # it was ESTracksReducer
 
 print 'Load lables:'
 print ' options.RecHitLabel = '+options.RecHitLabel
