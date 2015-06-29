@@ -1314,18 +1314,27 @@ void ESAlignTool::fill_PredictionState(int iz, int ip, int idee, edm::Handle<rec
        PredictionState_Bx[iTrk][a][b]=theMagField->inTesla(ES_prediction.globalPosition()).x();
        PredictionState_By[iTrk][a][b]=theMagField->inTesla(ES_prediction.globalPosition()).y();
        PredictionState_Bz[iTrk][a][b]=theMagField->inTesla(ES_prediction.globalPosition()).z();
- 
+
+       double hasB = theMagField->inTesla(ES_prediction.globalPosition()).x() * theMagField->inTesla(ES_prediction.globalPosition()).y() * theMagField->inTesla(ES_prediction.globalPosition()).z();
        //Original position error matrix
-       cxx=ES_prediction.cartesianError().position().cxx();
-       cyy=ES_prediction.cartesianError().position().cyy();
-       czz=ES_prediction.cartesianError().position().czz();
-       cyx=ES_prediction.cartesianError().position().cyx();
-       czx=ES_prediction.cartesianError().position().czx();
-       czy=ES_prediction.cartesianError().position().czy();
-       //Transform this error matrix on local coordinate
-       PredictionState_Exx[iTrk][a][b]= R11*R11*cxx+R12*R12*cyy+R13*R13*czz+2.*R11*R12*cyx+2.*R11*R13*czx+2.*R12*R13*czy;
-       PredictionState_Eyy[iTrk][a][b]= R21*R21*cxx+R22*R22*cyy+R23*R23*czz+2.*R21*R22*cyx+2.*R21*R23*czx+2.*R22*R23*czy;
-       PredictionState_Eyx[iTrk][a][b]= R11*R21*cxx+R12*R22*cyy+R13*R23*czz+(R11*R22+R21*R12)*cyx+(R11*R23+R21*R13)*czx+(R12*R23+R22*R13)*czy;
+       if( hasB != 0 )
+       {
+       		cxx=ES_prediction.cartesianError().position().cxx();
+       		cyy=ES_prediction.cartesianError().position().cyy();
+       		czz=ES_prediction.cartesianError().position().czz();
+       		cyx=ES_prediction.cartesianError().position().cyx();
+       		czx=ES_prediction.cartesianError().position().czx();
+       		czy=ES_prediction.cartesianError().position().czy();
+       		//Transform this error matrix on local coordinate
+    	   	PredictionState_Exx[iTrk][a][b]= R11*R11*cxx+R12*R12*cyy+R13*R13*czz+2.*R11*R12*cyx+2.*R11*R13*czx+2.*R12*R13*czy;
+       		PredictionState_Eyy[iTrk][a][b]= R21*R21*cxx+R22*R22*cyy+R23*R23*czz+2.*R21*R22*cyx+2.*R21*R23*czx+2.*R22*R23*czy;
+       		PredictionState_Eyx[iTrk][a][b]= R11*R21*cxx+R12*R22*cyy+R13*R23*czz+(R11*R22+R21*R12)*cyx+(R11*R23+R21*R13)*czx+(R12*R23+R22*R13)*czy;
+       }else{
+       		//Transform this error matrix on local coordinate
+       		PredictionState_Exx[iTrk][a][b]= 0; 
+       		PredictionState_Eyy[iTrk][a][b]= 0;
+       		PredictionState_Eyx[iTrk][a][b]= 0;
+	   }
 
        PredictionState_E44[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(3,3));
        PredictionState_E55[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(4,4));
@@ -1363,7 +1372,8 @@ void ESAlignTool::fill_residual(int iz)
    Double_t eF_yy= (PredictionState_Eyy[iTrk][a][0]);
    Double_t eF_yx= (PredictionState_Eyx[iTrk][a][0]);
    //e_yx=0.;
-   if( eF_xx*eF_yy-eF_yx*eF_yx <= 0 ) continue;
+   //if( eF_xx*eF_yy-eF_yx*eF_yx <= 0 ) continue;
+   if( eF_xx*eF_yy-eF_yx*eF_yx < 0 ) continue;
    if( eF_xx > e_xxlimit ) continue;
    if( eF_yy > e_yylimit ) continue;
    if( fabs(eF_yx) > e_yxlimit ) continue;
@@ -1372,7 +1382,8 @@ void ESAlignTool::fill_residual(int iz)
    Double_t eR_xx= (PredictionState_Exx[iTrk][a][1]);
    Double_t eR_yx= (PredictionState_Eyx[iTrk][a][1]);
    //e_yx=0.;
-   if( eR_xx*eR_yy-eR_yx*eR_yx <= 0 ) continue;
+   //if( eR_xx*eR_yy-eR_yx*eR_yx <= 0 ) continue;
+   if( eR_xx*eR_yy-eR_yx*eR_yx < 0 ) continue;
    if( eR_xx > e_xxlimit ) continue;
    if( eR_yy > e_yylimit ) continue;
    if( fabs(eR_yx) > e_yxlimit ) continue;
