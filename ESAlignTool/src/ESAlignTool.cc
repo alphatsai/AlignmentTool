@@ -1326,15 +1326,25 @@ void ESAlignTool::fill_PredictionState(int iz, int ip, int idee, edm::Handle<rec
        		czx=ES_prediction.cartesianError().position().czx();
        		czy=ES_prediction.cartesianError().position().czy();
        		//Transform this error matrix on local coordinate
+    	   	//PredictionState_Exx[iTrk][a][b]= R11*R11*cxx+R12*R12*cyy+R13*R13*czz+2.*R11*R12*cyx+2.*R11*R13*czx+2.*R12*R13*czy;
+       		//PredictionState_Eyy[iTrk][a][b]= R21*R21*cxx+R22*R22*cyy+R23*R23*czz+2.*R21*R22*cyx+2.*R21*R23*czx+2.*R22*R23*czy;
+       		//PredictionState_Eyx[iTrk][a][b]= R11*R21*cxx+R12*R22*cyy+R13*R23*czz+(R11*R22+R21*R12)*cyx+(R11*R23+R21*R13)*czx+(R12*R23+R22*R13)*czy;
+       }else{
+       		//Transform this error matrix on local coordinate
+       		//PredictionState_Exx[iTrk][a][b]= 0.00001; 
+       		//PredictionState_Eyy[iTrk][a][b]= 0.00001;
+       		//PredictionState_Eyx[iTrk][a][b]= 0.00001;
+       		cxx=0.0001;
+       		cyy=0.0001;
+       		czz=0.0001;
+       		cyx=0.0001;
+       		czx=0.0001;
+       		czy=0.0001;
+	   }
+       //Transform this error matrix on local coordinate
     	   	PredictionState_Exx[iTrk][a][b]= R11*R11*cxx+R12*R12*cyy+R13*R13*czz+2.*R11*R12*cyx+2.*R11*R13*czx+2.*R12*R13*czy;
        		PredictionState_Eyy[iTrk][a][b]= R21*R21*cxx+R22*R22*cyy+R23*R23*czz+2.*R21*R22*cyx+2.*R21*R23*czx+2.*R22*R23*czy;
        		PredictionState_Eyx[iTrk][a][b]= R11*R21*cxx+R12*R22*cyy+R13*R23*czz+(R11*R22+R21*R12)*cyx+(R11*R23+R21*R13)*czx+(R12*R23+R22*R13)*czy;
-       }else{
-       		//Transform this error matrix on local coordinate
-       		PredictionState_Exx[iTrk][a][b]= 0.00001; 
-       		PredictionState_Eyy[iTrk][a][b]= 0.00001;
-       		PredictionState_Eyx[iTrk][a][b]= 0.00001;
-	   }
 
        PredictionState_E44[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(3,3));
        PredictionState_E55[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(4,4));
