@@ -1331,9 +1331,9 @@ void ESAlignTool::fill_PredictionState(int iz, int ip, int idee, edm::Handle<rec
        		PredictionState_Eyx[iTrk][a][b]= R11*R21*cxx+R12*R22*cyy+R13*R23*czz+(R11*R22+R21*R12)*cyx+(R11*R23+R21*R13)*czx+(R12*R23+R22*R13)*czy;
        }else{
        		//Transform this error matrix on local coordinate
-       		PredictionState_Exx[iTrk][a][b]= 0; 
-       		PredictionState_Eyy[iTrk][a][b]= 0;
-       		PredictionState_Eyx[iTrk][a][b]= 0;
+       		PredictionState_Exx[iTrk][a][b]= 0.00001; 
+       		PredictionState_Eyy[iTrk][a][b]= 0.00001;
+       		PredictionState_Eyx[iTrk][a][b]= 0.00001;
 	   }
 
        PredictionState_E44[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(3,3));
