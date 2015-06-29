@@ -142,7 +142,6 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
  e_yxlimit = iConfig.getParameter<double>("e_yxlimit");
  winlimit = iConfig.getParameter<double>("winlimit");
 
- b_doRotation = iConfig.getParameter<bool>("doRotation");
  b_DrawMagField = iConfig.getParameter<bool>("DrawMagField");
  b_PrintPosition = iConfig.getParameter<bool>("PrintPosition");
  b_ReSetRfromOutside = iConfig.getParameter<bool>("ReSetRfromOutside");
@@ -263,13 +262,6 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
     Aligned_RotationMatrices(i, j, ES_Alpha[i][j], ES_Beta[i][j], ES_Gamma[i][j]);
     UnAligned_RotationMatrices(i, j, ES_O_Alpha[i][j], ES_O_Beta[i][j], ES_O_Gamma[i][j]);
   }} //default
-  //init_RotationMatrices( ESpF_defaultAlpha, ESpF_defaultBeta, ESpF_defaultGamma, ESpR_defaultAlpha, ESpR_defaultBeta, ESpR_defaultGamma, 
-  //			 ESmF_defaultAlpha, ESmF_defaultBeta, ESmF_defaultGamma, ESmR_defaultAlpha, ESmR_defaultBeta, ESmR_defaultGamma); //defualt
-  //ESpF_wRotateap=new RotationType(ES_R11[1][0],ES_R12[1][0],ES_R13[1][0],ES_R21[1][0],ES_R22[1][0],ES_R23[1][0],ES_R31[1][0],ES_R32[1][0],ES_R33[1][0]);
-  //ESpR_wRotateap=new RotationType(ES_R11[1][1],ES_R12[1][1],ES_R13[1][1],ES_R21[1][1],ES_R22[1][1],ES_R23[1][1],ES_R31[1][1],ES_R32[1][1],ES_R33[1][1]);
-  //ESmF_wRotateap=new RotationType(ES_R11[0][0],ES_R12[0][0],ES_R13[0][0],ES_R21[0][0],ES_R22[0][0],ES_R23[0][0],ES_R31[0][0],ES_R32[0][0],ES_R33[0][0]);
-  //ESmR_wRotateap=new RotationType(ES_R11[0][1],ES_R12[0][1],ES_R13[0][1],ES_R21[0][1],ES_R22[0][1],ES_R23[0][1],ES_R31[0][1],ES_R32[0][1],ES_R33[0][1]);
-
 
   ESpF_residualX=f->make<TH1D>("ESpF_residualX","ES+Front residualX",300,-15,15); 
   ESpF_residualY=f->make<TH1D>("ESpF_residualY","ES+Front residualY",300,-15,15);
@@ -313,24 +305,6 @@ void ESAlignTool::Aligned_RotationMatrices( int iz, int ip, double Alpha, double
     ES_R32[iz][ip] = sin(Beta)*sin(Gamma) - sin(Alpha)*cos(Beta)*cos(Gamma);
     ES_R33[iz][ip] = cos(Alpha)*cos(Beta);
 }
-
-/*void ESAlignTool::init_RotationMatrices(double ESpF_A, double ESpF_B, double ESpF_G, double ESpR_A, double ESpR_B, double ESpR_G,double ESmF_A, double ESmF_B, double ESmF_G, double ESmR_A, double ESmR_B, double ESmR_G)
-{
-  ES_O_Alpha[1][0]=ESpF_A; ES_O_Beta[1][0]=ESpF_B; ES_O_Gamma[1][0]=ESpF_G;
-  ES_O_Alpha[1][1]=ESpR_A; ES_O_Beta[1][1]=ESpR_B; ES_O_Gamma[1][1]=ESpR_G;
-  ES_O_Alpha[0][0]=ESmF_A; ES_O_Beta[0][0]=ESmF_B; ES_O_Gamma[0][0]=ESmF_G;
-  ES_O_Alpha[0][1]=ESmR_A; ES_O_Beta[0][1]=ESmR_B; ES_O_Gamma[0][1]=ESmR_G;
-
-  for(int i=0;i<2;i++)
-  {for(int j=0;j<2;j++)
-   {
-    ES_Alpha[i][j]=ES_dAlpha[i][j]+ES_O_Alpha[i][j]; 
-    ES_Beta[i][j] =ES_dBeta[i][j] +ES_O_Beta[i][j]; 
-    ES_Gamma[i][j]=ES_dGamma[i][j]+ES_O_Gamma[i][j];
-    Aligned_RotationMatrices(i, j, ES_Alpha[i][j], ES_Beta[i][j], ES_Gamma[i][j]);
-    UnAligned_RotationMatrices(i, j, ES_O_Alpha[i][j], ES_O_Beta[i][j], ES_O_Gamma[i][j]);
-  }}
-}*/
 
 //
 // member functions
@@ -382,9 +356,7 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //3.fill Track
   edm::Handle<reco::TrackCollection>   TrackCol;
   iEvent.getByLabel( TrackLabel_,      TrackCol );
-  //const reco::TrackCollection *track = Tracks.product();
 	
- 
   std::cout << " number of tracks " << TrackCol->size() << std::endl;
  
   fill_tracks(TrackCol);
@@ -423,36 +395,16 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
  
   //5.fill PredictionState on ES
   int iz=-1; int ip=1; int idee=0; //dee=1 -X/Y ; dee=2 +X/Y
-  if(!b_doRotation)
-  {
-   iz=1;ip=1;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
-   iz=1;ip=2;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
+   iz=1; ip=1;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
+   iz=1; ip=2;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
    iz=-1;ip=1;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
    iz=-1;ip=2;idee=0; fill_PredictionState(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
-  }
-  if(b_doRotation)
-  {
-   iz=1;ip=1;idee=0; fill_PredictionState_doRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
-   iz=1;ip=2;idee=0; fill_PredictionState_doRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
-   iz=-1;ip=1;idee=0; fill_PredictionState_doRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
-   iz=-1;ip=2;idee=0; fill_PredictionState_doRotation(iz,ip,idee,TrackCol,theMagField,theTrackingGeometry);
-  }
  
   //6.Residual and Calculation
-  if(!b_doRotation)
-  {
-   iz=1; fill_residual(iz);
-   iz=-1; fill_residual(iz);
-  }
- 
-  if(b_doRotation)
-  {
-   //iz=1; fill_residual(iz);
    iz=1; //std::cout<<"======================== iz "<<iz<<" ==========================="<std::endl; 
-	fill_residual_doRotation_v2(iz);
+	fill_residual(iz);
    iz=-1;//std::cout<<"======================== iz "<<iz<<" ==========================="<std::endl; 
-	fill_residual_doRotation_v2(iz);
-  }
+	fill_residual(iz);
  
   t_ESAlign->Fill();
 
@@ -1258,78 +1210,6 @@ void ESAlignTool::Overwrite_RotationMatrix(int _evt_run)
 void ESAlignTool::fill_PredictionState(int iz, int ip, int idee, edm::Handle<reco::TrackCollection> TrackCol, edm::ESHandle<MagneticField> theMagField, edm::ESHandle<GlobalTrackingGeometry> theTrackingGeometry)
 {
  PositionType *ES_Oap;
-
- if( (iz==1||iz==-1) && (ip==1||ip==2) )
- {
-   int a,b;
-  iz==-1 ? a=0 : a=1;
-  b=ip-1;
-  ES_Oap=new PositionType(ES_Oap_X[a][b],ES_Oap_Y[a][b],ES_Oap_Z[a][b]);
-  SteppingHelixPropagator ESpropa(theMagField.product());
-  Plane::PlanePointer Plane_ES = Plane::build(*ES_Oap,*woRotate);
-
-
-  int iTrk=0;
-  for(reco::TrackCollection::const_iterator itTrack = TrackCol->begin();
-      itTrack != TrackCol->end(); ++itTrack)
-  {    
-   if(iTrk>=2000)
-   {
-    edm::LogWarning("fill_tracks")<<"Too many selected tracks.\n";
-    continue;
-   }
-   if ( itTrack->charge()!=0 )
-   {
-    if( pass_TrackSelection(itTrack) )
-    {
-     reco::TransientTrack TTrack(*itTrack,theMagField.product(),theTrackingGeometry);
-     TrajectoryStateOnSurface ipTSOS=TTrack.impactPointState();
-     if(ipTSOS.isValid()&&TTrack.impactPointStateAvailable())
-     {
-      TrajectoryStateOnSurface ES_prediction=ESpropa.propagate(*(ipTSOS.freeState()),*Plane_ES);
-      if( (ES_prediction.isValid())&&(ES_prediction.hasError()) )
-      {
-       PredictionState_iz[iTrk][a][b]=iz;
-       PredictionState_ip[iTrk][a][b]=ip;
-       PredictionState_valid[iTrk][a][b]=1;
-       PredictionState_X[iTrk][a][b]=ES_prediction.globalPosition().x();
-       PredictionState_Y[iTrk][a][b]=ES_prediction.globalPosition().y();
-       PredictionState_Z[iTrk][a][b]=ES_prediction.globalPosition().z();
-       PredictionState_Px[iTrk][a][b]=ES_prediction.globalMomentum().x();
-       PredictionState_Py[iTrk][a][b]=ES_prediction.globalMomentum().y();
-       PredictionState_Pz[iTrk][a][b]=ES_prediction.globalMomentum().z();
-       PredictionState_Bx[iTrk][a][b]=theMagField->inTesla(ES_prediction.globalPosition()).x();
-       PredictionState_By[iTrk][a][b]=theMagField->inTesla(ES_prediction.globalPosition()).y();
-       PredictionState_Bz[iTrk][a][b]=theMagField->inTesla(ES_prediction.globalPosition()).z();
-       PredictionState_Exx[iTrk][a][b]=ES_prediction.cartesianError().position().cxx();
-       PredictionState_Eyx[iTrk][a][b]=ES_prediction.cartesianError().position().cyx();
-       PredictionState_Eyy[iTrk][a][b]=ES_prediction.cartesianError().position().cyy();
-       PredictionState_E44[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(3,3));
-       PredictionState_E55[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(4,4));
-       PredictionState_E66[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(5,5));
-       PredictionState_E45[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(3,4));
-       PredictionState_E46[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(3,5));
-       PredictionState_E56[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(4,5));
-       PredictionState_E14[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(0,3));
-       PredictionState_E15[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(0,4));
-       PredictionState_E16[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(0,5));
-       PredictionState_E24[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(1,3));
-       PredictionState_E25[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(1,4));
-       PredictionState_E26[iTrk][a][b]=((ES_prediction.cartesianError().matrix())(1,5));
-       PredictionState_delX[iTrk][a][b]=PredictionState_Px[iTrk][a][b]/PredictionState_Pz[iTrk][a][b];
-       PredictionState_delY[iTrk][a][b]=PredictionState_Py[iTrk][a][b]/PredictionState_Pz[iTrk][a][b];
-      }//end if ES_prediction Valid and hasError
-     }//end if innerTSOS.isValid()
-     iTrk++;
-    }//pass trk selections
-   }//trk charge !=0
-  }//loop trks
- }//if one of 4 planes
-}
-
-void ESAlignTool::fill_PredictionState_doRotation(int iz, int ip, int idee, edm::Handle<reco::TrackCollection> TrackCol, edm::ESHandle<MagneticField> theMagField, edm::ESHandle<GlobalTrackingGeometry> theTrackingGeometry)
-{
- PositionType *ES_Oap;
  RotationType *ES_Rotation;
 
  Double_t R11,R12,R13,R21,R22,R23,R31,R32,R33;
@@ -1475,176 +1355,6 @@ void ESAlignTool::fill_residual(int iz)
  if(iz==1||iz==-1)
  {
   int a; iz==-1 ? a=0 : a=1;
-  for(int iTrk=0;iTrk<Ntrack;iTrk++)
-  {
-   if(PredictionState_valid[iTrk][a][0]!=1) continue; //ES+/- F
-   if(PredictionState_valid[iTrk][a][1]!=1) continue; //ES+/- R
-   Double_t eF_xx= (PredictionState_Exx[iTrk][a][0]);
-   Double_t eF_yy= (PredictionState_Eyy[iTrk][a][0]);
-   Double_t eF_yx= (PredictionState_Eyx[iTrk][a][0]);
-   //e_yx=0.;
-   if( eF_xx*eF_yy-eF_yx*eF_yx <= 0 ) continue;
-   if( eF_xx > e_xxlimit ) continue;
-   if( eF_yy > e_yylimit ) continue;
-   if( fabs(eF_yx) > e_yxlimit ) continue;
-   eF_xx+=pow(0.055029,2.); eF_yy+=pow(1.760918,2.);
-   Double_t eR_yy= (PredictionState_Eyy[iTrk][a][1]);
-   Double_t eR_xx= (PredictionState_Exx[iTrk][a][1]);
-   Double_t eR_yx= (PredictionState_Eyx[iTrk][a][1]);
-   //e_yx=0.;
-   if( eR_xx*eR_yy-eR_yx*eR_yx <= 0 ) continue;
-   if( eR_xx > e_xxlimit ) continue;
-   if( eR_yy > e_yylimit ) continue;
-   if( fabs(eR_yx) > e_yxlimit ) continue;
-   eR_yy+=pow(0.055029,2.); eR_xx+=pow(1.760918,2.);
-   Double_t X0F=(PredictionState_X[iTrk][a][0]-ES_Oap_X[a][0]);
-   Double_t Y0F=(PredictionState_Y[iTrk][a][0]-ES_Oap_Y[a][0]);
-   if(check_DeadZone(iz,1,X0F,Y0F)==0) continue; 
-   if(check_Radius(X0F,Y0F)==0) continue;
-   Double_t X0R=(PredictionState_X[iTrk][a][1]-ES_Oap_X[a][1]);
-   Double_t Y0R=(PredictionState_Y[iTrk][a][1]-ES_Oap_Y[a][1]);
-   if(check_DeadZone(iz,2,X0R,Y0R)==0) continue;
-   if(check_Radius(X0R,Y0R)==0) continue;
-
-   Double_t disF=(winlimit*winlimit); int indF=-1;
-   for(int irec=0;irec<Nesrh;irec++)
-   {
-    if(_esRecHit_siZ[irec]!=iz||_esRecHit_siP[irec]!=1) continue;
-    if(_esRecHit_X[irec]==0.&&_esRecHit_Y[irec]==0.) continue;
-    if(_esRecHit_MatchedTrk_fromOuter[irec]!=iTrk) continue;
-    Double_t X=_esRecHit_X[irec]-ES_O_X[a][0];  
-    Double_t Y=_esRecHit_Y[irec]-ES_O_Y[a][0];
-    if( fabs(X-X0F)>winlimit ) continue;
-    if( fabs(Y-Y0F)>winlimit ) continue;
-    Double_t buf = pow(X-X0F,2.)+pow(Y-Y0F,2.);
-    if(buf<disF)
-    { indF=irec; disF=buf; }
-   }//end for-loop ESrechit
-   Double_t disR=(winlimit*winlimit); int indR=-1;
-   for(int irec=0;irec<Nesrh;irec++)
-   {
-    if(_esRecHit_siZ[irec]!=iz||_esRecHit_siP[irec]!=2) continue;
-    if(_esRecHit_X[irec]==0.&&_esRecHit_Y[irec]==0.) continue;
-    if(_esRecHit_MatchedTrk_fromOuter[irec]!=iTrk) continue;
-    Double_t X=_esRecHit_X[irec]-ES_O_X[a][1];  
-    Double_t Y=_esRecHit_Y[irec]-ES_O_Y[a][1];
-    if( fabs(X-X0R)>winlimit) continue;
-    if( fabs(Y-Y0R)>winlimit) continue;
-    Double_t buf = pow(X-X0R,2.)+pow(Y-Y0R,2.);
-    if(buf<disR)
-    { indR=irec; disR=buf; }
-   }//end for-loop ESrechita
-
-   if(indF>-1&&_esRecHit_Noisy[indF]==0&&indR>-1&&_esRecHit_Noisy[indR]==0
-      && BadSensor(_esRecHit_siZ[indF],_esRecHit_siP[indF],_esRecHit_siX[indF],_esRecHit_siY[indF])==0
-      && BadSensor(_esRecHit_siZ[indR],_esRecHit_siP[indR],_esRecHit_siX[indR],_esRecHit_siY[indR])==0
-     )
-   {
-    PredictionState_MatchedRec[iTrk][a][0]=indF;
-    PredictionState_resiX[iTrk][a][0]=PredictionState_X[iTrk][a][0]-ES_dX[a][0]-_esRecHit_X[indF];
-    PredictionState_resiY[iTrk][a][0]=PredictionState_Y[iTrk][a][0]-ES_dY[a][0]-_esRecHit_Y[indF];
-    if(a==1)
-    {
-     ESpF_residualX->Fill(PredictionState_resiX[iTrk][a][0]);
-     ESpF_residualY->Fill(PredictionState_resiY[iTrk][a][0]);
-    }
-    if(a==0)
-    {
-     ESmF_residualX->Fill(PredictionState_resiX[iTrk][a][0]);
-     ESmF_residualY->Fill(PredictionState_resiY[iTrk][a][0]);
-    }
-    Double_t XDF=PredictionState_resiX[iTrk][a][0];
-    Double_t YDF=PredictionState_resiY[iTrk][a][0];
-    Double_t determinant= eF_xx*eF_yy-eF_yx*eF_yx;
-    Double_t derX=(PredictionState_delX[iTrk][a][0]);
-    Double_t derY=(PredictionState_delY[iTrk][a][0]);
-
-    Cal_MatrixM(iz,1,eF_xx,eF_yx,eF_yy,derX,derY,determinant);
-    Cal_VectorP(iz,1,eF_xx,eF_yx,eF_yy,derX,derY,determinant,XDF,YDF);
-    Cal_CHI2(iz,1,eF_xx,eF_yx,eF_yy,XDF,YDF);
-    ES_NTracks[a][0] += 1;
-
-    Double_t Exx=eF_xx;Double_t Eyx=eF_yx;Double_t Eyy=eF_yy;
-    Double_t Px=PredictionState_Px[iTrk][a][0];
-    Double_t Py=PredictionState_Py[iTrk][a][0];
-    Double_t Pz=PredictionState_Pz[iTrk][a][0];
-    Double_t sPxx=PredictionState_E44[iTrk][a][0];
-    Double_t sPxy=PredictionState_E45[iTrk][a][0];
-    Double_t sPxz=PredictionState_E46[iTrk][a][0];
-    Double_t sPyy=PredictionState_E55[iTrk][a][0];
-    Double_t sPyz=PredictionState_E56[iTrk][a][0];
-    Double_t sPzz=PredictionState_E66[iTrk][a][0];
-    Double_t sE14=PredictionState_E14[iTrk][a][0];
-    Double_t sE15=PredictionState_E15[iTrk][a][0];
-    Double_t sE16=PredictionState_E16[iTrk][a][0];
-    Double_t sE24=PredictionState_E24[iTrk][a][0];
-    Double_t sE25=PredictionState_E25[iTrk][a][0];
-    Double_t sE26=PredictionState_E26[iTrk][a][0];
-    Double_t Rxx=pow(0.055029,2.); Double_t Ryy=pow(1.760918,2.);
-    Double_t Xpre=X0F;  Double_t Ypre=Y0F;
-    Double_t Xrec=X0F-XDF;  Double_t Yrec=Y0F-YDF;
-
-    Cal_MatrixMErr2(iz,1,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz);
-    Cal_VectorPErr2(iz,1,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz,Rxx,Ryy,Xpre,Ypre,Xrec,Yrec,sE14,sE15,sE16,sE24,sE25,sE26,determinant);
-
-    PredictionState_MatchedRec[iTrk][a][1]=indR;
-    PredictionState_resiX[iTrk][a][1]=PredictionState_X[iTrk][a][1]-ES_dX[a][1]-_esRecHit_X[indR];
-    PredictionState_resiY[iTrk][a][1]=PredictionState_Y[iTrk][a][1]-ES_dY[a][1]-_esRecHit_Y[indR];
-    if(a==1)
-    {
-     ESpR_residualX->Fill(PredictionState_resiX[iTrk][a][1]);
-     ESpR_residualY->Fill(PredictionState_resiY[iTrk][a][1]);
-    }
-    if(a==0)
-    {
-     ESmR_residualX->Fill(PredictionState_resiX[iTrk][a][1]);
-     ESmR_residualY->Fill(PredictionState_resiY[iTrk][a][1]);
-    }
-    Double_t XDR=PredictionState_resiX[iTrk][a][1];
-    Double_t YDR=PredictionState_resiY[iTrk][a][1];
-    determinant= eR_xx*eR_yy-eR_yx*eR_yx;
-    derX=(PredictionState_delX[iTrk][a][1]);
-    derY=(PredictionState_delY[iTrk][a][1]);
-
-    Cal_MatrixM(iz,2,eR_xx,eR_yx,eR_yy,derX,derY,determinant);
-    Cal_VectorP(iz,2,eR_xx,eR_yx,eR_yy,derX,derY,determinant,XDR,YDR);
-    Cal_CHI2(iz,2,eR_xx,eR_yx,eR_yy,XDR,YDR);
-    ES_NTracks[a][1] += 1;
-
-    Exx=eF_xx;Eyx=eF_yx;Eyy=eF_yy;
-    Px=PredictionState_Px[iTrk][a][1];
-    Py=PredictionState_Py[iTrk][a][1];
-    Pz=PredictionState_Pz[iTrk][a][1];
-    sPxx=PredictionState_E44[iTrk][a][1];
-    sPxy=PredictionState_E45[iTrk][a][1];
-    sPxz=PredictionState_E46[iTrk][a][1];
-    sPyy=PredictionState_E55[iTrk][a][1];
-    sPyz=PredictionState_E56[iTrk][a][1];
-    sPzz=PredictionState_E66[iTrk][a][1];
-    sE14=PredictionState_E14[iTrk][a][1];
-    sE15=PredictionState_E15[iTrk][a][1];
-    sE16=PredictionState_E16[iTrk][a][1];
-    sE24=PredictionState_E24[iTrk][a][1];
-    sE25=PredictionState_E25[iTrk][a][1];
-    sE26=PredictionState_E26[iTrk][a][1];
-    Ryy=pow(0.055029,2.); Rxx=pow(1.760918,2.);
-    Xpre=X0F;  Ypre=Y0F;
-    Xrec=X0F-XDF;  Yrec=Y0F-YDF;
-
-    Cal_MatrixMErr2(iz,2,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz);
-    Cal_VectorPErr2(iz,2,Exx,Eyx,Eyy,Px,Py,Pz,sPxx,sPyy,sPzz,sPxy,sPxz,sPyz,Rxx,Ryy,Xpre,Ypre,Xrec,Yrec,sE14,sE15,sE16,sE24,sE25,sE26,determinant);
-
-   }//end if good matching
-  }//end for-loop Trk
-
- }//iz==1 or -1
-}
-
-void ESAlignTool::fill_residual_doRotation_v2(int iz)
-{
- if(iz==1||iz==-1)
- {
-  int a; iz==-1 ? a=0 : a=1;
   for(int iTrk=0;iTrk<Ntrack;iTrk++)// Predicted hits from global to local
   {
    if(PredictionState_valid[iTrk][a][0]!=1) continue; //ES+/- F
@@ -1770,158 +1480,6 @@ void ESAlignTool::fill_residual_doRotation_v2(int iz)
     PredictionState_MatchedRec[iTrk][a][1]=indR;
     PredictionState_resiX[iTrk][a][1]=resiXR;
     PredictionState_resiY[iTrk][a][1]=resiYR;
-
-    if(a==1)
-    {
-     ESpR_residualX->Fill(PredictionState_resiX[iTrk][a][1]);
-     ESpR_residualY->Fill(PredictionState_resiY[iTrk][a][1]);
-    }
-    if(a==0)
-    {
-     ESmR_residualX->Fill(PredictionState_resiX[iTrk][a][1]);
-     ESmR_residualY->Fill(PredictionState_resiY[iTrk][a][1]);
-    }
-    Double_t XDR=PredictionState_resiX[iTrk][a][1];
-    Double_t YDR=PredictionState_resiY[iTrk][a][1];
-    //determinant= eR_xx*eR_yy-eR_yx*eR_yx;
-    //derX=(PredictionState_delX[iTrk][a][1]);
-    //derY=(PredictionState_delY[iTrk][a][1]);
-
-    if(  Selected_idee==0
-       || (Selected_idee==1&&_esRecHit_Y[indR]-ES_O_Y[a][0]>6.1 )
-       || (Selected_idee==2&&_esRecHit_Y[indR]-ES_O_Y[a][0]<-6.1 )
-      )
-    {
-     Cal_MatrixM_doRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
-     Cal_VectorP_doRotation(iTrk,iz,2,eR_xx,eR_yx,eR_yy);
-     Cal_CHI2(iz,2,eR_xx,eR_yx,eR_yy,XDR,YDR);
-     ES_NTracks[a][1] += 1;
-    }
-
-   }//end if good matching
-  }//end for-loop Trk
-
- }//iz==1 or -1
-}
-
-void ESAlignTool::fill_residual_doRotation(int iz)
-{
- if(iz==1||iz==-1)
- {
-  int a; iz==-1 ? a=0 : a=1;
-  for(int iTrk=0;iTrk<Ntrack;iTrk++)
-  {
-   if(PredictionState_valid[iTrk][a][0]!=1) continue; //ES+/- F
-   if(PredictionState_valid[iTrk][a][1]!=1) continue; //ES+/- R
-   Double_t eF_xx= (PredictionState_Exx[iTrk][a][0]);
-   Double_t eF_yy= (PredictionState_Eyy[iTrk][a][0]);
-   Double_t eF_yx= (PredictionState_Eyx[iTrk][a][0]);
-   //e_yx=0.;
-   if( eF_xx*eF_yy-eF_yx*eF_yx <= 0 ) continue;
-   if( eF_xx > e_xxlimit ) continue;
-   if( eF_yy > e_yylimit ) continue;
-   if( fabs(eF_yx) > e_yxlimit ) continue;
-   eF_xx+=pow(0.055029,2.); eF_yy+=pow(1.760918,2.);
-   Double_t eR_yy= (PredictionState_Eyy[iTrk][a][1]);
-   Double_t eR_xx= (PredictionState_Exx[iTrk][a][1]);
-   Double_t eR_yx= (PredictionState_Eyx[iTrk][a][1]);
-   //e_yx=0.;
-   if( eR_xx*eR_yy-eR_yx*eR_yx <= 0 ) continue;
-   if( eR_xx > e_xxlimit ) continue;
-   if( eR_yy > e_yylimit ) continue;
-   if( fabs(eR_yx) > e_yxlimit ) continue;
-   eR_yy+=pow(0.055029,2.); eR_xx+=pow(1.760918,2.);
-   //Prediction Point on Local coordinate
-   Double_t X0F,Y0F;
-   X0F
-   = (PredictionState_X[iTrk][a][0]-ES_Oap_X[a][0])*ES_R11[a][0]
-    +(PredictionState_Y[iTrk][a][0]-ES_Oap_Y[a][0])*ES_R12[a][0]
-    +(PredictionState_Z[iTrk][a][0]-ES_Oap_Z[a][0])*ES_R13[a][0];
-   Y0F
-   = (PredictionState_X[iTrk][a][0]-ES_Oap_X[a][0])*ES_R21[a][0]
-    +(PredictionState_Y[iTrk][a][0]-ES_Oap_Y[a][0])*ES_R22[a][0]
-    +(PredictionState_Z[iTrk][a][0]-ES_Oap_Z[a][0])*ES_R23[a][0];
-   if(check_DeadZone(iz,1,X0F,Y0F)==0) continue; 
-   if(check_Radius(X0F,Y0F)==0) continue;
-   Double_t X0R,Y0R;
-   X0R
-   = (PredictionState_X[iTrk][a][1]-ES_Oap_X[a][1])*ES_R11[a][1]
-    +(PredictionState_Y[iTrk][a][1]-ES_Oap_Y[a][1])*ES_R12[a][1]
-    +(PredictionState_Z[iTrk][a][1]-ES_Oap_Z[a][1])*ES_R13[a][1];
-   Y0R
-   = (PredictionState_X[iTrk][a][1]-ES_Oap_X[a][1])*ES_R21[a][1]
-    +(PredictionState_Y[iTrk][a][1]-ES_Oap_Y[a][1])*ES_R22[a][1]
-    +(PredictionState_Z[iTrk][a][1]-ES_Oap_Z[a][1])*ES_R23[a][1];
-   if(check_DeadZone(iz,2,X0R,Y0R)==0) continue;
-   if(check_Radius(X0R,Y0R)==0) continue;
-
-   Double_t disF=(winlimit*winlimit); int indF=-1;
-   for(int irec=0;irec<Nesrh;irec++)
-   {
-    if(_esRecHit_siZ[irec]!=iz||_esRecHit_siP[irec]!=1) continue;
-    if(_esRecHit_X[irec]==0.&&_esRecHit_Y[irec]==0.) continue;
-    if(_esRecHit_MatchedTrk_fromOuter[irec]!=iTrk) continue;
-    Double_t X=_esRecHit_X[irec]-ES_O_X[a][0];  
-    Double_t Y=_esRecHit_Y[irec]-ES_O_Y[a][0];
-    if( fabs(X-X0F)>winlimit ) continue;
-    if( fabs(Y-Y0F)>winlimit ) continue;
-    Double_t buf = pow(X-X0F,2.)+pow(Y-Y0F,2.);
-    if(buf<disF)
-    { indF=irec; disF=buf; }
-   }//end for-loop ESrechit
-   Double_t disR=(winlimit*winlimit); int indR=-1;
-   for(int irec=0;irec<Nesrh;irec++)
-   {
-    if(_esRecHit_siZ[irec]!=iz||_esRecHit_siP[irec]!=2) continue;
-    if(_esRecHit_X[irec]==0.&&_esRecHit_Y[irec]==0.) continue;
-    if(_esRecHit_MatchedTrk_fromOuter[irec]!=iTrk) continue;
-    Double_t X=_esRecHit_X[irec]-ES_O_X[a][1];  
-    Double_t Y=_esRecHit_Y[irec]-ES_O_Y[a][1];
-    if( fabs(X-X0R)>winlimit) continue;
-    if( fabs(Y-Y0R)>winlimit) continue;
-    Double_t buf = pow(X-X0R,2.)+pow(Y-Y0R,2.);
-    if(buf<disR)
-    { indR=irec; disR=buf; }
-   }//end for-loop ESrechita
-
-   if(indF>-1&&_esRecHit_Noisy[indF]==0&&indR>-1&&_esRecHit_Noisy[indR]==0
-      && BadSensor(_esRecHit_siZ[indF],_esRecHit_siP[indF],_esRecHit_siX[indF],_esRecHit_siY[indF])==0
-      && BadSensor(_esRecHit_siZ[indR],_esRecHit_siP[indR],_esRecHit_siX[indR],_esRecHit_siY[indR])==0
-     )
-   {
-    PredictionState_MatchedRec[iTrk][a][0]=indF;
-    PredictionState_resiX[iTrk][a][0]=X0F-(_esRecHit_X[indF]-ES_O_X[a][0]);
-    PredictionState_resiY[iTrk][a][0]=Y0F-(_esRecHit_Y[indF]-ES_O_Y[a][0]);
-    if(a==1)
-    {
-     ESpF_residualX->Fill(PredictionState_resiX[iTrk][a][0]);
-     ESpF_residualY->Fill(PredictionState_resiY[iTrk][a][0]);
-    }
-    if(a==0)
-    {
-     ESmF_residualX->Fill(PredictionState_resiX[iTrk][a][0]);
-     ESmF_residualY->Fill(PredictionState_resiY[iTrk][a][0]);
-    }
-    Double_t XDF=PredictionState_resiX[iTrk][a][0];
-    Double_t YDF=PredictionState_resiY[iTrk][a][0];
-    //Double_t determinant= eF_xx*eF_yy-eF_yx*eF_yx;
-    //Double_t derX=(PredictionState_delX[iTrk][a][0]);
-    //Double_t derY=(PredictionState_delY[iTrk][a][0]);
-
-    if(  Selected_idee==0
-       || (Selected_idee==1&&_esRecHit_X[indF]-ES_O_X[a][0]>6.1 )
-       || (Selected_idee==2&&_esRecHit_X[indF]-ES_O_X[a][0]<-6.1 )
-      )
-    {
-     Cal_MatrixM_doRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
-     Cal_VectorP_doRotation(iTrk,iz,1,eF_xx,eF_yx,eF_yy);
-     Cal_CHI2(iz,1,eF_xx,eF_yx,eF_yy,XDF,YDF);
-     ES_NTracks[a][0] += 1;
-    }
-
-    PredictionState_MatchedRec[iTrk][a][1]=indR;
-    PredictionState_resiX[iTrk][a][1]=X0R-(_esRecHit_X[indR]-ES_O_X[a][1]);
-    PredictionState_resiY[iTrk][a][1]=Y0R-(_esRecHit_Y[indR]-ES_O_Y[a][1]);
 
     if(a==1)
     {

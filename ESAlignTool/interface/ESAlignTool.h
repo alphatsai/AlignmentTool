@@ -84,10 +84,7 @@ protected:
   void Overwrite_RotationMatrix(int);
   void normalize(Double_t &, Double_t &, Double_t &);
   void fill_PredictionState(int, int, int, edm::Handle<reco::TrackCollection>, edm::ESHandle<MagneticField>, edm::ESHandle<GlobalTrackingGeometry>);
-  void fill_PredictionState_doRotation(int, int, int, edm::Handle<reco::TrackCollection>, edm::ESHandle<MagneticField>, edm::ESHandle<GlobalTrackingGeometry>);
   void fill_residual(int);
-  void fill_residual_doRotation(int);
-  void fill_residual_doRotation_v2(int);
  
   // The main sub-object which does the real work
   // Verbosity
@@ -254,7 +251,6 @@ private:
 
   int iterN;
 
-  bool b_doRotation;
   bool b_DrawMagField;   bool b_PrintPosition;
   bool b_PrintMatrix; bool b_ReSetRfromOutside;
   bool b_InputRefitter;

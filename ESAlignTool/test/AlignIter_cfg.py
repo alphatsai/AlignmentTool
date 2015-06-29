@@ -58,11 +58,6 @@ options.register('InputRefitter', True,
 	VarParsing.varType.bool,
 	"Input with refit-files"
 	)
-options.register('doRotation', True,
-	VarParsing.multiplicity.singleton,
-	VarParsing.varType.bool,
-	"Consider  Rotation in alignment"
-	)
 options.register('DrawMagField', False,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
@@ -163,7 +158,6 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
 	TrackLabel = cms.InputTag(options.TrackLabel),
 	IterN = cms.uint32(options.IterN),
 	InputRefitter = cms.bool(options.InputRefitter),
-	doRotation = cms.bool(options.doRotation),
 	DrawMagField = cms.bool(options.DrawMagField),
 	PrintPosition = cms.bool(options.PrintPosition),
     	PrintMatrix = cms.bool(options.PrintMatrix),
