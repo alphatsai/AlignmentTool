@@ -1,6 +1,7 @@
 # Dataset_name    Number_of_jobs    EOS_location    PyCfg_parameters (optional)
 
 #/Jet/Run2012A-22Jan2013-v1/AOD                 5 /eos/cms/store/user/devdatta/NtuplesBprimeTobH_v1/Data_bugfix/Jet_Run2012A MaxEvents=1
-#/job_SinglePionGun_GEN_SIM_v1/tdoan-job_SinglePionGun_RECO_v1-a2645d794d4263c6295ef839881df757/USER  10  /eos/cms/store/user/jtsai/ESAlignment/SinglePionGun_RECO_POSTLS170_V5_MaxEvents1M InputRefitter=False
-alignment_results_jobs  10  /eos/cms/store/user/jtsai/ESAlignment/SkimRefit_GTv6_SinglePionGun_RECO_POSTLS170_V5_MaxEvents1M  
-
+#/job_SinglePionGun_GEN_SIM_v1/tdoan-job_SinglePionGun_RECO_v1-a2645d794d4263c6295ef839881df757/USER  10  /eos/cms/store/user/jtsai/ESAlignment/SinglePionGun_RECO_POSTLS170_V5_MaxEvents100K InputRefitter=False
+#SinglePionGun_RECO_MCRUN2_74_V1_MaxEvents1M  10  /eos/cms/store/user/jtsai/ESAlignment/CMSSW_7_4_0_pre6/SinglePionGun_RECO_MCRUN2_74_V1_MaxEvents1M InputRefitter=False
+#alignment_results_jobs  10  /eos/cms/store/user/jtsai/ESAlignment/SkimRefit_GTv6_SinglePionGun_RECO_POSTLS170_V5_MaxEvRun2015A/Jet/RECO/PromptReco-v1/000/247/99210  /eos/cms/store/user/jtsai/ESAlignment/CMSSW_7_4_0_pre6/SinglePionGun_RECO_MCRUN2_74_V1_MaxEvents1M InputRefitter=False
+Run2015A_Jet_RECO_PromptReco-v1_000247992  40  /eos/cms/store/data/Run2015A/Jet/RECO/PromptReco-v1/000/247/992/00000 InputRefitter=False

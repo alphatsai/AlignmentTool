@@ -5,6 +5,7 @@ process = cms.Process("ESAlignmentTool")
 process.load('Configuration.StandardSequences.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+process.load("TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAlong_cfi")
 
 ###################### Modify following Global tag ################################
 ######################       This is example       ################################
@@ -30,7 +31,9 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 #                                         )
 #process.es_prefer_GlobalPositionDB = cms.ESPrefer("PoolDBESSource", "newGlobalPosition")
 #process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
-process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
+#process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
+#process.GlobalTag.globaltag = 'MCRUN2_74_V1::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
+process.GlobalTag.globaltag = 'GR_P_V56::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
 ####################################################################################
 
 
@@ -57,11 +60,6 @@ options.register('InputRefitter', True,
 	VarParsing.varType.bool,
 	"Input with refit-files"
 	)
-options.register('doRotation', True,
-	VarParsing.multiplicity.singleton,
-	VarParsing.varType.bool,
-	"Consider  Rotation in alignment"
-	)
 options.register('DrawMagField', False,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
@@ -86,6 +84,11 @@ options.register('CalculateESaxes', True,
 	VarParsing.multiplicity.singleton,
 	VarParsing.varType.bool,
 	"Calulate ES Axes from Geometry"
+	)
+options.register('StoreDetail', False,
+	VarParsing.multiplicity.singleton,
+	VarParsing.varType.bool,
+	"Store detail branches"
 	)
 options.register('OverwriteRotationM', False,
 	VarParsing.multiplicity.singleton,
@@ -130,8 +133,8 @@ process.source = cms.Source("PoolSource",
     #firstEvent = cms.untracked.uint32(1),
     #fileNames = cms.untracked.vstring(FileNames_CSA14Test)
     #fileNames = cms.untracked.vstring(FileNames_PionGunTest)
-    #fileNames = cms.untracked.vstring(FileNames_Skim721)
     fileNames = cms.untracked.vstring(FileNames)
+    #fileNames = cms.untracked.vstring("root://eoscms//eos/cms/store/data/Run2015A/Jet/RECO/PromptReco-v1/000/247/992/00000/6C94F6E2-2415-E511-BDD0-02163E011938.root")
 )
 
 ### output
@@ -147,9 +150,6 @@ print 'Load lables:'
 print ' options.RecHitLabel = '+options.RecHitLabel
 print ' options.TrackLabel = '+options.TrackLabel
 
-#if options.IterN == 1 and options.CalculateESorigin == False:
-#	print 'WARNING: First iter, options.CalculateESorigin = True' 
-#	options.CalculateESorigin = True 
 if options.IterN == 1 and options.OverwriteRotationM == False:
 	print 'WARNING: First iter, options.OverwriteRotationM = True' 
 	options.OverwriteRotationM = True
@@ -162,13 +162,13 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
 	TrackLabel = cms.InputTag(options.TrackLabel),
 	IterN = cms.uint32(options.IterN),
 	InputRefitter = cms.bool(options.InputRefitter),
-	doRotation = cms.bool(options.doRotation),
 	DrawMagField = cms.bool(options.DrawMagField),
 	PrintPosition = cms.bool(options.PrintPosition),
     	PrintMatrix = cms.bool(options.PrintMatrix),
 	CalculateESorigin = cms.bool(options.CalculateESorigin),
 	CalculateESaxes = cms.bool(options.CalculateESaxes),
     	OverwriteRotationM = cms.bool(options.OverwriteRotationM),
+    	StoreDetail = cms.bool(options.StoreDetail),
     	ReSetRfromOutside = cms.bool(options.ReSetRfromOutside),
 	e_xxlimit = cms.double(1.),
 	e_yylimit = cms.double(1.),
