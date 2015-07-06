@@ -8,7 +8,8 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
 #process.GlobalTag.globaltag = 'GR_R_74_V1A::All'  #for RECO data CMSSW_7_4_0_pre6 with condition=auto::run2_data
 #process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
-process.GlobalTag.globaltag = 'MCRUN2_74_V1::All'  #https://twiki.cern.ch/twiki/bin/viewauth/CMS/RelValGT
+#process.GlobalTag.globaltag = 'MCRUN2_74_V1::All'  #https://twiki.cern.ch/twiki/bin/viewauth/CMS/RelValGT
+process.GlobalTag.globaltag = 'GR_P_V56::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
 
 
 # Default Parameter options
@@ -67,8 +68,8 @@ process.source = cms.Source("PoolSource",
     #skipEvents = cms.untracked.uint32(0),
     #firstEvent = cms.untracked.uint32(1),
     #fileNames = cms.untracked.vstring(FileNames_PionGunTest)
-    fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESSkim.root")
-    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/generateSamples/CMSSW_7_4_0_pre6/src/PionGun_RECO/pionGun_DIGI_L1_DIGI2RAW_RAW2DIGI_RECO.root")
+    #fileNames = cms.untracked.vstring("file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_0_pre6_dev/src/SkimTool/ESHitSkimLoose/test/ESSkim.root")
+    fileNames = cms.untracked.vstring("root://eoscms//eos/cms/store/data/Run2015A/Jet/RECO/PromptReco-v1/000/247/992/00000/6C94F6E2-2415-E511-BDD0-02163E011938.root")
 )
 
 ### output

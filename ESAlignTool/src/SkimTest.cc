@@ -144,6 +144,9 @@ SkimTest::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		  if( isGoodTrack(*itTrack) ) NtrackGood++;
 		  std::cout<<" Track "<<Ntrack<<std::endl;
 		  std::cout<<"   pT "<<itTrack->pt()<<std::endl;
+		  std::cout<<"   px "<<itTrack->px()<<std::endl;
+		  std::cout<<"   py "<<itTrack->py()<<std::endl;
+		  std::cout<<"   pz "<<itTrack->pz()<<std::endl;
 		  std::cout<<"   outerZ "<<itTrack->outerZ()<<std::endl;
 		  std::cout<<"   eta "<<fabs(itTrack->eta())<<std::endl;
 		  std::cout<<"   quality "<<(itTrack->qualityMask())%8<<std::endl;
