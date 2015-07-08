@@ -3,6 +3,7 @@ Description on Wiki for AlignmentTool
 https://github.com/chiyi/ESAlignmentWorks/wiki/AlignmentTool
 
 Provide DB files
+
 1. Checkout package
 cmsrel CMSSW_7_4_5
 cd CMSSW_7_4_5/src
