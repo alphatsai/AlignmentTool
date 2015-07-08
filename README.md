@@ -5,7 +5,7 @@ https://github.com/chiyi/ESAlignmentWorks/wiki/AlignmentTool
 Provide DB files
 
 1. Checkout package:
-
+	```
 	cmsrel CMSSW_7_4_5
 	cd CMSSW_7_4_5/src
 	cmsenv
@@ -13,6 +13,7 @@ Provide DB files
 	git cms-addpkg Geometry/CaloEventSetup
 	git clone https://github.com/alphatsai/AlignmentTool.git
 	scram b -j16
+	```
 
 2. Produce DB files which contain ES coordinate:
 
