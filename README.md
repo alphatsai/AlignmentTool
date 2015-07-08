@@ -23,4 +23,6 @@ Provide DB files
 
 3. Add the aligned coordinate which are with respect to ideal coordinate:
 
-	Exsample in Run1: https://hypernews.cern.ch/HyperNews/CMS/get/ecal-calibration/560.html
+	Example in Run1: https://hypernews.cern.ch/HyperNews/CMS/get/ecal-calibration/560.html
+	Example under ESAlignTool/genDBExample/TestWriteESAlignments.cc
+	
