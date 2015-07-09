@@ -107,6 +107,7 @@ eval `scram runtime -sh`
 
 cp -v MAIN_WORKDIR/CMSSW_cfg.py $BATCHDIR/CMSSW_cfg.py
 cp -v MAIN_WORKDIR/inputMatrixElements_cfi.py $BATCHDIR/
+cp -v MAIN_WORKDIR/inputDB.db $BATCHDIR/
 cp -v DATASET_WORKDIR/input/inputFiles_JOB_NUMBER_cfi.py $BATCHDIR/inputFiles_cfi.py
 
 cd $BATCHDIR
@@ -130,9 +131,9 @@ exit $exitcode
 
 
 # usage description
-usage = """Usage: ./createAndSubmitJobs.py [options]\n
-Example: ./createAndSubmitJobs.py -w LXBatch_Jobs -d datasetList.txt -c btagvalidation_cfg.py\n
-For more help: ./createAndSubmitJobs.py --help
+usage = """Usage: ./createAndSubmitJobsOnCMSDATA.py [options]\n
+Example: ./createAndSubmitJobsOnCMSDATA.py -w LXBatch_Jobs -d datasetList.txt -c btagvalidation_cfg.py\n
+For more help: ./createAndSubmitJobsOnCMSDATA.py --help
 """
 
 def main():
@@ -141,6 +142,7 @@ def main():
 
   parser.add_option("-w", "--main_workdir", dest="main_workdir", action='store', help="Main working directory", metavar="MAIN_WORKDIR")
   parser.add_option("-d", "--dataset_list", dest="dataset_list", action='store', help="Text file containing a list of datasets to be processed", metavar="DATASET_LIST")
+  parser.add_option("-D", "--DBFileInput",  dest="DBFileInput",  action='store', help="Input DB file", default='', metavar="DBFILEINPUT")
   parser.add_option("-o", "--output_filename", dest="output_filename", action='store', default='AlignmentFile', help="Output ROOT filename (Default set to AlignmentFile)", metavar="OUTPUT_FILENAME")
   parser.add_option("-E", "--eos_path", dest="eos_path", action='store', help="EOS path to copy output files to (This parameter is optional)", metavar="EOS_PATH")
   parser.add_option('-m', '--match', dest="match", action='store', help='Only files containing the MATCH string in their names will be considered (This parameter is optional)', metavar='MATCH')
@@ -175,6 +177,9 @@ def main():
 
   # copy the CMSSW cfg file to the cfg_files_dir
   shutil.copyfile(cmssw_cfg,os.path.join(main_workdir,'CMSSW_cfg.py'))
+
+  if options.DBFileInput != '':
+    shutil.copyfile( options.DBFileInput, os.path.join(main_workdir,'inputDB.db'))
 
   # look for pileup distribution files and copy them into main_workdir
   cfg_dirname = os.path.dirname(cmssw_cfg)

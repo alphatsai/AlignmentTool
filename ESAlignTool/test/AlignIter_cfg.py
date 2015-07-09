@@ -16,7 +16,7 @@ process.load("TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAl
 process.GlobalTag.globaltag = 'GR_P_V56::All'  
 #process.newESAlignment = cms.ESSource("PoolDBESSource",
 #				       process.CondDBSetup,
-#                                       connect = cms.string('sqlite_file:testESAlignments.db'),
+#                                       connect = cms.string('sqlite_file:inputDB.db'),
 #                                       toGet= cms.VPSet(cms.PSet(record = cms.string("ESAlignmentRcd"),
 #                                                       tag = cms.string('ES'))
 #                                                           )
