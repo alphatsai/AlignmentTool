@@ -10,7 +10,18 @@ process.load("TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAl
 ###################### Modify following Global tag ################################
 ######################       This is example       ################################
 #	https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
-#process.GlobalTag.globaltag = 'GR_R_311_V1::All'
+#process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
+#process.GlobalTag.globaltag = 'POSTLS170_V5::All'  
+#process.GlobalTag.globaltag = 'MCRUN2_74_V1::All' 
+process.GlobalTag.globaltag = 'GR_P_V56::All'  
+#process.newESAlignment = cms.ESSource("PoolDBESSource",
+#				       process.CondDBSetup,
+#                                       connect = cms.string('sqlite_file:testESAlignments.db'),
+#                                       toGet= cms.VPSet(cms.PSet(record = cms.string("ESAlignmentRcd"),
+#                                                       tag = cms.string('ES'))
+#                                                           )
+#)
+#process.es_prefer_GlobalPositionDB = cms.ESPrefer("PoolDBESSource", "newESAlignment")
 #process.newTKAlignment = cms.ESSource("PoolDBESSource",
 #                                        process.CondDBSetup,
 #                                        connect = cms.string('frontier://FrontierProd/CMS_COND_31X_ALIGNMENT'),
@@ -21,19 +32,7 @@ process.load("TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAl
 #                                                ))
 #                                        )
 #process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource", "newTKAlignment")
-#
-#process.newGlobalPosition = cms.ESSource("PoolDBESSource",
-#                                          process.CondDBSetup,
-#                                          connect = cms.string('frontier://FrontierProd/CMS_COND_31X_ALIGNMENT'),
-#                                          toGet= cms.VPSet(cms.PSet(record = cms.string("GlobalPositionRcd"),
-#                                                                     tag = cms.string('GlobalAlignment_TkRotMuonFromLastIovV2_offline'))
-#                                                           )
-#                                         )
-#process.es_prefer_GlobalPositionDB = cms.ESPrefer("PoolDBESSource", "newGlobalPosition")
-#process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
-#process.GlobalTag.globaltag = 'POSTLS170_V5::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
-#process.GlobalTag.globaltag = 'MCRUN2_74_V1::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
-process.GlobalTag.globaltag = 'GR_P_V56::All'  #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
+
 ####################################################################################
 
 
@@ -129,12 +128,12 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.MaxE
 ### input
 from inputFiles_cfi import * #FileNames 
 process.source = cms.Source("PoolSource",
-    #skipEvents = cms.untracked.uint32(0),
-    #firstEvent = cms.untracked.uint32(1),
+    fileNames = cms.untracked.vstring(FileNames)
     #fileNames = cms.untracked.vstring(FileNames_CSA14Test)
     #fileNames = cms.untracked.vstring(FileNames_PionGunTest)
-    fileNames = cms.untracked.vstring(FileNames)
     #fileNames = cms.untracked.vstring("root://eoscms//eos/cms/store/data/Run2015A/Jet/RECO/PromptReco-v1/000/247/992/00000/6C94F6E2-2415-E511-BDD0-02163E011938.root")
+    #skipEvents = cms.untracked.uint32(0),
+    #firstEvent = cms.untracked.uint32(1),
 )
 
 ### output
@@ -164,19 +163,19 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
 	InputRefitter = cms.bool(options.InputRefitter),
 	DrawMagField = cms.bool(options.DrawMagField),
 	PrintPosition = cms.bool(options.PrintPosition),
-    	PrintMatrix = cms.bool(options.PrintMatrix),
+   	PrintMatrix = cms.bool(options.PrintMatrix),
 	CalculateESorigin = cms.bool(options.CalculateESorigin),
 	CalculateESaxes = cms.bool(options.CalculateESaxes),
-    	OverwriteRotationM = cms.bool(options.OverwriteRotationM),
-    	StoreDetail = cms.bool(options.StoreDetail),
-    	ReSetRfromOutside = cms.bool(options.ReSetRfromOutside),
+   	OverwriteRotationM = cms.bool(options.OverwriteRotationM),
+   	StoreDetail = cms.bool(options.StoreDetail),
+   	ReSetRfromOutside = cms.bool(options.ReSetRfromOutside),
 	e_xxlimit = cms.double(1.),
 	e_yylimit = cms.double(1.),
 	e_yxlimit = cms.double(1.),
 	winlimit = cms.double(3.),
-    	Selected_idee = cms.uint32(0),
-    	Selected_RUNmin = cms.int32(0),
-    	Selected_RUNmax = cms.int32(0),
+   	Selected_idee = cms.uint32(0),
+   	Selected_RUNmin = cms.int32(0),
+   	Selected_RUNmax = cms.int32(0),
 	DefaultESLocation = DefaultESLocation.clone(),
 	MatrixElements = MatrixElementsTmp.clone(),
 )
