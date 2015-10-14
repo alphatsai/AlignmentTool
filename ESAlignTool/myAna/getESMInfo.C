@@ -19,10 +19,10 @@ const int iterN=1;
 void getESMInfo(){
 	TFile* f;	
 	TTree* t;
-	f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_0_7_dev/src/AlignmentTool/ESAlignTool/test/OnLxplus/09Oct_PionGun100K_GTv6_Iter1/job_SinglePionGun_GEN_SIM_v1__tdoan-job_SinglePionGun_RECO_v1-a2645d794d4263c6295ef839881df757__USER.root");
+	f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_12_patch4/src/AlignmentTool/ESAlignTool/test/OnLxplus/14Oct_BoffRunC_Iter1_nofulldata/SingleElectron_Run2015C-PromptReco-v1.root");
 	t=(TTree*)f->Get("ESAlignmentTool/tree");
   	CalIter_wRotation caculate;
 	caculate.registerESMatrix(t);
 	caculate.iterN=iterN;
-	caculate.run();
+	caculate.run("BoffRunC_Iter1");
 }
