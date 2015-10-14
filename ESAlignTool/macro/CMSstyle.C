@@ -54,7 +54,7 @@ void CMSstyle(){
  cmsStyle->SetTitleSize(0.06,"z");
 
  // use bold lines and markers
- cmsStyle->SetMarkerStyle(8);
+ //cmsStyle->SetMarkerStyle(7);
  cmsStyle->SetHistLineWidth(1.85);
  cmsStyle->SetLineStyleString(2,"[12 12]"); // postscript dashes
 
