@@ -1,6 +1,6 @@
 Working CMSSW Version
 	CMSSW_7_4_X
-Test was done in CMSSW_7_4_5
+Test was done in CMSSW_7_4_12_patch4
 
 Example:
 https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideSteppingHelixPropagator
