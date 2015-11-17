@@ -259,14 +259,14 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
 				UnAligned_RotationMatrices(i, j, ES_O_Alpha[i][j], ES_O_Beta[i][j], ES_O_Gamma[i][j]);
 			}} //default
 
-			ESpF_residualX=f->make<TH1D>("ESpF_residualX","ES+Front residualX",300,-15,15); 
-			ESpF_residualY=f->make<TH1D>("ESpF_residualY","ES+Front residualY",300,-15,15);
-			ESpR_residualX=f->make<TH1D>("ESpR_residualX","ES+Rear residualX",300,-15,15);
-			ESpR_residualY=f->make<TH1D>("ESpR_residualY","ES+Rear residualY",300,-15,15);
-			ESmF_residualX=f->make<TH1D>("ESmF_residualX","ES-Front residualX",300,-15,15);
-			ESmF_residualY=f->make<TH1D>("ESmF_residualY","ES-Front residualY",300,-15,15);
-			ESmR_residualX=f->make<TH1D>("ESmR_residualX","ES-Rear residualX",300,-15,15);
-			ESmR_residualY=f->make<TH1D>("ESmR_residualY","ES-Rear residualY",300,-15,15);
+			ESpF_residualX=f->make<TH1D>("ESpF_residualX","ES+Front residualX",3000,-15,15); 
+			ESpF_residualY=f->make<TH1D>("ESpF_residualY","ES+Front residualY",3000,-15,15);
+			ESpR_residualX=f->make<TH1D>("ESpR_residualX","ES+Rear residualX",3000,-15,15);
+			ESpR_residualY=f->make<TH1D>("ESpR_residualY","ES+Rear residualY",3000,-15,15);
+			ESmF_residualX=f->make<TH1D>("ESmF_residualX","ES-Front residualX",3000,-15,15);
+			ESmF_residualY=f->make<TH1D>("ESmF_residualY","ES-Front residualY",3000,-15,15);
+			ESmR_residualX=f->make<TH1D>("ESmR_residualX","ES-Rear residualX",3000,-15,15);
+			ESmR_residualY=f->make<TH1D>("ESmR_residualY","ES-Rear residualY",3000,-15,15);
 
 }
 void ESAlignTool::UnAligned_Original( int iz, int ip, PositionType* plan){
