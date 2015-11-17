@@ -1,0 +1,4 @@
+./createAndSubmitJobsOnCMSDATA.py -w 14Oct_Boff50ns_Iter1_nofulldata -d Boff50ns/datasetList.txt -c Boff50ns/AlignIter_cfg.py -J Boff50ns/Cert_246908-254608_13TeV_PromptReco_Collisions15_ZeroTesla_JSON.txt
+./createAndSubmitJobsOnCMSDATA.py -w 14Oct_Bon50ns_Iter1_nofulldata -d Bon50ns/datasetList.txt -c Bon50ns/AlignIter_cfg.py -J Bon50ns/Cert_246908-254833-254879_13TeV_PromptReco_Collisions15_JSON.txt
+./createAndSubmitJobsOnCMSDATA.py -w 14Oct_BonRunC_Iter1_nofulldata -d BonRunC/datasetList.txt -c BonRunC/AlignIter_cfg.py -J BonRunC/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON.txt 
+./createAndSubmitJobsOnCMSDATA.py -w 14Oct_BoffRunC_Iter2_nofulldata -d BoffRunC/datasetListIter2.txt -c BoffRunC/AlignIter_cfg.py -J BoffRunC/Cert_246908-254608_13TeV_PromptReco_Collisions15_ZeroTesla_JSON.txt -q 8nh
