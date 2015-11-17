@@ -87,7 +87,13 @@ eval `scram runtime -sh`
 
 cp -v MAIN_WORKDIR/CMSSW_cfg.py $BATCHDIR/CMSSW_cfg.py
 cp -v MAIN_WORKDIR/inputMatrixElements_cfi.py $BATCHDIR/
+#cp -v MAIN_WORKDIR/Cert*JSON*.txt $BATCHDIR/
 cp -v DATASET_WORKDIR/input/inputFiles_JOB_NUMBER_cfi.py $BATCHDIR/inputFiles_cfi.py
+
+if [ -e MAIN_WORKDIR/myJSON.txt ]
+then
+    cp -v MAIN_WORKDIR/myJSON.txt $BATCHDIR/
+fi
 
 cd $BATCHDIR
 echo "Running CMSSW job"
@@ -121,6 +127,7 @@ def main():
 
   parser.add_option("-w", "--main_workdir", dest="main_workdir", action='store', help="Main working directory", metavar="MAIN_WORKDIR")
   parser.add_option("-d", "--dataset_list", dest="dataset_list", action='store', help="Text file containing a list of datasets to be processed", metavar="DATASET_LIST")
+  parser.add_option("-j", "--myJSONfile", dest="myJSONfile", action='store', help="JSON file for selecting event", metavar="MYJSONFILE")
   parser.add_option("-o", "--output_filename", dest="output_filename", action='store', default='AlignmentFile', help="Output ROOT filename (Default set to AlignmentFile)", metavar="OUTPUT_FILENAME")
   parser.add_option("-E", "--eos_path", dest="eos_path", action='store', help="EOS path to copy output files to (This parameter is optional)", metavar="EOS_PATH")
   parser.add_option('-m', '--match', dest="match", action='store', help='Only files containing the MATCH string in their names will be considered (This parameter is optional)', metavar='MATCH')
@@ -153,6 +160,9 @@ def main():
   # copy the dataset list file to the main_workdir
   shutil.copyfile(dataset_list,os.path.join(main_workdir,'datasetList.txt'))
 
+  # copy the dataset list file to the main_workdir
+  shutil.copyfile(myJSONfile,os.path.join(main_workdir,'myJSON.txt'))
+
   # copy the CMSSW cfg file to the cfg_files_dir
   shutil.copyfile(cmssw_cfg,os.path.join(main_workdir,'CMSSW_cfg.py'))
 
@@ -165,6 +175,8 @@ def main():
       continue
     if re.search("inputMatrixElements_cfi.py", filename):
       shutil.copy(os.path.join(cfg_dirname,filename),main_workdir)
+    #if re.search("^Cert.*JSON.*\.txt$",  filename):
+    #  shutil.copy(os.path.join(cfg_dirname,filename),main_workdir)
 
   # open and read the dataset_list file
   dataset_list_file = open(dataset_list,"r")
