@@ -12,7 +12,8 @@ process.load("TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAl
 ###################### Modify following Global tag ################################
 ######################       This is example       ################################
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
+#process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v4', '')
 
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
 #process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
@@ -58,6 +59,11 @@ options.register('OutFilename', 'AlignmentFile.root',
     VarParsing.multiplicity.singleton,
     VarParsing.varType.string,
     "Output File name"
+    )
+options.register('Debug', False,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.bool,
+    "Debug"
     )
 options.register('InputRefitter', True,
     VarParsing.multiplicity.singleton,
@@ -165,6 +171,7 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
     RecHitLabel = cms.InputTag(options.RecHitLabel),
     TrackLabel = cms.InputTag(options.TrackLabel),
     IterN = cms.uint32(options.IterN),
+    Debug = cms.bool(options.Debug),
     InputRefitter = cms.bool(options.InputRefitter),
     DrawMagField = cms.bool(options.DrawMagField),
     PrintPosition = cms.bool(options.PrintPosition),
@@ -186,6 +193,7 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
 )
 import FWCore.PythonUtilities.LumiList as LumiList
 process.source.lumisToProcess = LumiList.LumiList(filename='myJSON.txt').getVLuminosityBlockRange()
+#process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
 
 process.load("RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi")
 #from RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi import *
