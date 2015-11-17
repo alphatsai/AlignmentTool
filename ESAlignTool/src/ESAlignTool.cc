@@ -1644,12 +1644,12 @@ void
 ESAlignTool::endJob() {
     std::cout<<std::endl << "In ESAlignTool.endJob\n";
 
-    if(b_DrawMagField)  t_ESField->Write();
+    //if(b_DrawMagField)  t_ESField->Write();
 
-    ESpF_residualX->Write();  ESpF_residualY->Write();
-    ESpR_residualX->Write();  ESpR_residualY->Write();
-    ESmF_residualX->Write();  ESmF_residualY->Write();
-    ESmR_residualX->Write();  ESmR_residualY->Write();
+    //ESpF_residualX->Write();  ESpF_residualY->Write();
+    //ESpR_residualX->Write();  ESpR_residualY->Write();
+    //ESmF_residualX->Write();  ESmF_residualY->Write();
+    //ESmR_residualX->Write();  ESmR_residualY->Write();
 
     std::cout << std::endl;
     std::cout << " --------------------------------------------- " << std::endl;
@@ -1664,10 +1664,10 @@ ESAlignTool::endJob() {
     delete ESpF_O;  delete ESpR_O;  delete ESmF_O;  delete ESmR_O;
     delete ESpF_Oap;  delete ESpR_Oap;  delete ESmF_Oap;  delete ESmR_Oap;
 
-    delete ESpF_residualX;  delete ESpF_residualY;
-    delete ESpR_residualX;  delete ESpR_residualY;
-    delete ESmF_residualX;  delete ESmF_residualY;
-    delete ESmR_residualX;  delete ESmR_residualY;
+    //delete ESpF_residualX;  delete ESpF_residualY;
+    //delete ESpR_residualX;  delete ESpR_residualY;
+    //delete ESmF_residualX;  delete ESmF_residualY;
+    //delete ESmR_residualX;  delete ESmR_residualY;
 }
 
 //define this as a plug-in
