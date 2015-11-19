@@ -3,14 +3,24 @@ import os, re, sys, shutil
 import math, time
 from ROOT import *
 
-X0={'mR':-0.06,    'mF':-0.05,    'pF':0.52,    'pR':0.54    }
-Y0={'mR':-0.749,   'mF':-0.779,   'pF':-0.97,   'pR':-0.959  }
-Z0={'mR':-309.286, 'mF':-304.646, 'pF':304.466, 'pR':309.116 }
-A0={'mR':1.9,      'mF':2.2,      'pF':0.1,     'pR':-1.6    }
-B0={'mR':-0.2,     'mF':0.5,      'pF':0.3,     'pR':-0.5    }
-G0={'mR':-0.1,     'mF':0.5,      'pF':0.8,     'pR':0.5     }
+## 1. 2015 summer propmt reco
+#X0={'mR':-0.06,    'mF':-0.05,    'pF':0.52,    'pR':0.54    }
+#Y0={'mR':-0.749,   'mF':-0.779,   'pF':-0.97,   'pR':-0.959  }
+#Z0={'mR':-309.286, 'mF':-304.646, 'pF':304.466, 'pR':309.116 }
+#A0={'mR':1.9,      'mF':2.2,      'pF':0.1,     'pR':-1.6    }
+#B0={'mR':-0.2,     'mF':0.5,      'pF':0.3,     'pR':-0.5    }
+#G0={'mR':-0.1,     'mF':0.5,      'pF':0.8,     'pR':0.5     }
+
+## 2. 2015 RunC,D propmt reco
+X0={'mR':-0.303,   'mF':-0.284,   'pF':0.324,   'pR':0.357   }
+Y0={'mR':-0.462,   'mF':-0.477,   'pF':-0.932,  'pR':-0.905  }
+Z0={'mR':-308.922, 'mF':-304.289, 'pF':304.167, 'pR':308.770 }
+A0={'mR':1.4,      'mF':1.4,      'pF':-1.3,    'pR':-1.7    }
+B0={'mR':0.5,     'mF':0.8,       'pF':0.1,     'pR':0.4     }
+G0={'mR':-0.,     'mF':0.6,       'pF':0.8,     'pR':0.6     }
 
 inputFile='inputMatrixElements_cfi.py'
+output='pdf/Stabilities_RunDv3'
 print '>> [INFO] Read file '+inputFile
 
 lines0 = open(inputFile)
@@ -146,11 +156,27 @@ for p in ['mR', 'mF', 'pF', 'pR']:
     c.cd(6)
     gG.Draw('A*L')
     tl.Draw('SAME')
-    c.SaveAs(str('Stabilites_'+p+'.pdf'))
+    c.SaveAs(str(output+'_'+p+'.pdf'))
 
-print ">> [INFO] %5s %5s %6s %8s %5s %5s %5s "%( 'plain', 'X(cm)', 'Y(cm)', 'Z(cm)', 'Alpha', 'Beta', 'Gamma')
+outputFile = open(output+'_FinalPositions.txt', 'w')
+
+print ">> [INFO] Un-Aligned P"  
+print "          %5s %5s %6s %8s %5s %5s %5s "%( 'plain', 'X(cm)', 'Y(cm)', 'Z(cm)', 'Alpha', 'Beta', 'Gamma')
+outputFile.write("Un-Aligned:\n") 
+outputFile.write("%5s %5s %6s %8s %5s %5s %5s\n"%( 'plain', 'X(cm)', 'Y(cm)', 'Z(cm)', 'Alpha', 'Beta', 'Gamma' ))
+for p in ['mR', 'mF', 'pF', 'pR']:
+    print "          %5s %5.2f %6.3f %8.3f %5.1f %5.1f %5.1f "%(p, X0[p], Y0[p], Z0[p], A0[p], B0[p], G0[p])
+    outputFile.write("%5s %5.2f %6.3f %8.3f %5.1f %5.1f %5.1f\n"%( p, X0[p], Y0[p], Z0[p], A0[p], B0[p], G0[p] ))
+
+outputFile.write("\n")
+ 
+print ">> [INFO] Aligned P-dP" 
+print "          %5s %5s %6s %8s %5s %5s %5s "%( 'plain', 'X(cm)', 'Y(cm)', 'Z(cm)', 'Alpha', 'Beta', 'Gamma')
+outputFile.write("Aligned P-dP:\n") 
+outputFile.write("%5s %5s %6s %8s %5s %5s %5s\n"%( 'plain', 'X(cm)', 'Y(cm)', 'Z(cm)', 'Alpha', 'Beta', 'Gamma' ))
 for p in ['mR', 'mF', 'pF', 'pR']:
     print "          %5s %5.2f %6.3f %8.3f %5.1f %5.1f %5.1f "%(p, X[p], Y[p], Z[p], A[p], B[p], G[p])
+    outputFile.write("%5s %5.2f %6.3f %8.3f %5.1f %5.1f %5.1f\n"%( p, X[p], Y[p], Z[p], A[p], B[p], G[p] ))
 
-
+outputFile.close()
 
