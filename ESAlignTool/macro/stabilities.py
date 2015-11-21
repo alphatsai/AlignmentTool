@@ -228,7 +228,7 @@ Axis={  'X':X,   'Y':Y,   'Z':Z,   'Alpha':A,   'Beta':B,   'Gamma':G   }
 Axis0={ 'X':X00, 'Y':Y00, 'Z':Z00, 'Alpha':A00, 'Beta':B00, 'Gamma':G00 }
 print  ">> [INFO] For producing db file macro" 
 print  "          %6s  %7s, %7s, %7s, %7s, %7s, %7s, %7s, %7s  "%( 'Axis', 'mR', 'mR', 'mF', 'mF', 'pF', 'pF', 'pR', 'pR')
-outputFile.write("Aligned (P-dP)-P0:\n") 
+outputFile.write("For producing db file macro:\n") 
 outputFile.write("%6s  %7s, %7s, %7s, %7s, %7s, %7s, %7s, %7s\n"%( 'Axis', 'mR', 'mR', 'mF', 'mF', 'pF', 'pF', 'pR', 'pR'))
 for a in [ 'X', 'Y', 'Z', 'Alpha', 'Beta', 'Gamma' ]:
     print  "          %6s  %7.4f, %7.4f, %7.4f, %7.4f, %7.4f, %7.4f, %7.4f, %7.4f  "%( a, Axis[a]['mR']-Axis0[a]['mR'], Axis[a]['mR']-Axis0[a]['mR'], Axis[a]['mF']-Axis0[a]['mF'], Axis[a]['mF']-Axis0[a]['mF'], Axis[a]['pF']-Axis0[a]['pF'], Axis[a]['pF']-Axis0[a]['pF'], Axis[a]['pR']-Axis0[a]['pR'], Axis[a]['pR']-Axis0[a]['pR'] )
