@@ -42,16 +42,25 @@ void drawResidual( TFile* f1, TCanvas* c1, string savePath, int xrange=3, Color_
     
     setStyle(pF); setStyle(pR); setStyle(mF); setStyle(mR);
 
+    TLine* line0_pF = new TLine(0.,0.,0.,pF->GetMaximum()); line0_pF->SetLineStyle(7);
+    TLine* line0_pR = new TLine(0.,0.,0.,pR->GetMaximum()); line0_pR->SetLineStyle(7);
+    TLine* line0_mF = new TLine(0.,0.,0.,mF->GetMaximum()); line0_mF->SetLineStyle(7);
+    TLine* line0_mR = new TLine(0.,0.,0.,mR->GetMaximum()); line0_mR->SetLineStyle(7);
+
     c1->Clear();
     c1->Divide(2,2);
     c1->cd(1);
     pF->Draw("pe");
+    line0_pF->Draw();
     c1->cd(2);
     pR->Draw("pe");
+    line0_pR->Draw();
     c1->cd(3);
     mF->Draw("pe");
+    line0_mF->Draw();
     c1->cd(4);
     mR->Draw("pe");
+    line0_mR->Draw();
     c1->SaveAs(savePath.c_str());
 
 }
