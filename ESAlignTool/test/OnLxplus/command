@@ -1,4 +1,6 @@
-./createAndSubmitJobsOnCMSDATA.py -w 14Oct_Boff50ns_Iter1_nofulldata -d Boff50ns/datasetList.txt -c Boff50ns/AlignIter_cfg.py -J Boff50ns/Cert_246908-254608_13TeV_PromptReco_Collisions15_ZeroTesla_JSON.txt
-./createAndSubmitJobsOnCMSDATA.py -w 14Oct_Bon50ns_Iter1_nofulldata -d Bon50ns/datasetList.txt -c Bon50ns/AlignIter_cfg.py -J Bon50ns/Cert_246908-254833-254879_13TeV_PromptReco_Collisions15_JSON.txt
-./createAndSubmitJobsOnCMSDATA.py -w 14Oct_BonRunC_Iter1_nofulldata -d BonRunC/datasetList.txt -c BonRunC/AlignIter_cfg.py -J BonRunC/Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON.txt 
-./createAndSubmitJobsOnCMSDATA.py -w 14Oct_BoffRunC_Iter2_nofulldata -d BoffRunC/datasetListIter2.txt -c BoffRunC/AlignIter_cfg.py -J BoffRunC/Cert_246908-254608_13TeV_PromptReco_Collisions15_ZeroTesla_JSON.txt -q 8nh
+./createAndSubmitJobsOnCMSDATA.py -w 18Nov_RunB_Iter2 -d RunB/datasetListIter2.txt -c RunB/AlignIter_cfg.py -J RunB/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt -q cmscaf1nd
+./createAndSubmitJobsOnCMSDATA.py -w 18Nov_RunC25ns_Iter1 -d RunC25ns/datasetListIter1.txt -c RunC25ns/AlignIter_cfg.py -J RunC25ns/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt  -q cmscaf1nd
+./createAndSubmitJobsOnCMSDATA.py -w 18Nov_RunDv3_Iter1 -d RunDv3/datasetListIter1.txt -c RunDv3/AlignIter_cfg.py -J RunDv3/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt -q cmscaf1nd
+./createAndSubmitJobsOnCMSDATA.py -w 18Nov_RunDv4_Iter1 -d RunDv4/datasetListIter1.txt -c RunDv4/AlignIter_cfg.py -J RunDv4/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt -q cmscaf1nd
+./createAndSubmitJobsOnCMSDATA.py -w 18Nov_ValRunB_Iter8 -d RunDv3/datasetListValIter8.txt -c RunDv3/AlignIter_cfg.py -J RunB/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt -q cmscaf1nd
+./createAndSubmitJobsOnCMSDATA.py -w 18Nov_ValRunCDv4_Iter8 -d RunDv3/datasetListValIter8.txt -c RunDv3/AlignIter_cfg.py -J RunDv3/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt -q cmscaf1nd
