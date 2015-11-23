@@ -259,12 +259,14 @@ def main():
     ifile = 0
     for ijob in range(ijobmax):
        # prepare the list of input files
-       input_files = '    \'root://eoscms.cern.ch/' + filelist[ifile] + '\''
+       #input_files = '    \'root://eoscms.cern.ch/' + filelist[ifile] + '\''
+       input_files = '    \'root://eoscms//' + filelist[ifile] + '\''
        for i in range(filesperjob-1):
            if ifile>(numfiles-2):
                break
            ifile = ifile + 1
-           input_files += (',\n    \'root://eoscms.cern.ch/' + filelist[ifile] + '\'')
+           #input_files += (',\n    \'root://eoscms.cern.ch/' + filelist[ifile] + '\'')
+           input_files += (',\n    \'root://eoscms//' + filelist[ifile] + '\'')
        ifile = ifile + 1
 
        ## create input cfi file
@@ -284,7 +286,7 @@ def main():
        bash_script.close()
 
        if(not options.no_submission):
-	 time.sleep(2)
+	 #time.sleep(2)
          cmd = 'bsub -q ' + options.queue + ' -o ' + os.path.join(dataset_workdir,'output','job_' + str(ijob) + '.log') + ' source ' + os.path.join(dataset_workdir,'input','job_' + str(ijob) + '.sh')
          os.system(cmd)
 
