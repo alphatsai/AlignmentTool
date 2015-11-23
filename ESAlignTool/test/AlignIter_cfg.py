@@ -13,7 +13,8 @@ process.load("TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAl
 ######################       This is example       ################################
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v4', '')
+#process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v4', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Candidate_2015_11_18_10_21_42', '')
 
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
 #process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
@@ -137,7 +138,8 @@ options.parseArguments()
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.MaxEvents) )
 
 ### input
-from inputFiles_cfi import * #FileNames 
+#from inputFiles_cfi import * #FileNames 
+from inputFiles_44_cfi import * #FileNames 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(FileNames)
     #fileNames = cms.untracked.vstring(FileNames_CSA14Test)
@@ -192,8 +194,9 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
     MatrixElements = MatrixElementsTmp.clone(),
 )
 import FWCore.PythonUtilities.LumiList as LumiList
-process.source.lumisToProcess = LumiList.LumiList(filename='myJSON.txt').getVLuminosityBlockRange()
-#process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
+#process.source.lumisToProcess = LumiList.LumiList(filename='myJSON.txt').getVLuminosityBlockRange()
+process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
+#process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt').getVLuminosityBlockRange()
 
 process.load("RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi")
 #from RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi import *
