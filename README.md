@@ -7,7 +7,7 @@ Provide DB files
 1. Checkout package:
 	```
 	cmsrel CMSSW_8_0_3
-	cd CMSSW_7_4_5/src
+	cd CMSSW_8_0_3/src
 	cmsenv
 	git cms-addpkg Geometry/EcalAlgo
 	git cms-addpkg Geometry/CaloEventSetup
