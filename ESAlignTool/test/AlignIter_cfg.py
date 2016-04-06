@@ -61,6 +61,11 @@ options.register('OutFilename', 'AlignmentFile.root',
     VarParsing.varType.string,
     "Output File name"
     )
+options.register('JSONFilename', 'myJSON.txt',
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.string,
+    "Input JSON"
+    )
 options.register('Debug', False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
@@ -194,8 +199,8 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
     MatrixElements = MatrixElementsTmp.clone(),
 )
 import FWCore.PythonUtilities.LumiList as LumiList
-#process.source.lumisToProcess = LumiList.LumiList(filename='myJSON.txt').getVLuminosityBlockRange()
-process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
+process.source.lumisToProcess = LumiList.LumiList(filename='myJSON.txt').getVLuminosityBlockRange()
+#process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
 #process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt').getVLuminosityBlockRange()
 
 process.load("RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi")
