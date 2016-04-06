@@ -143,8 +143,7 @@ options.parseArguments()
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.MaxEvents) )
 
 ### input
-#from inputFiles_cfi import * #FileNames 
-from inputFiles_44_cfi import * #FileNames 
+from inputFiles_cfi import * #FileNames 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(FileNames)
     #fileNames = cms.untracked.vstring(FileNames_CSA14Test)
@@ -175,35 +174,37 @@ if options.IterN == 1 and options.OverwriteRotationM == False:
 from AlignmentTool.ESAlignTool.DefaultESLocation_cfi import *  
 from inputMatrixElements_cfi import * #MatrixElementsTmp # Modify inputMatrixElements_cfi.py for Matrix Elements 
 process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
-    RecHitLabel = cms.InputTag(options.RecHitLabel),
-    TrackLabel = cms.InputTag(options.TrackLabel),
-    IterN = cms.uint32(options.IterN),
-    Debug = cms.bool(options.Debug),
-    InputRefitter = cms.bool(options.InputRefitter),
-    DrawMagField = cms.bool(options.DrawMagField),
-    PrintPosition = cms.bool(options.PrintPosition),
-    PrintMatrix = cms.bool(options.PrintMatrix),
-    CalculateESorigin = cms.bool(options.CalculateESorigin),
-    CalculateESaxes = cms.bool(options.CalculateESaxes),
+    RecHitLabel        = cms.InputTag(options.RecHitLabel),
+    TrackLabel         = cms.InputTag(options.TrackLabel),
+    IterN              = cms.uint32(options.IterN),
+    Debug              = cms.bool(options.Debug),
+    InputRefitter      = cms.bool(options.InputRefitter),
+    DrawMagField       = cms.bool(options.DrawMagField),
+    PrintPosition      = cms.bool(options.PrintPosition),
+    PrintMatrix        = cms.bool(options.PrintMatrix),
+    CalculateESorigin  = cms.bool(options.CalculateESorigin),
+    CalculateESaxes    = cms.bool(options.CalculateESaxes),
     OverwriteRotationM = cms.bool(options.OverwriteRotationM),
-    StoreDetail = cms.bool(options.StoreDetail),
-    ReSetRfromOutside = cms.bool(options.ReSetRfromOutside),
-    e_xxlimit = cms.double(1.),
-    e_yylimit = cms.double(1.),
-    e_yxlimit = cms.double(1.),
-    winlimit = cms.double(3.),
-    Selected_idee = cms.uint32(0),
-    Selected_RUNmin = cms.int32(0),
-    Selected_RUNmax = cms.int32(0),
-    DefaultESLocation = DefaultESLocation.clone(),
-    MatrixElements = MatrixElementsTmp.clone(),
+    StoreDetail        = cms.bool(options.StoreDetail),
+    ReSetRfromOutside  = cms.bool(options.ReSetRfromOutside),
+    e_xxlimit          = cms.double(1.),
+    e_yylimit          = cms.double(1.),
+    e_yxlimit          = cms.double(1.),
+    winlimit           = cms.double(3.),
+    Selected_idee      = cms.uint32(0),
+    Selected_RUNmin    = cms.int32(0),
+    Selected_RUNmax    = cms.int32(0),
+    DefaultESLocation  = DefaultESLocation.clone(),
+    MatrixElements     = MatrixElementsTmp.clone(),
 )
+
+### Input JSON
 import FWCore.PythonUtilities.LumiList as LumiList
-process.source.lumisToProcess = LumiList.LumiList(filename='myJSON.txt').getVLuminosityBlockRange()
+process.source.lumisToProcess = LumiList.LumiList(filename=options.JSONFilename).getVLuminosityBlockRange()
 #process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
 #process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt').getVLuminosityBlockRange()
 
-process.load("RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi")
+process.load("RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi") # For ES ALCA RECO dataset
 #from RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi import *
 #process.esLocalReco = cms.Sequence( ecalPreshowerRecHit )
 
