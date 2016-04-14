@@ -1,5 +1,6 @@
 #include<cmath>
 #include<vector>
+#include "TMath.h"
 using namespace std;
 void printRM( std::vector<std::vector<float> > RM33 )
 {
@@ -7,7 +8,8 @@ void printRM( std::vector<std::vector<float> > RM33 )
     printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[1][0], RM33[1][1], RM33[1][2]);
     printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[2][0], RM33[2][1], RM33[2][2]);
 }
-float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool printInfo=true ){
+float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool printInfo=true )
+{
     // Init
     float Alpha=angle[0];
     float Beta=angle[1];
@@ -48,4 +50,56 @@ float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool print
     }
 
     return det;
+}
+
+// Two solutions if fabs(RM33[e3][e1]) != 1., angle = spi, theta and phi
+int getEulerAngle( std::vector<std::vector<float> > RM33, float angle1[3], float angle2[3], bool printInfo=true )
+{
+    int solCase=0; // -1: R31=-1, 1: R31=1, 0: R31!=1or-1 
+    int e1=0;
+    int e2=1;
+    int e3=2;
+    float theta1=0, theta2=0;
+    float phi1=0, phi2=0;
+    float psi1=0, psi2=0;
+
+    if( fabs(RM33[e3][e1]) != 1. ) // R31 != 1, -1
+    {
+        theta1 = -asin(RM33[e3][e1]);
+        theta2 = TMath::Pi()-theta1;
+        psi1 = atan2( RM33[e3][e2]/cos(theta1), RM33[e3][e3]/cos(theta1) );
+        psi2 = atan2( RM33[e3][e2]/cos(theta2), RM33[e3][e3]/cos(theta2) );
+        phi1 = atan2( RM33[e2][e1]/cos(theta1), RM33[e1][e1]/cos(theta1) );
+        phi2 = atan2( RM33[e2][e1]/cos(theta2), RM33[e1][e1]/cos(theta2) );
+    }
+    else
+    {
+        if( RM33[e3][e1] == -1 )
+        {   
+            solCase=-1;
+            theta1 = theta2 = TMath::Pi()/2;
+            psi1 = psi2 = phi1 + atan2( RM33[e1][e2], RM33[e1][e3] );
+        }
+        else
+        {
+            solCase=1;
+            theta1 = theta2 = -1*TMath::Pi()/2;
+            psi1 = psi2 = -1*phi1 + atan2( -1*RM33[e1][e2], -1*RM33[e1][e3] );
+        }    
+    }
+    angle1[0]=psi1;   angle2[0]=psi2;
+    angle1[1]=theta1; angle2[1]=theta2;
+    angle1[2]=phi1;   angle2[2]=phi2;
+   
+    // Print out detail 
+    if( printInfo )
+    {
+        printf("Input matrix\n");
+        printRM(RM33);
+        printf("Output results with case %d ( 1/-1: one solution, 0: two solutions )\n", solCase );
+        printf(" Sol 1. ( spi, theta, phi ) = ( %11.8f,%11.8f,%11.8f )\n", angle1[0], angle1[1], angle1[2]);
+        printf(" Sol 2. ( spi, theta, phi ) = ( %11.8f,%11.8f,%11.8f )\n", angle2[0], angle2[1], angle2[2]);
+    }
+
+    return solCase;
 }
