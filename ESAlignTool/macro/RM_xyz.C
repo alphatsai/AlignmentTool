@@ -10,7 +10,7 @@ void printRM( std::vector<std::vector<float> > RM33 )
     printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[2][0], RM33[2][1], RM33[2][2]);
 }
 
-// Caculate rotation matrix
+// Caculate rotation matrix in ES
 float RM_xyz( float Alpha, float Beta, float Gamma, std::vector<std::vector<float> > &RM33, bool printInfo=true )
 {
     // Init
@@ -54,6 +54,52 @@ float RM_xyz( float Alpha, float Beta, float Gamma, std::vector<std::vector<floa
 float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool printInfo=true )
 {
     return RM_xyz( angle[0], angle[1], angle[2], RM33, printInfo );
+}
+
+// Caculate rotation matrix in Euler angles
+float RM_euler( float Psi, float Theta, float Phi, std::vector<std::vector<float> > &RM33, bool printInfo=true )
+{
+    // Init
+    std::vector<float> row1;
+    std::vector<float> row2;
+    std::vector<float> row3;
+
+    //Caculation
+    float R11 = cos(Theta)*cos(Phi);
+    float R12 = sin(Psi)*sin(Theta)*cos(Phi)-cos(Psi)*sin(Phi);
+    float R13 = cos(Psi)*sin(Theta)*cos(Phi)+sin(Psi)*sin(Phi);
+    float R21 = cos(Theta)*sin(Phi);
+    float R22 = sin(Psi)*sin(Theta)*sin(Phi)+cos(Psi)*cos(Phi);
+    float R23 = cos(Psi)*sin(Theta)*sin(Phi)-sin(Psi)*cos(Phi);
+    float R31 = -sin(Theta);
+    float R32 = sin(Psi)*cos(Theta);
+    float R33 = cos(Psi)*cos(Theta);
+    float det = ( R11*R22*R33 + R12*R23*R31 + R13*R21*R32 ) - ( R11*R23*R32 + R12*R21*R33 + R13*R22*R31 );
+    row1.push_back(R11); row1.push_back(R12); row1.push_back(R13);
+    row2.push_back(R21); row2.push_back(R22); row2.push_back(R23);
+    row3.push_back(R31); row3.push_back(R32); row3.push_back(R33);
+    RM33.push_back(row1);
+    RM33.push_back(row2);
+    RM33.push_back(row3);
+
+    // Print out detail
+    if( printInfo )
+    {
+        printf("Input angle(psi, theta, phi) = (%11.8f,%11.8f,%11.8f)\n", Psi, Theta, Phi );
+        printf("Rotation matrix RM =\n");
+        printRM(RM33);
+        // Debug
+        //printf(" | %11.8f  %11.8f  %11.8f |\n", R11, R12, R13);
+        //printf(" | %11.8f  %11.8f  %11.8f |\n", R21, R22, R23);
+        //printf(" | %11.8f  %11.8f  %11.8f |\n", R31, R32, R33);
+        printf("Determinant det(RM) = %11.8f\n", det);
+    }
+
+    return det;
+}
+float RM_euler( float angle[3], std::vector<std::vector<float> > &RM33, bool printInfo=true )
+{
+    return RM_euler( angle[0], angle[1], angle[2], RM33, printInfo );
 }
 
 // Two solutions if fabs(RM33[e3][e1]) != 1., angle = spi, theta and phi
