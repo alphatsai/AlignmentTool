@@ -10,12 +10,10 @@ void printRM( std::vector<std::vector<float> > RM33 )
     printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[2][0], RM33[2][1], RM33[2][2]);
 }
 
-float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool printInfo=true )
+// Caculate rotation matrix
+float RM_xyz( float Alpha, float Beta, float Gamma, std::vector<std::vector<float> > &RM33, bool printInfo=true )
 {
     // Init
-    float Alpha=angle[0];
-    float Beta=angle[1];
-    float Gamma=angle[2];
     std::vector<float> row1;
     std::vector<float> row2;
     std::vector<float> row3;
@@ -52,6 +50,10 @@ float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool print
     }
 
     return det;
+}
+float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool printInfo=true )
+{
+    return RM_xyz( angle[0], angle[1], angle[2], RM33, printInfo );
 }
 
 // Two solutions if fabs(RM33[e3][e1]) != 1., angle = spi, theta and phi
