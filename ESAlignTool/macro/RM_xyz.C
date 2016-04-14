@@ -3,9 +3,9 @@
 using namespace std;
 void printRM( std::vector<std::vector<float> > RM33 )
 {
-    printf(" | %5.2f  %5.2f  %5.2f |\n", RM33[0][0], RM33[0][1], RM33[0][2]);
-    printf(" | %5.2f  %5.2f  %5.2f |\n", RM33[1][0], RM33[1][1], RM33[1][2]);
-    printf(" | %5.2f  %5.2f  %5.2f |\n", RM33[2][0], RM33[2][1], RM33[2][2]);
+    printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[0][0], RM33[0][1], RM33[0][2]);
+    printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[1][0], RM33[1][1], RM33[1][2]);
+    printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[2][0], RM33[2][1], RM33[2][2]);
 }
 float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool printInfo=true ){
     // Init
@@ -37,14 +37,14 @@ float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool print
     // Print out detail
     if( printInfo )
     {
-        printf("Input angle(a,b,g) = (%5.2f,%5.2f,%5.2f)\n", Alpha, Beta, Gamma);
+        printf("Input angle(a,b,g) = (%11.8f,%11.8f,%11.8f)\n", Alpha, Beta, Gamma);
         printf("Rotation matrix RM =\n");
         printRM(RM33);
         // Debug
-        //printf(" | %5.2f  %5.2f  %5.2f |\n", R11, R12, R13);
-        //printf(" | %5.2f  %5.2f  %5.2f |\n", R21, R22, R23);
-        //printf(" | %5.2f  %5.2f  %5.2f |\n", R31, R32, R33);
-        printf("Determinant det(RM) = %5.2f\n", det);
+        //printf(" | %11.8f  %11.8f  %11.8f |\n", R11, R12, R13);
+        //printf(" | %11.8f  %11.8f  %11.8f |\n", R21, R22, R23);
+        //printf(" | %11.8f  %11.8f  %11.8f |\n", R31, R32, R33);
+        printf("Determinant det(RM) = %11.8f\n", det);
     }
 
     return det;
