@@ -2,12 +2,14 @@
 #include<vector>
 #include "TMath.h"
 using namespace std;
+
 void printRM( std::vector<std::vector<float> > RM33 )
 {
     printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[0][0], RM33[0][1], RM33[0][2]);
     printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[1][0], RM33[1][1], RM33[1][2]);
     printf(" | %11.8f  %11.8f  %11.8f |\n", RM33[2][0], RM33[2][1], RM33[2][2]);
 }
+
 float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool printInfo=true )
 {
     // Init
@@ -53,6 +55,7 @@ float RM_xyz( float angle[3], std::vector<std::vector<float> > &RM33, bool print
 }
 
 // Two solutions if fabs(RM33[e3][e1]) != 1., angle = spi, theta and phi
+// Follow https://github.com/alphatsai/AlignmentTool/blob/master/ESAlignTool/macro/euler.pdf
 int getEulerAngle( std::vector<std::vector<float> > RM33, float angle1[3], float angle2[3], bool printInfo=true )
 {
     int solCase=0; // -1: R31=-1, 1: R31=1, 0: R31!=1or-1 
