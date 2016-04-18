@@ -65,15 +65,15 @@ float RM_euler( float Psi, float Theta, float Phi, std::vector<std::vector<float
     std::vector<float> row3;
 
     //Caculation
-    float R11 = cos(Theta)*cos(Phi);
-    float R12 = sin(Psi)*sin(Theta)*cos(Phi)-cos(Psi)*sin(Phi);
-    float R13 = cos(Psi)*sin(Theta)*cos(Phi)+sin(Psi)*sin(Phi);
-    float R21 = cos(Theta)*sin(Phi);
-    float R22 = sin(Psi)*sin(Theta)*sin(Phi)+cos(Psi)*cos(Phi);
-    float R23 = cos(Psi)*sin(Theta)*sin(Phi)-sin(Psi)*cos(Phi);
-    float R31 = -sin(Theta);
-    float R32 = sin(Psi)*cos(Theta);
-    float R33 = cos(Psi)*cos(Theta);
+    float R11 =    cos(Psi)*cos(Phi)-cos(Theta)*sin(Psi)*sin(Phi);
+    float R12 =    cos(Psi)*sin(Phi)+cos(Theta)*sin(Psi)*cos(Phi);
+    float R13 =    sin(Psi)*sin(Theta);
+    float R21 = -1*sin(Psi)*cos(Phi)-cos(Theta)*cos(Psi)*sin(Phi);
+    float R22 = -1*sin(Psi)*sin(Phi)+cos(Theta)*cos(Psi)*cos(Phi);
+    float R23 =    cos(Psi)*sin(Theta); 
+    float R31 =    sin(Theta)*sin(Phi); 
+    float R32 = -1*sin(Theta)*cos(Phi); 
+    float R33 =    cos(Theta); 
     float det = ( R11*R22*R33 + R12*R23*R31 + R13*R21*R32 ) - ( R11*R23*R32 + R12*R21*R33 + R13*R22*R31 );
     row1.push_back(R11); row1.push_back(R12); row1.push_back(R13);
     row2.push_back(R21); row2.push_back(R22); row2.push_back(R23);
@@ -102,8 +102,7 @@ float RM_euler( float angle[3], std::vector<std::vector<float> > &RM33, bool pri
     return RM_euler( angle[0], angle[1], angle[2], RM33, printInfo );
 }
 
-// Two solutions if fabs(RM33[e3][e1]) != 1., angle = spi, theta and phi
-// Follow https://github.com/alphatsai/AlignmentTool/blob/master/ESAlignTool/macro/euler.pdf
+// Two solutions if fabs(RM33[e3][e3]) != 1., angle = spi, theta and phi
 int getEulerAngle( std::vector<std::vector<float> > RM33, float angle1[3], float angle2[3], bool printInfo=true )
 {
     int solCase=0; // -1: R31=-1, 1: R31=1, 0: R31!=1or-1 
@@ -114,28 +113,29 @@ int getEulerAngle( std::vector<std::vector<float> > RM33, float angle1[3], float
     float phi1=0, phi2=0;
     float psi1=0, psi2=0;
 
-    if( fabs(RM33[e3][e1]) != 1. ) // R31 != 1, -1
+    if( fabs(RM33[e3][e3]) != 1. ) // R33 != 1, -1
     {
-        theta1 = -asin(RM33[e3][e1]);
-        theta2 = TMath::Pi()-theta1;
-        psi1 = atan2( RM33[e3][e2]/cos(theta1), RM33[e3][e3]/cos(theta1) );
-        psi2 = atan2( RM33[e3][e2]/cos(theta2), RM33[e3][e3]/cos(theta2) );
-        phi1 = atan2( RM33[e2][e1]/cos(theta1), RM33[e1][e1]/cos(theta1) );
-        phi2 = atan2( RM33[e2][e1]/cos(theta2), RM33[e1][e1]/cos(theta2) );
+        theta1 = acos(RM33[e3][e3]);
+        theta2 = -1*theta1;
+        //theta2 = 2*TMath::Pi()-theta1;
+        psi1 = atan2(    RM33[e1][e3]/sin(theta1), RM33[e1][e3]/sin(theta1) );
+        psi2 = atan2(    RM33[e1][e3]/sin(theta2), RM33[e1][e3]/sin(theta2) );
+        phi1 = atan2( -1*RM33[e3][e1]/sin(theta1), RM33[e3][e2]/sin(theta1) );
+        phi2 = atan2( -1*RM33[e3][e1]/sin(theta2), RM33[e3][e2]/sin(theta2) );
     }
     else
     {
-        if( RM33[e3][e1] == -1 )
+        if( RM33[e3][e3] == -1 )
         {   
             solCase=-1;
-            theta1 = theta2 = TMath::Pi()/2;
-            psi1 = psi2 = phi1 + atan2( RM33[e1][e2], RM33[e1][e3] );
+            theta1 = theta2 = TMath::Pi();
+            psi1 = psi2 = phi1 + atan2( -1*RM33[e1][e2], -1*RM33[e2][e2] );
         }
         else
         {
             solCase=1;
-            theta1 = theta2 = -1*TMath::Pi()/2;
-            psi1 = psi2 = -1*phi1 + atan2( -1*RM33[e1][e2], -1*RM33[e1][e3] );
+            theta1 = theta2 = 0;
+            psi1 = psi2 = -1*phi1 + atan2( -1*RM33[e1][e2], -1*RM33[e2][e2] );
         }    
     }
     angle1[0]=psi1;   angle2[0]=psi2;
@@ -154,3 +154,103 @@ int getEulerAngle( std::vector<std::vector<float> > RM33, float angle1[3], float
 
     return solCase;
 }
+
+//// Caculate rotation matrix in Euler angles
+// Follow https://github.com/alphatsai/AlignmentTool/blob/master/ESAlignTool/macro/euler.pdf
+//float RM_euler( float Psi, float Theta, float Phi, std::vector<std::vector<float> > &RM33, bool printInfo=true )
+//{
+//    // Init
+//    std::vector<float> row1;
+//    std::vector<float> row2;
+//    std::vector<float> row3;
+//
+//    //Caculation
+//    float R11 = cos(Theta)*cos(Phi);
+//    float R12 = sin(Psi)*sin(Theta)*cos(Phi)-cos(Psi)*sin(Phi);
+//    float R13 = cos(Psi)*sin(Theta)*cos(Phi)+sin(Psi)*sin(Phi);
+//    float R21 = cos(Theta)*sin(Phi);
+//    float R22 = sin(Psi)*sin(Theta)*sin(Phi)+cos(Psi)*cos(Phi);
+//    float R23 = cos(Psi)*sin(Theta)*sin(Phi)-sin(Psi)*cos(Phi);
+//    float R31 = -sin(Theta);
+//    float R32 = sin(Psi)*cos(Theta);
+//    float R33 = cos(Psi)*cos(Theta);
+//    float det = ( R11*R22*R33 + R12*R23*R31 + R13*R21*R32 ) - ( R11*R23*R32 + R12*R21*R33 + R13*R22*R31 );
+//    row1.push_back(R11); row1.push_back(R12); row1.push_back(R13);
+//    row2.push_back(R21); row2.push_back(R22); row2.push_back(R23);
+//    row3.push_back(R31); row3.push_back(R32); row3.push_back(R33);
+//    RM33.push_back(row1);
+//    RM33.push_back(row2);
+//    RM33.push_back(row3);
+//
+//    // Print out detail
+//    if( printInfo )
+//    {
+//        printf("Input angle(psi, theta, phi) = (%11.8f,%11.8f,%11.8f)\n", Psi, Theta, Phi );
+//        printf("Rotation matrix RM =\n");
+//        printRM(RM33);
+//        // Debug
+//        //printf(" | %11.8f  %11.8f  %11.8f |\n", R11, R12, R13);
+//        //printf(" | %11.8f  %11.8f  %11.8f |\n", R21, R22, R23);
+//        //printf(" | %11.8f  %11.8f  %11.8f |\n", R31, R32, R33);
+//        printf("Determinant det(RM) = %11.8f\n", det);
+//    }
+//
+//    return det;
+//}
+//float RM_euler( float angle[3], std::vector<std::vector<float> > &RM33, bool printInfo=true )
+//{
+//    return RM_euler( angle[0], angle[1], angle[2], RM33, printInfo );
+//}
+//
+//// Two solutions if fabs(RM33[e3][e1]) != 1., angle = spi, theta and phi
+//// Follow https://github.com/alphatsai/AlignmentTool/blob/master/ESAlignTool/macro/euler.pdf
+//int getEulerAngle( std::vector<std::vector<float> > RM33, float angle1[3], float angle2[3], bool printInfo=true )
+//{
+//    int solCase=0; // -1: R31=-1, 1: R31=1, 0: R31!=1or-1 
+//    int e1=0;
+//    int e2=1;
+//    int e3=2;
+//    float theta1=0, theta2=0;
+//    float phi1=0, phi2=0;
+//    float psi1=0, psi2=0;
+//
+//    if( fabs(RM33[e3][e1]) != 1. ) // R31 != 1, -1
+//    {
+//        theta1 = -asin(RM33[e3][e1]);
+//        theta2 = TMath::Pi()-theta1;
+//        psi1 = atan2( RM33[e3][e2]/cos(theta1), RM33[e3][e3]/cos(theta1) );
+//        psi2 = atan2( RM33[e3][e2]/cos(theta2), RM33[e3][e3]/cos(theta2) );
+//        phi1 = atan2( RM33[e2][e1]/cos(theta1), RM33[e1][e1]/cos(theta1) );
+//        phi2 = atan2( RM33[e2][e1]/cos(theta2), RM33[e1][e1]/cos(theta2) );
+//    }
+//    else
+//    {
+//        if( RM33[e3][e1] == -1 )
+//        {   
+//            solCase=-1;
+//            theta1 = theta2 = TMath::Pi()/2;
+//            psi1 = psi2 = phi1 + atan2( RM33[e1][e2], RM33[e1][e3] );
+//        }
+//        else
+//        {
+//            solCase=1;
+//            theta1 = theta2 = -1*TMath::Pi()/2;
+//            psi1 = psi2 = -1*phi1 + atan2( -1*RM33[e1][e2], -1*RM33[e1][e3] );
+//        }    
+//    }
+//    angle1[0]=psi1;   angle2[0]=psi2;
+//    angle1[1]=theta1; angle2[1]=theta2;
+//    angle1[2]=phi1;   angle2[2]=phi2;
+//   
+//    // Print out detail 
+//    if( printInfo )
+//    {
+//        printf("Input matrix\n");
+//        printRM(RM33);
+//        printf("Output results with case %d ( 1/-1: one solution, 0: two solutions )\n", solCase );
+//        printf(" Sol 1. ( spi, theta, phi ) = ( %11.8f,%11.8f,%11.8f )\n", angle1[0], angle1[1], angle1[2]);
+//        printf(" Sol 2. ( spi, theta, phi ) = ( %11.8f,%11.8f,%11.8f )\n", angle2[0], angle2[1], angle2[2]);
+//    }
+//
+//    return solCase;
+//}
