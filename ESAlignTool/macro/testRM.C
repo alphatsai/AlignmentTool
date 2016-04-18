@@ -14,8 +14,8 @@ void testRM()
     RM_euler(a1,RM1);
     RM_euler(a2,RM2);
 
-    // Only try rotation maxtrix of CMSSW
-    //double a[3]={-0.0001 , -0 , -0};
+    //// Only try rotation maxtrix of CMSSW
+    ////double a[3]={-0.0001 , 0 , 0};
     //double a[3]={-0 , -0, -0.0001};
     //vector<std::vector<double> > RM;
     //RM_euler(a,RM);
