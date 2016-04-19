@@ -11,7 +11,7 @@ void printRM( std::vector<std::vector<double> > RM33 )
 }
 
 // Caculate rotation matrix in ES
-double RM_xyz( double Alpha, double Beta, double Gamma, std::vector<std::vector<double> > &RM33, bool printInfo=true )
+double RM_ES( double Alpha, double Beta, double Gamma, std::vector<std::vector<double> > &RM33, bool printInfo=true )
 {
     // Init
     std::vector<double> row1;
@@ -51,13 +51,13 @@ double RM_xyz( double Alpha, double Beta, double Gamma, std::vector<std::vector<
 
     return det;
 }
-double RM_xyz( double angle[3], std::vector<std::vector<double> > &RM33, bool printInfo=true )
+double RM_ES( double angle[3], std::vector<std::vector<double> > &RM33, bool printInfo=true )
 {
-    return RM_xyz( angle[0], angle[1], angle[2], RM33, printInfo );
+    return RM_ES( angle[0], angle[1], angle[2], RM33, printInfo );
 }
 
 // Caculate rotation matrix in Euler angles
-double RM_euler( double Phi, double Theta, double Psi, std::vector<std::vector<double> > &RM33, bool printInfo=true )
+double RM_CLHEP( double Phi, double Theta, double Psi, std::vector<std::vector<double> > &RM33, bool printInfo=true )
 {
     // Init
     std::vector<double> row1;
@@ -97,13 +97,13 @@ double RM_euler( double Phi, double Theta, double Psi, std::vector<std::vector<d
 
     return det;
 }
-double RM_euler( double angle[3], std::vector<std::vector<double> > &RM33, bool printInfo=true )
+double RM_CLHEP( double angle[3], std::vector<std::vector<double> > &RM33, bool printInfo=true )
 {
-    return RM_euler( angle[0], angle[1], angle[2], RM33, printInfo );
+    return RM_CLHEP( angle[0], angle[1], angle[2], RM33, printInfo );
 }
 
 // Two solutions if fabs(RM33[e3][e3]) != 1., angle = spi, theta and phi
-int getEulerAngle( std::vector<std::vector<double> > RM33, double angle1[3], double angle2[3], bool printInfo=true )
+int getAnglesCLHEP( std::vector<std::vector<double> > RM33, double angle1[3], double angle2[3], bool printInfo=true )
 {
     int solCase=0; // -1: R31=-1, 1: R31=1, 0: R31!=1or-1 
     int e1=0;
@@ -122,8 +122,6 @@ int getEulerAngle( std::vector<std::vector<double> > RM33, double angle1[3], dou
         psi2 = atan2( RM33[e1][e3]/sin(theta2), RM33[e2][e3]/sin(theta2) );
         phi1 = TMath::Pi()-atan2( RM33[e3][e1]/sin(theta1), RM33[e3][e2]/sin(theta1) );
         phi2 = TMath::Pi()-atan2( RM33[e3][e1]/sin(theta2), RM33[e3][e2]/sin(theta2) );
-        //phi1 = -atan2( RM33[e3][e1]/sin(theta1), RM33[e3][e2]/sin(theta1) );
-        //phi2 = -atan2( RM33[e3][e1]/sin(theta2), RM33[e3][e2]/sin(theta2) );
     }
     else
     {
@@ -159,7 +157,7 @@ int getEulerAngle( std::vector<std::vector<double> > RM33, double angle1[3], dou
 
 //// Caculate rotation matrix in Euler angles
 // Follow https://github.com/alphatsai/AlignmentTool/blob/master/ESAlignTool/macro/euler.pdf
-//double RM_euler( double Psi, double Theta, double Phi, std::vector<std::vector<double> > &RM33, bool printInfo=true )
+//double RM_CLHEP( double Psi, double Theta, double Phi, std::vector<std::vector<double> > &RM33, bool printInfo=true )
 //{
 //    // Init
 //    std::vector<double> row1;
@@ -199,14 +197,14 @@ int getEulerAngle( std::vector<std::vector<double> > RM33, double angle1[3], dou
 //
 //    return det;
 //}
-//double RM_euler( double angle[3], std::vector<std::vector<double> > &RM33, bool printInfo=true )
+//double RM_CLHEP( double angle[3], std::vector<std::vector<double> > &RM33, bool printInfo=true )
 //{
-//    return RM_euler( angle[0], angle[1], angle[2], RM33, printInfo );
+//    return RM_CLHEP( angle[0], angle[1], angle[2], RM33, printInfo );
 //}
 //
 //// Two solutions if fabs(RM33[e3][e1]) != 1., angle = spi, theta and phi
 //// Follow https://github.com/alphatsai/AlignmentTool/blob/master/ESAlignTool/macro/euler.pdf
-//int getEulerAngle( std::vector<std::vector<double> > RM33, double angle1[3], double angle2[3], bool printInfo=true )
+//int getAnglesCLHEP( std::vector<std::vector<double> > RM33, double angle1[3], double angle2[3], bool printInfo=true )
 //{
 //    int solCase=0; // -1: R31=-1, 1: R31=1, 0: R31!=1or-1 
 //    int e1=0;
