@@ -46,7 +46,7 @@ double RM_ES( double Alpha, double Beta, double Gamma, std::vector<std::vector<d
         //printf(" | %11.8f  %11.8f  %11.8f |\n", R11, R12, R13);
         //printf(" | %11.8f  %11.8f  %11.8f |\n", R21, R22, R23);
         //printf(" | %11.8f  %11.8f  %11.8f |\n", R31, R32, R33);
-        printf("Determinant det(RM) = %11.8f\n", det);
+        printf("Determinant det(RM) = %11.8f\n\n", det);
     }
 
     return det;
@@ -92,7 +92,7 @@ double RM_CLHEP( double Phi, double Theta, double Psi, std::vector<std::vector<d
         //printf(" | %11.8f  %11.8f  %11.8f |\n", R11, R12, R13);
         //printf(" | %11.8f  %11.8f  %11.8f |\n", R21, R22, R23);
         //printf(" | %11.8f  %11.8f  %11.8f |\n", R31, R32, R33);
-        printf("Determinant det(RM) = %11.8f\n", det);
+        printf("Determinant det(RM) = %11.8f\n\n", det);
     }
 
     return det;
@@ -149,7 +149,7 @@ int getAnglesCLHEP( std::vector<std::vector<double> > RM33, double angle1[3], do
         printRM(RM33);
         printf("Output results with case %d ( 1/-1: one solution, 0: two solutions )\n", solCase );
         printf(" Sol 1. ( phi, theta, psi ) = ( %11.8f,%11.8f,%11.8f )\n", angle1[0], angle1[1], angle1[2]);
-        printf(" Sol 2. ( phi, theta, psi ) = ( %11.8f,%11.8f,%11.8f )\n", angle2[0], angle2[1], angle2[2]);
+        printf(" Sol 2. ( phi, theta, psi ) = ( %11.8f,%11.8f,%11.8f )\n\n", angle2[0], angle2[1], angle2[2]);
     }
 
     return solCase;

@@ -2,7 +2,7 @@
 #include <iostream>
 void testRM()
 {
-    //// Conversion of ES and CLHEP  ------------------------
+    ////// Conversion of ES and CLHEP  ------------------------
     // *1 Input (alpha, beta, gamma) from ES alignment tool representations.
     //double a[3]={0,0,0};
     double a[3]={0.0014, 0.0005, 0};
@@ -16,13 +16,17 @@ void testRM()
     double a2[3];
     getAnglesCLHEP(RM,a1,a2);
 
-    // *4 Valiate the two solutions can provide the same roation matrix.
+    // *4 Validate the two solutions can provide the same roation matrix.
     vector<std::vector<double> > RM1, RM2;
     RM_CLHEP(a1,RM1);
     RM_CLHEP(a2,RM2);
 
-    ////// Only try rotation maxtrix of CLHEP  ------------------
-    //double a3[3]={ -0 , -0.0001 , 0};
-    //vector<std::vector<double> > RM3;
+    //////// Only try rotation maxtrix of CLHEP  ------------------
+    //double a1[3]={ -0.0001 , -0 , -0};
+    //double a2[3]={ -0 , -0.0001 , 0};
+    //double a3[3]={ -0 , -0 , -0.0001};
+    //vector<std::vector<double> > RM1, RM2, RM3;
+    //RM_CLHEP(a1,RM1);
+    //RM_CLHEP(a2,RM2);
     //RM_CLHEP(a3,RM3);
 }
