@@ -39,7 +39,7 @@ double RM_ES( double Alpha, double Beta, double Gamma, std::vector<std::vector<d
     // Print out detail
     if( printInfo )
     {
-        printf("Input angle(a,b,g) = (%11.8f,%11.8f,%11.8f)\n", Alpha, Beta, Gamma);
+        printf("Input angle(alpha,beta,gamma) = (%11.8f,%11.8f,%11.8f)\n", Alpha, Beta, Gamma);
         printf("Rotation matrix RM =\n");
         printRM(RM33);
         // Debug
