@@ -29,8 +29,6 @@
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 #include "Geometry/CommonDetUnit/interface/GlobalTrackingGeometry.h"
-
-
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 #include "DataFormats/GeometrySurface/interface/Plane.h"
 #include "TrackPropagation/SteppingHelixPropagator/interface/SteppingHelixPropagator.h"
@@ -46,6 +44,10 @@
 // class declaration
 //
 
+using namespace edm;
+using namespace reco;   
+using namespace std; 
+ 
 class ESAlignTool : public edm::EDAnalyzer  // public edm::EDAnalyzer
 {
     public:
@@ -71,7 +73,8 @@ class ESAlignTool : public edm::EDAnalyzer  // public edm::EDAnalyzer
         void UnAligned_RotationMatrices( int iz, int ip, double Alpha, double Beta, double Gamma);
         void LoadMagFieldonES(Long64_t ,const CaloGeometry *, edm::ESHandle<MagneticField>);
         void PrintPosition(Long64_t , const CaloGeometry *);
-        void fill_esRecHit(const CaloGeometry *, edm::Handle<EcalRecHitCollection>);
+        void fill_esRecHit(const CaloGeometry *, edm::Handle<ESRecHitCollection>);
+        //void fill_esRecHit(const CaloGeometry *, edm::Handle<EcalRecHitCollection>);
         void fill_tracks(edm::Handle<reco::TrackCollection>);
         bool pass_TrackSelection(reco::TrackCollection::const_iterator);
         void fill_esRecHitAssociation();
@@ -256,8 +259,10 @@ class ESAlignTool : public edm::EDAnalyzer  // public edm::EDAnalyzer
         int Selected_idee;
         int Selected_RUNmin;  int Selected_RUNmax;
 
-        edm::InputTag RecHitLabel_;
-        edm::InputTag TrackLabel_;
+        //edm::InputTag RecHitLabel_;
+        //edm::InputTag TrackLabel_;
+        edm::EDGetTokenT<ESRecHitCollection> RecHitLabel_;
+        edm::EDGetTokenT<TrackCollection> TrackLabel_;
 
         edm::ParameterSet DefaultESLocation_; 
         edm::ParameterSet MatrixElements_; 

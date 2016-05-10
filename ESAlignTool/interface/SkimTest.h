@@ -47,6 +47,9 @@
 //
 // class declaration
 //
+using namespace edm;
+using namespace reco;   
+using namespace std; 
 
 class SkimTest : public edm::EDAnalyzer  // public edm::EDAnalyzer
 {
@@ -77,9 +80,11 @@ protected:
 private:
   bool isEndCapTrack(reco::Track track);
   bool isGoodTrack(reco::Track track);
-  edm::InputTag RecHitLabel_;
-  edm::InputTag TrackLabel_;
- 
+  //edm::InputTag RecHitLabel_;
+  //edm::InputTag TrackLabel_;
+  edm::EDGetTokenT<ESRecHitCollection> RecHitLabel_;
+  edm::EDGetTokenT<TrackCollection> TrackLabel_;
+
 };
 
 #endif

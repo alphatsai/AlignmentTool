@@ -87,8 +87,10 @@ void SkimTest::initAllPara(const edm::ParameterSet& iConfig)
 {
  std::cout<<"Initializing All Parameters..."<<std::endl;
   _evt_run=_good_tracks=0;	
- RecHitLabel_ = iConfig.getParameter<edm::InputTag>("RecHitLabel"); 
- TrackLabel_ = iConfig.getParameter<edm::InputTag>("TrackLabel"); 
+ //RecHitLabel_ = iConfig.getParameter<edm::InputTag>("RecHitLabel"); 
+ //TrackLabel_  = iConfig.getParameter<edm::InputTag>("TrackLabel"); 
+ RecHitLabel_ = consumes<ESRecHitCollection>(iConfig.getParameter<edm::InputTag>("RecHitLabel")); 
+ TrackLabel_  = consumes<TrackCollection>(iConfig.getParameter<edm::InputTag>("TrackLabel")); 
 }
 
 void 
@@ -127,12 +129,12 @@ SkimTest::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::cout<<"Pass EvtRun Selection.\n";
  
   edm::Handle<EcalRecHitCollection> PreshowerRecHits;
-  iEvent.getByLabel(RecHitLabel_, PreshowerRecHits);
+  iEvent.getByToken(RecHitLabel_, PreshowerRecHits);
   std::cout << " number of ES reco-hits " << PreshowerRecHits->size() << std::endl;
  
  
   edm::Handle<reco::TrackCollection>   TrackCol;
-  iEvent.getByLabel( TrackLabel_,      TrackCol );
+  iEvent.getByToken( TrackLabel_,      TrackCol );
   std::cout << " number of tracks " << TrackCol->size() << std::endl;
 
   int NtrackEndCap=0;

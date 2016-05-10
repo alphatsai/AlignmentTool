@@ -158,8 +158,8 @@ void ESAlignTool::initAllPara(const edm::ParameterSet& iConfig)
     Selected_RUNmin = iConfig.getParameter<int>("Selected_RUNmin");
     Selected_RUNmax = iConfig.getParameter<int>("Selected_RUNmax");
 
-    RecHitLabel_ = iConfig.getParameter<edm::InputTag>("RecHitLabel"); 
-    TrackLabel_ = iConfig.getParameter<edm::InputTag>("TrackLabel"); 
+    RecHitLabel_ = consumes<ESRecHitCollection>(iConfig.getParameter<edm::InputTag>("RecHitLabel")); 
+    TrackLabel_  = consumes<TrackCollection>(iConfig.getParameter<edm::InputTag>("TrackLabel")); 
 
     iterN = iConfig.getParameter<unsigned int>("IterN");
     if(iterN<0||iterN>11) std::cout<<"Error : Out of Range for iterN!!!!\n";
@@ -357,15 +357,16 @@ ESAlignTool::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 
         //2.fill es hits
-        edm::Handle<EcalRecHitCollection> PreshowerRecHits;
-        iEvent.getByLabel(RecHitLabel_, PreshowerRecHits);
+        //edm::Handle<EcalRecHitCollection> PreshowerRecHits;
+        edm::Handle<ESRecHitCollection> PreshowerRecHits;
+        iEvent.getByToken(RecHitLabel_, PreshowerRecHits);
         fill_esRecHit(caloGeom,PreshowerRecHits);
         if( _debug ) std::cout << " number of reco-hits " << PreshowerRecHits->size() << std::endl;
 
 
         //3.fill Track
         edm::Handle<reco::TrackCollection>   TrackCol;
-        iEvent.getByLabel( TrackLabel_,      TrackCol );
+        iEvent.getByToken( TrackLabel_,      TrackCol );
         if( _debug ) std::cout << " number of tracks " << TrackCol->size() << std::endl;
 
         fill_tracks(TrackCol);
@@ -645,12 +646,15 @@ void ESAlignTool::PrintPosition(Long64_t _evt_run, const CaloGeometry *caloGeom)
                             }}}}}}}
 }
 
-void ESAlignTool::fill_esRecHit(const CaloGeometry *caloGeom, edm::Handle<EcalRecHitCollection> PreshowerRecHits)
+//void ESAlignTool::fill_esRecHit(const CaloGeometry *caloGeom, edm::Handle<EcalRecHitCollection> PreshowerRecHits)
+void ESAlignTool::fill_esRecHit(const CaloGeometry *caloGeom, edm::Handle<ESRecHitCollection> PreshowerRecHits)
 {
-    const ESRecHitCollection *ESRH = PreshowerRecHits.product();
-    EcalRecHitCollection::const_iterator esrh_it;
+    //const ESRecHitCollection *ESRH = PreshowerRecHits.product();
+    //EcalRecHitCollection::const_iterator esrh_it;
+    ESRecHitCollection::const_iterator esrh_it;
 
-    for ( esrh_it = ESRH->begin(); esrh_it != ESRH->end(); esrh_it++)
+    //for ( esrh_it = ESRH->begin(); esrh_it != ESRH->end(); esrh_it++)
+    for ( esrh_it = PreshowerRecHits->begin(); esrh_it != PreshowerRecHits->end(); esrh_it++)
     {
         Double_t esrh_x = caloGeom->getPosition(esrh_it->id()).x();
         Double_t esrh_y = caloGeom->getPosition(esrh_it->id()).y();
