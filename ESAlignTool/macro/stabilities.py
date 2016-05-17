@@ -21,23 +21,33 @@ G00={'mR':0.,        'mF':0.,        'pF':0.,       'pR':0.      }
 #G0={'mR':-0.1,     'mF':0.5,      'pF':0.8,     'pR':0.5     }
 
 ## 2. 2015 RunC,D propmt reco
-X0={'mR':-0.303,   'mF':-0.284,   'pF':0.324,   'pR':0.357   }
-Y0={'mR':-0.462,   'mF':-0.477,   'pF':-0.932,  'pR':-0.905  }
-Z0={'mR':-308.922, 'mF':-304.289, 'pF':304.167, 'pR':308.770 }
-A0={'mR':1.4,      'mF':1.4,      'pF':-1.3,    'pR':-1.7    }
-B0={'mR':0.5,      'mF':0.8,      'pF':0.1,     'pR':0.4     }
-G0={'mR':-0.,      'mF':0.6,      'pF':0.8,     'pR':0.6     }
+#X0={'mR':-0.303,   'mF':-0.284,   'pF':0.324,   'pR':0.357   }
+#Y0={'mR':-0.462,   'mF':-0.477,   'pF':-0.932,  'pR':-0.905  }
+#Z0={'mR':-308.922, 'mF':-304.289, 'pF':304.167, 'pR':308.770 }
+#A0={'mR':1.4,      'mF':1.4,      'pF':-1.3,    'pR':-1.7    }
+#B0={'mR':0.5,      'mF':0.8,      'pF':0.1,     'pR':0.4     }
+#G0={'mR':-0.,      'mF':0.6,      'pF':0.8,     'pR':0.6     }
+
+## 2. 2016 RunB, 80X_dataRun2_Prompt_v8 (used Run2015 Boff)
+X0={'mR':-0.225,   'mF':-0.242,   'pF':0.331,   'pR':0.351   }
+Y0={'mR':-0.503,   'mF':-0.534,   'pF':-0.927,  'pR':-0.898  }
+Z0={'mR':-310.274, 'mF':-305.657, 'pF':305.510, 'pR':310.086 }
+A0={'mR':1.4,      'mF':1.2,      'pF':-1.2,    'pR':-1.2    }
+B0={'mR':0.2,      'mF':0.6,      'pF':0.0,     'pR':0.4     }
+G0={'mR':0.1,      'mF':0.6,      'pF':0.8,     'pR':0.6     }
 
 ### Input files
 #inputFile='pdf/inputMatrixElementsRunB.txt'
 #inputFile='pdf/inputMatrixElementsRunC25ns.txt'
-inputFile='pdf/inputMatrixElementsRunDv3.txt'
+#inputFile='pdf/inputMatrixElementsRunDv3.txt'
 #inputFile='pdf/inputMatrixElementsRunDv4.txt'
+inputFile='results/17May_Run2016B/inputMatrixElementsRunDv4.txt'
 
 #output='pdf/Stabilities_RunB'
 #output='pdf/Stabilities_RunC25ns'
-output='pdf/Stabilities_RunDv3'
+#output='pdf/Stabilities_RunDv3'
 #output='pdf/Stabilities_RunDv4'
+output='results/17May_Run2016B'
 
 
 ### Main functions
