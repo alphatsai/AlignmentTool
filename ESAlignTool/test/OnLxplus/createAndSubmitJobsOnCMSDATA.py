@@ -102,7 +102,8 @@ EOSPATH="EOS_PATH"
 
 #export SCRAM_ARCH=slc5_amd64_gcc462
 #export SCRAM_ARCH=slc6_amd64_gcc481
-export SCRAM_ARCH=slc6_amd64_gcc491
+#export SCRAM_ARCH=slc6_amd64_gcc491
+export SCRAM_ARCH=slc6_amd64_gcc530
 cd MAIN_WORKDIR
 eval `scram runtime -sh`
 
@@ -152,7 +153,7 @@ def main():
   parser.add_option("-w", "--main_workdir", dest="main_workdir", action='store', help="Main working directory", metavar="MAIN_WORKDIR")
   parser.add_option("-d", "--dataset_list", dest="dataset_list", action='store', help="Text file containing a list of datasets to be processed", metavar="DATASET_LIST")
   parser.add_option("-D", "--DBFileInput",  dest="DBFileInput",  action='store', help="Input DB file", default='', metavar="DBFILEINPUT")
-  parser.add_option("-J", "--myJSONfile", dest="myJSONfile", action='store', help="JSON file for selecting event", metavar="MYJSONFILE")
+  parser.add_option("-J", "--myJSONfile", dest="myJSONfile", action='store', help="JSON file for selecting event", default='', metavar="MYJSONFILE")
   parser.add_option("-o", "--output_filename", dest="output_filename", action='store', default='AlignmentFile', help="Output ROOT filename (Default set to AlignmentFile)", metavar="OUTPUT_FILENAME")
   parser.add_option("-E", "--eos_path", dest="eos_path", action='store', help="EOS path to copy output files to (This parameter is optional)", metavar="EOS_PATH")
   parser.add_option('-m', '--match', dest="match", action='store', help='Only files containing the MATCH string in their names will be considered (This parameter is optional)', metavar='MATCH')

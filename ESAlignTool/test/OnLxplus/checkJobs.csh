@@ -21,7 +21,7 @@ cmsenv
 #	exit
 #endif
 if( $4 == "" ) then
-	set sq="1nh" 
+	set sq="cmscaf1nd" 
 else
 	set sq=$4
 endif

@@ -1,5 +1,5 @@
 FileNames = [
-    'file:/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_15_patch1/src/SkimTool/ESHitSkimLoose/test/Refitter.root'
+    'root://eoscms//eos/cms/store/group/dpg_ecal/alca_ecalcalib/ESAlignment/ESALCALRECO_CMSSW_8_0_7_patch3_v2/HLTPhysics/crab_HLTPhysics_Run2016B-v1/160513_115757/0000/EcalESAlign_999.root'
 ]
 FileNames_CSA14Test = [
 	'root://eoscms//eos/cms/store/mc/Spring14dr/DYJetsToLL_M-50_HT-400to600_Tune4C_13TeV-madgraph-tauola/AODSIM/PU_S14_POSTLS170_V6-v1/00000/FAA72611-9F00-E411-AED5-002590A2CD68.root',

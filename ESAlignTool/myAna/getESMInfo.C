@@ -19,10 +19,19 @@ const int iterN=1;
 void getESMInfo(){
 	TFile* f;	
 	TTree* t;
-	f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_7_4_12_patch4/src/AlignmentTool/ESAlignTool/test/OnLxplus/14Oct_BoffRunC_Iter1_nofulldata/SingleElectron_Run2015C-PromptReco-v1.root");
+	f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter1/HLTPhysics.root");
+	//f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter2/HLTPhysics.root");
+	//f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter3/HLTPhysics.root");
+	//f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter4/HLTPhysics.root");
+	//f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter5/HLTPhysics.root");
+	//f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter6/HLTPhysics.root");
+	//f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter7/HLTPhysics.root");
+	//f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter8/HLTPhysics.root");
+	//f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter9/HLTPhysics.root");
+	//f=new TFile("/afs/cern.ch/work/j/jtsai/ESAlignment/CMSSW_8_0_7_patch3/src/AlignmentTool/ESAlignTool/test/OnLxplus/24May_Run2016B_iter10/HLTPhysics.root");
 	t=(TTree*)f->Get("ESAlignmentTool/tree");
   	CalIter_wRotation caculate;
 	caculate.registerESMatrix(t);
 	caculate.iterN=iterN;
-	caculate.run("BoffRunC_Iter1");
+	caculate.run("BonRun2016B_Iter1");
 }
