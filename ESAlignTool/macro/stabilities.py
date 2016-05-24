@@ -41,13 +41,13 @@ G0={'mR':0.1,      'mF':0.6,      'pF':0.8,     'pR':0.6     }
 #inputFile='pdf/inputMatrixElementsRunC25ns.txt'
 #inputFile='pdf/inputMatrixElementsRunDv3.txt'
 #inputFile='pdf/inputMatrixElementsRunDv4.txt'
-inputFile='results/17May_Run2016B/inputMatrixElementsRunDv4.txt'
+inputFile='results/17May_Run2016B/inputMatrixElements_cfi.txt'
 
 #output='pdf/Stabilities_RunB'
 #output='pdf/Stabilities_RunC25ns'
 #output='pdf/Stabilities_RunDv3'
 #output='pdf/Stabilities_RunDv4'
-output='results/17May_Run2016B'
+output='results/17May_Run2016B/pdf/Stabilities'
 
 
 ### Main functions
@@ -236,7 +236,7 @@ outputFile.write("\n")
 ### Print out info for macro 
 Axis={  'X':X,   'Y':Y,   'Z':Z,   'Alpha':A,   'Beta':B,   'Gamma':G   }
 Axis0={ 'X':X00, 'Y':Y00, 'Z':Z00, 'Alpha':A00, 'Beta':B00, 'Gamma':G00 }
-print  ">> [INFO] For producing db file macro" 
+print  ">> [INFO] For producing db file macro (angle unit is mrad)" 
 print  "          %6s  %7s, %7s, %7s, %7s, %7s, %7s, %7s, %7s  "%( 'Axis', 'mR', 'mR', 'mF', 'mF', 'pF', 'pF', 'pR', 'pR')
 outputFile.write("For producing db file macro:\n") 
 outputFile.write("%6s  %7s, %7s, %7s, %7s, %7s, %7s, %7s, %7s\n"%( 'Axis', 'mR', 'mR', 'mF', 'mF', 'pF', 'pF', 'pR', 'pR'))
