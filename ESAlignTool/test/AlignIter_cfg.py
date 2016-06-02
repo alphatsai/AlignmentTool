@@ -1,50 +1,26 @@
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("ESAlignmentTool")
-
-#process.load('Configuration.StandardSequences.GeometryDB_cff')
-#process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 process.load("TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAlong_cfi")
 
 ###################### Modify following Global tag ################################
-######################       This is example       ################################
+## See https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v8', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v8_CustomTrackerAndECAL_2016B_v0', '')
+#process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v8', '')
 
-#from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
-#process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v4', '')
-#process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Candidate_2015_11_18_10_21_42', '')
-
-# https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions
-#process.GlobalTag.globaltag = 'POSTLS170_V6::All'  
-#process.GlobalTag.globaltag = 'POSTLS170_V5::All'  
-#process.GlobalTag.globaltag = 'MCRUN2_74_V1::All' 
-#process.GlobalTag.globaltag = 'GR_P_V56::All'  
+#### For input DB file
+## Check DB content by "conddb -d myfile.db list ES"
 #process.newESAlignment = cms.ESSource("PoolDBESSource",
-#           process.CondDBSetup,
 #                                       connect = cms.string('sqlite_file:inputDB.db'),
 #                                       toGet= cms.VPSet(cms.PSet(record = cms.string("ESAlignmentRcd"),
 #                                                       tag = cms.string('ES'))
 #                                                           )
 #)
 #process.es_prefer_GlobalPositionDB = cms.ESPrefer("PoolDBESSource", "newESAlignment")
-#process.newTKAlignment = cms.ESSource("PoolDBESSource",
-#                                        process.CondDBSetup,
-#                                        connect = cms.string('frontier://FrontierProd/CMS_COND_31X_ALIGNMENT'),
-#                                        timetype = cms.string('runnumber'),
-#                                        toGet = cms.VPSet(cms.PSet(
-#                                                record = cms.string('TrackerAlignmentRcd'),
-#                                                tag = cms.string('TrackerAlignment_GR10_v4_offline')
-#                                                ))
-#                                        )
-#process.es_prefer_trackerAlignment = cms.ESPrefer("PoolDBESSource", "newTKAlignment")
-
-####################################################################################
-
 
 # Default Parameter options
 from FWCore.ParameterSet.VarParsing import VarParsing
@@ -149,11 +125,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.MaxE
 from inputFiles_cfi import * #FileNames 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(FileNames)
-    #fileNames = cms.untracked.vstring(FileNames_CSA14Test)
-    #fileNames = cms.untracked.vstring(FileNames_PionGunTest)
     #fileNames = cms.untracked.vstring("root://eoscms//eos/cms/store/data/Run2015A/Jet/RECO/PromptReco-v1/000/247/992/00000/6C94F6E2-2415-E511-BDD0-02163E011938.root")
-    #skipEvents = cms.untracked.uint32(0),
-    #firstEvent = cms.untracked.uint32(1),
 )
 
 ### output
@@ -205,12 +177,6 @@ process.ESAlignmentTool = cms.EDAnalyzer('ESAlignTool',
 if options.JSONFilename != "":
     import FWCore.PythonUtilities.LumiList as LumiList
     process.source.lumisToProcess = LumiList.LumiList(filename=options.JSONFilename).getVLuminosityBlockRange()
-#process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt').getVLuminosityBlockRange()
-#process.source.lumisToProcess = LumiList.LumiList(filename='Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt').getVLuminosityBlockRange()
 
 process.load("RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi") # For ES ALCA RECO dataset
-#from RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi import *
-#process.esLocalReco = cms.Sequence( ecalPreshowerRecHit )
-
 process.p = cms.Path( process.ecalPreshowerRecHit*process.ESAlignmentTool)
-#process.p = cms.Path( process.esLocalReco *process.ESAlignmentTool)

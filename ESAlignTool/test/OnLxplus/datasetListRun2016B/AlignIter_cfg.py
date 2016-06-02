@@ -12,7 +12,7 @@ process.load("TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAl
 ###################### Modify following Global tag ################################
 ######################       This is example       ################################
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v8', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v8_CustomTrackerAndECAL_2016B_v0', '')
 
 #from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')

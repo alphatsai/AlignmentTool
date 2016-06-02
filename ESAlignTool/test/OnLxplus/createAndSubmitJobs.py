@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, shutil, re, subprocess
+import sys, os, shutil, re, subprocess, time
 from optparse import OptionParser
 
 
@@ -23,34 +23,49 @@ def process_input_dir(input_dir, match, filelist):
     path = input_dir;
     name = ''
     jobdict = {}
+    cmseosdata=False
 
+    job = 0
     for filename in filenamelist:
         if( not re.search('.root$', filename) ):
             continue
         if ( match!=None and not re.search(match, filename) ):
             continue
-        if re.search('_\d+_\d+_\w+.root', filename):
-          m1 = re.search('_\d+_\d+_\w+.root', filename)
-        elif re.search('_\d+.root', filename):
-          m1 = re.search('_\d+.root', filename)
+        if re.search('_\d+_\d+_\w+\.root', filename):
+          m1 = re.search('_\d+_\d+_\w+\.root', filename)
+        elif re.search('_\d+\.root', filename):
+          m1 = re.search('_\d+\.root', filename)
+        elif re.search('.*-.*-.*-.*-.*\.root', filename):
+          m1 = re.search('.*-.*-.*-.*-.*\.root', filename)
+          cmseosdata=True
         if name=='':
-          if re.search('_\d+_\d+_\w+.root', filename):
-            name = re.split('_\d+_\d+_\w+.root', filename)[0]
-          elif re.search('_\d+.root', filename):
-            name = re.split('_\d+.root', filename)[0]
-        jobstring = filename[m1.start():].lstrip('_').replace('.root','').split('_')
-        job = int(jobstring[0])
-        if len(jobstring)>1:
-          if job not in jobdict.keys():
-              jobdict[job] = []
-              jobdict[job].append([int(jobstring[1])])
-              jobdict[job].append([jobstring[2]])
-          else:
-              jobdict[job][0].append(int(jobstring[1]))
-              jobdict[job][1].append(jobstring[2])
+          if re.search('_\d+_\d+_\w+\.root', filename):
+            name = re.split('_\d+_\d+_\w+\.root', filename)[0]
+          elif re.search('_\d+\.root', filename):
+            name = re.split('_\d+\.root', filename)[0]
+          elif re.search('.*-.*-.*-.*-.*\.root', filename):
+            name = ''
+        jobstring = ''
+        if not cmseosdata: 
+            jobstring = filename[m1.start():].lstrip('_').replace('.root','').split('_')
+            job = int(jobstring[0])
         else:
-          if job not in jobdict.keys():
-            jobdict[job] = []
+            jobstring = filename
+            job += 1
+        if not cmseosdata:
+         if len(jobstring)>1:
+           if job not in jobdict.keys():
+               jobdict[job] = []
+               jobdict[job].append([int(jobstring[1])])
+               jobdict[job].append([jobstring[2]])
+           else:
+               jobdict[job][0].append(int(jobstring[1]))
+               jobdict[job][1].append(jobstring[2])
+         else:
+           if job not in jobdict.keys():
+             jobdict[job] = []
+        else:
+           jobdict[job] = jobstring 
 
     jobs = jobdict.keys()
     if( len(jobs)==0 ):
@@ -59,12 +74,17 @@ def process_input_dir(input_dir, match, filelist):
 
     jobs.sort()
     for job in jobs:
-        if len(jobdict[job])>1:
-          maxsub = max(jobdict[job][0])
-          filename = (path+name+'_%i_%i_%s.root')%(job, maxsub, jobdict[job][1][jobdict[job][0].index(maxsub)])
+        if not cmseosdata:
+         if len(jobdict[job])>1:
+           maxsub = max(jobdict[job][0])
+           filename = (path+name+'_%i_%i_%s.root')%(job, maxsub, jobdict[job][1][jobdict[job][0].index(maxsub)])
+         else:
+           filename = (path+name+'_%i.root')%(job)
+         filelist.append(filename)
         else:
-          filename = (path+name+'_%i.root')%(job)
-        filelist.append(filename)
+         filename = path+name+jobdict[job]
+         filelist.append(filename)
+
 
     return
 
@@ -81,15 +101,20 @@ BATCHDIR=${PWD}
 EOSPATH="EOS_PATH"
 
 #export SCRAM_ARCH=slc5_amd64_gcc462
-export SCRAM_ARCH=slc6_amd64_gcc481
+#export SCRAM_ARCH=slc6_amd64_gcc481
+#export SCRAM_ARCH=slc6_amd64_gcc491
+export SCRAM_ARCH=slc6_amd64_gcc530
 cd MAIN_WORKDIR
 eval `scram runtime -sh`
 
 cp -v MAIN_WORKDIR/CMSSW_cfg.py $BATCHDIR/CMSSW_cfg.py
 cp -v MAIN_WORKDIR/inputMatrixElements_cfi.py $BATCHDIR/
-#cp -v MAIN_WORKDIR/Cert*JSON*.txt $BATCHDIR/
 cp -v DATASET_WORKDIR/input/inputFiles_JOB_NUMBER_cfi.py $BATCHDIR/inputFiles_cfi.py
 
+if [ -e MAIN_WORKDIR/inputDB.db ]
+then
+    cp -v MAIN_WORKDIR/inputDB.db $BATCHDIR/
+fi
 if [ -e MAIN_WORKDIR/myJSON.txt ]
 then
     cp -v MAIN_WORKDIR/myJSON.txt $BATCHDIR/
@@ -116,9 +141,9 @@ exit $exitcode
 
 
 # usage description
-usage = """Usage: ./createAndSubmitJobs.py [options]\n
-Example: ./createAndSubmitJobs.py -w LXBatch_Jobs -d datasetList.txt -c btagvalidation_cfg.py\n
-For more help: ./createAndSubmitJobs.py --help
+usage = """Usage: ./createAndSubmitJobsOnCMSDATA.py [options]\n
+Example: ./createAndSubmitJobsOnCMSDATA.py -w LXBatch_Jobs -d datasetList.txt -c btagvalidation_cfg.py\n
+For more help: ./createAndSubmitJobsOnCMSDATA.py --help
 """
 
 def main():
@@ -127,7 +152,8 @@ def main():
 
   parser.add_option("-w", "--main_workdir", dest="main_workdir", action='store', help="Main working directory", metavar="MAIN_WORKDIR")
   parser.add_option("-d", "--dataset_list", dest="dataset_list", action='store', help="Text file containing a list of datasets to be processed", metavar="DATASET_LIST")
-  parser.add_option("-j", "--myJSONfile", dest="myJSONfile", action='store', help="JSON file for selecting event", metavar="MYJSONFILE")
+  parser.add_option("-D", "--DBFileInput",  dest="DBFileInput",  action='store', help="Input DB file", default='', metavar="DBFILEINPUT")
+  parser.add_option("-J", "--myJSONfile", dest="myJSONfile", action='store', help="JSON file for selecting event", default='', metavar="MYJSONFILE")
   parser.add_option("-o", "--output_filename", dest="output_filename", action='store', default='AlignmentFile', help="Output ROOT filename (Default set to AlignmentFile)", metavar="OUTPUT_FILENAME")
   parser.add_option("-E", "--eos_path", dest="eos_path", action='store', help="EOS path to copy output files to (This parameter is optional)", metavar="EOS_PATH")
   parser.add_option('-m', '--match', dest="match", action='store', help='Only files containing the MATCH string in their names will be considered (This parameter is optional)', metavar='MATCH')
@@ -160,11 +186,13 @@ def main():
   # copy the dataset list file to the main_workdir
   shutil.copyfile(dataset_list,os.path.join(main_workdir,'datasetList.txt'))
 
-  # copy the dataset list file to the main_workdir
-  shutil.copyfile(myJSONfile,os.path.join(main_workdir,'myJSON.txt'))
-
   # copy the CMSSW cfg file to the cfg_files_dir
   shutil.copyfile(cmssw_cfg,os.path.join(main_workdir,'CMSSW_cfg.py'))
+
+  if options.myJSONfile != '':
+    shutil.copyfile( options.myJSONfile, os.path.join(main_workdir,'myJSON.txt'))
+  if options.DBFileInput != '':
+    shutil.copyfile( options.DBFileInput, os.path.join(main_workdir,'inputDB.db'))
 
   # look for pileup distribution files and copy them into main_workdir
   cfg_dirname = os.path.dirname(cmssw_cfg)
@@ -175,8 +203,6 @@ def main():
       continue
     if re.search("inputMatrixElements_cfi.py", filename):
       shutil.copy(os.path.join(cfg_dirname,filename),main_workdir)
-    #if re.search("^Cert.*JSON.*\.txt$",  filename):
-    #  shutil.copy(os.path.join(cfg_dirname,filename),main_workdir)
 
   # open and read the dataset_list file
   dataset_list_file = open(dataset_list,"r")
@@ -234,12 +260,14 @@ def main():
     ifile = 0
     for ijob in range(ijobmax):
        # prepare the list of input files
-       input_files = '    \'root://eoscms.cern.ch/' + filelist[ifile] + '\''
+       #input_files = '    \'root://eoscms.cern.ch/' + filelist[ifile] + '\''
+       input_files = '    \'root://eoscms//' + filelist[ifile] + '\''
        for i in range(filesperjob-1):
            if ifile>(numfiles-2):
                break
            ifile = ifile + 1
-           input_files += (',\n    \'root://eoscms.cern.ch/' + filelist[ifile] + '\'')
+           #input_files += (',\n    \'root://eoscms.cern.ch/' + filelist[ifile] + '\'')
+           input_files += (',\n    \'root://eoscms//' + filelist[ifile] + '\'')
        ifile = ifile + 1
 
        ## create input cfi file
@@ -259,6 +287,7 @@ def main():
        bash_script.close()
 
        if(not options.no_submission):
+	 #time.sleep(2)
          cmd = 'bsub -q ' + options.queue + ' -o ' + os.path.join(dataset_workdir,'output','job_' + str(ijob) + '.log') + ' source ' + os.path.join(dataset_workdir,'input','job_' + str(ijob) + '.sh')
          os.system(cmd)
 

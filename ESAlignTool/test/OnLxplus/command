@@ -5,3 +5,4 @@
 ./createAndSubmitJobsOnCMSDATA.py -w 18Nov_ValRunB_Iter8 -d RunDv3/datasetListValIter8.txt -c RunDv3/AlignIter_cfg.py -J RunB/Cert_246908-255031_13TeV_PromptReco_Collisions15_50ns_JSON_v2.txt -q cmscaf1nd
 ./createAndSubmitJobsOnCMSDATA.py -w 18Nov_ValRunCDv4_Iter8 -d RunDv3/datasetListValIter8.txt -c RunDv3/AlignIter_cfg.py -J RunDv3/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt -q cmscaf1nd
 ./createAndSubmitJobsOnCMSDATA.py -w 17May_Run2016B_iter3 -d datasetListRun2016B/datasetList_iter3.txt -c datasetListRun2016B/AlignIter_cfg.py -q cmscaf1nh
+./createAndSubmitJobsOnCMSDATA.py -w 24May_Run2016B_iter1 -d datasetListRun2016B/datasetList_iter1.txt -c datasetListRun2016B/AlignIter_cfg.py -q cmscaf1nh
