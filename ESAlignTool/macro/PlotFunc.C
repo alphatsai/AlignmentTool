@@ -1,6 +1,6 @@
 using namespace std;
-void fitResidual(TH1D* h1, string xName, Color_t color=2){
-    TF1* gaus1_ = new TF1("gaus1_","gaus", -3., 3.);
+void fitResidual(TH1D* h1, string xName, float xrange=3, Color_t color=2){
+    TF1* gaus1_ = new TF1("gaus1_","gaus", -1*xrange, xrange );
     gaus1_->SetLineColor(color); 
     h1->Fit("gaus1_","WR"); cout<<endl;
     double Mean = gaus1_->GetParameter(1);
@@ -16,7 +16,7 @@ void setStyle( TH1D* h1){
     h1->SetMarkerSize(0.6);
 }
 
-void drawResidual( TFile* f1, TCanvas* c1, string savePath, int xrange=3, Color_t color=2 ){
+void drawResidual( TFile* f1, TCanvas* c1, string savePath, float xrange=3, Color_t color=2 ){
     CMSstyle();
     gStyle->SetOptFit(101);
     gStyle->SetFitFormat("3.3g");
@@ -24,7 +24,6 @@ void drawResidual( TFile* f1, TCanvas* c1, string savePath, int xrange=3, Color_
     //gStyle->SetStatY(0.9);      // Set y-position (fraction of pad size)
     //gStyle->SetStatW(0.18);      // Set width of stat-box (fraction of pad size)
     //gStyle->SetStatH(0.2);      // Set height of stat-box (fraction of pad size)
-    //
 
     TH1D* pF = (TH1D*)f1->Get("ESAlignmentTool/ESpF_residualX");  
     TH1D* pR = (TH1D*)f1->Get("ESAlignmentTool/ESpR_residualY");  

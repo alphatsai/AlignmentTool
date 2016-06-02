@@ -103,7 +103,7 @@ double RM_CLHEP( double angle[3], std::vector<std::vector<double> > &RM33, bool 
 }
 
 // Two solutions if fabs(RM33[e3][e3]) != 1., angle = spi, theta and phi
-int getAnglesCLHEP( std::vector<std::vector<double> > RM33, double angle1[3], double angle2[3], bool printInfo=true )
+int getAnglesCLHEP( std::vector<std::vector<double> > RM33, double angle1[3], double angle2[3], bool printInfo=true, double unit=1)
 {
     int solCase=0; // -1: R31=-1, 1: R31=1, 0: R31!=1or-1 
     int e1=0;
@@ -148,8 +148,8 @@ int getAnglesCLHEP( std::vector<std::vector<double> > RM33, double angle1[3], do
         printf("Input matrix\n");
         printRM(RM33);
         printf("Output CLHEP results with case %d ( 1/-1: one solution, 0: two solutions )\n", solCase );
-        printf(" Sol 1. ( phi, theta, psi ) = ( %11.8f,%11.8f,%11.8f )\n", angle1[0], angle1[1], angle1[2]);
-        printf(" Sol 2. ( phi, theta, psi ) = ( %11.8f,%11.8f,%11.8f )\n\n", angle2[0], angle2[1], angle2[2]);
+        printf(" Sol 1. ( phi, theta, psi ) = ( %11.8f,%11.8f,%11.8f )\n", angle1[0]*unit, angle1[1]*unit, angle1[2]*unit);
+        printf(" Sol 2. ( phi, theta, psi ) = ( %11.8f,%11.8f,%11.8f )\n\n", angle2[0]*unit, angle2[1]*unit, angle2[2]*unit);
     }
 
     return solCase;
