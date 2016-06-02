@@ -133,7 +133,7 @@ CalIter_wRotation::CalIter_wRotation()
    }}
 }
 
-void CalIter_wRotation::run( std::string outputName)
+void CalIter_wRotation::run( std::string outputName="test" )
 {
   cout<<"Alignment on ES+Front :\n";
   if(GetIteration(1,1,ES_dX[1][0],ES_dY[1][0],ES_dZ[1][0],ES_dAlpha[1][0],ES_dBeta[1][0],ES_dGamma[1][0])==1)
@@ -169,7 +169,7 @@ void CalIter_wRotation::run( std::string outputName)
   }
 
   ofstream file;
-  file.open((outputName+".txt").c_str(),ios::out|ios::app);
+  file.open((outputName+"_py.txt").c_str(),ios::out|ios::app);
   file<<"MatrixElementsTmp.Iter"<<iterN<<"_ESpFdX = cms.double("<<ES_dX[1][0]<<")\n";
   file<<"MatrixElementsTmp.Iter"<<iterN<<"_ESpFdY = cms.double("<<ES_dY[1][0]<<")\n";
   file<<"MatrixElementsTmp.Iter"<<iterN<<"_ESpFdZ = cms.double("<<ES_dZ[1][0]<<")\n";
@@ -202,7 +202,7 @@ void CalIter_wRotation::run( std::string outputName)
   file.close();
 
   ofstream file2;
-  file2.open((outputName+"2.txt").c_str(),ios::out|ios::app);
+  file2.open((outputName+"_detail.txt").c_str(),ios::out|ios::app);
   file2<<"idx="<<iterN-1<<";\n";
   file2<<"ESpFdX-="<<ES_dX[1][0]<<"; ESpFdY-="<<ES_dY[1][0]<<"; ESpFdZ-="<<ES_dZ[1][0]<<";\n";
   file2<<"ESpFdAlpha-="<<ES_dAlpha[1][0]<<"; ESpFdBeta-="<<ES_dBeta[1][0]<<"; ESpFdGamma-="<<ES_dGamma[1][0]<<";\n";
