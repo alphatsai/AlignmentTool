@@ -1,4 +1,4 @@
-CMSSW_8_0_3
+CMSSW_8_0_8
 Description on Wiki for AlignmentTool
 https://github.com/chiyi/ESAlignmentWorks/wiki/AlignmentTool
 
@@ -6,8 +6,8 @@ Provide DB files
 
 1. Checkout package:
 	```
-	cmsrel CMSSW_8_0_3
-	cd CMSSW_8_0_3/src
+	cmsrel CMSSW_8_0_8
+	cd CMSSW_8_0_8/src
 	cmsenv
 	git cms-addpkg Geometry/EcalAlgo
 	git cms-addpkg Geometry/CaloEventSetup
