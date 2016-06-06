@@ -5,11 +5,10 @@ from optparse import OptionParser
 
 ## bsub Error description
 errorMsg = { 
-"Fail open root" : ["Fatal Root Error", "Failed to open the file"],
-"EOS error"      : ["Error while doing the asyn writing", "error: target file was not created!"],
-"Segmentation"   : ["Segmentation"],
-"Over memory"    : ["bad_alloc"],
-"Over CPU"       : ["CPU time limit exceeded", "Aborted", "Killed"],
+"Fail open root"  : ["Fatal Root Error", "Failed to open the file"],
+"EOS error"       : ["Error while doing the asyn writing", "error: target file was not created!"],
+"Segmentation"    : ["Segmentation"],
+"Over CPU/RAM" : ["CPU time limit exceeded", "Aborted", "Killed", "bad_alloc"],
 }
 
 ## usage description
@@ -20,21 +19,24 @@ usage = """
 """
 
 ## Assistant functions
-def checkError( logsDir, failJobDetail, failJobs ):
+#def checkError( logsDir, failJobDetail, failJobs ):
+def checkError( logsDir, failJobDetail ):
     for errType in errorMsg:
+        #failJobs[errType] = [] 
         failJobDetail[errType] = {} 
         for err in errorMsg[errType]:
+            failJobDetail[errType][err] = [] 
             cmd = 'grep -r \''+err+'\' '+logsDir
             errInJobs = os.popen(cmd).read()
             if errInJobs != '':
-                failJobDetail[errType][err] = [] 
                 for errJob in errInJobs.split('\n'):
                     if errJob == '':
                         continue
                     job = re.search('\d', re.search('job_\d',errJob).group(0)).group(0)
-                    failJobDetail[errType][err].append(int(job))
-                    if int(job) not in failJobs:
-                        failJobs.append(int(job))
+                    if int(job) not in failJobDetail[errType][err]:
+                        failJobDetail[errType][err].append(int(job))
+                    #if int(job) not in failJobs:
+                    #    failJobs[errType].append(int(job))
 
 def checkRoots( outputDir, nJobs, rootName, noDoneRootList ):
     originDir = os.getcwd()
@@ -64,41 +66,56 @@ def main():
         print usage
         sys.exit()
 
-    print '>> ------------------------------------------------------- '
-    print '>> [INFO] Check jot status:' 
-    print '>>        Workspace : '+options.workDir
-    print '>>        Root name : '+options.outRoot
-    print '>> ------------------------------------------------------- '
-
     # Store name of datasets
-    datasetDir={};
-    noDoneRoot={};
-    failedJobs={};
+    datasetDir={}
+    noDoneRoot={}
+    #failedJobs={}
     failedInfo={}
     for fname in os.listdir(options.workDir):
         f=options.workDir+'/'+fname
         if os.path.isdir(f):
             if 'output' in os.listdir(f) and 'input' in os.listdir(f):
                 noDoneRoot[fname] = []
-                failedJobs[fname] = []
+                #failedJobs[fname] = []
                 failedInfo[fname] = {}
                 datasetDir[fname] = [ len(glob.glob(f+'/input/job_*.sh')),
                                       len(glob.glob(f+'/output/job_*.log')),
                                       len(glob.glob(f+'/output/'+options.outRoot+'_*.root'))
                                     ]
                 checkRoots(f+'/output', datasetDir[fname][0], options.outRoot,  noDoneRoot[fname] )
-                checkError(f+'/output', failedInfo[fname],    failedJobs[fname] )
+                checkError(f+'/output', failedInfo[fname] )
+                #checkError(f+'/output', failedInfo[fname],    failedJobs[fname] )
     
     # Print all information
     nData=len(datasetDir)
     nDone=0
 
+    print '>> ------------------------------------------------------- '
+    print '>> [INFO] Check jot status:' 
+    print '>>        Workspace : '+options.workDir
+    print '>>        Root name : '+options.outRoot
+    print '>> ------------------------------------------------------- '
+
     for name in datasetDir:
+        noYet=len(noDoneRoot[name])
+        sumErrJobs=[]
+        failedJobs={}
+        for errType in failedInfo[name]:
+            failedJobs[errType]=[]
+            for err in failedInfo[name][errType]:
+                failedJobs[errType]=list(set(failedJobs[errType]+failedInfo[name][errType][err]))
+                for fjob in failedInfo[name][errType][err]:
+                    if fjob not in sumErrJobs:
+                        sumErrJobs.append(int(fjob))
+                        if fjob not in noDoneRoot[name]:
+                            noYet+=1
+                    
+
         nJobs = int(datasetDir[name][0])
         nLogs = int(datasetDir[name][1])
         nRoot = int(datasetDir[name][2])
-        nFail = len(failedJobs[name])
-        nFinish = int(datasetDir[name][2])-nFail
+        nFail = len(sumErrJobs)
+        nFinish = nJobs-noYet
         if nFinish == nJobs :
             print '> [DONE] '+name
             nDone+=1
@@ -110,11 +127,10 @@ def main():
         print '> Finshed job : '+str(nFinish)+'/'+str(nJobs)
 
         if nFail != 0:
-            print '> Failed jots : '+str(nFail)+' '+str(sorted(failedJobs[name]))
-            #for errorType in failedInfo[name]:
-            #    for error in failedInfo[name][errorType]:
-            #        if len(failedInfo[name][errorType][error]) > 0:
-            #            print '  --- '+error+" : "+str(sorted(failedInfo[name][errorType][error]))
+            print '> Failed jots : '+str(nFail)+' '+str(sorted(sumErrJobs))
+            for errType in failedJobs:
+                if len(failedJobs[errType]) > 0:
+                    print '  --- '+errType+" : "+str(sorted(failedJobs[errType]))
 
         if len(noDoneRoot[name]) != 0:
             print '> No see root : '+str(len(noDoneRoot[name]))+' '+str(sorted(noDoneRoot[name]))
