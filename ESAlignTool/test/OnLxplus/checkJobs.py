@@ -152,8 +152,6 @@ def main():
         for i in options.resubmit.split(','):
             if i not in resubmitJobs:
                 resubmitJobs.append(int(i))
-        #print resubmitJobs
-        #sys.exit()
     else:
         print '>> ------------------------------------------------------- '
         print '>> [INFO] Checking jot status...' 
@@ -244,7 +242,7 @@ def main():
         if len(noDoneRoot[name]) != 0:
             print '> %-15s %s'%( 'Not found roots', str(sorted(noDoneRoot[name])).replace(" ", ""))
 
-        # Resubmit all 
+        # Resubmit  
         if options.resubmitAll or doOneResubmit:
             if not doOneResubmit:
                 resubmitJobs = sumErrJobs 
