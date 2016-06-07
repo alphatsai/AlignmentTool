@@ -87,6 +87,21 @@ def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list
     return list_datasetDir[0]
 
 
+# 5. Resubmit
+def resubmit( path, job, queue ):
+
+    doneResubmit=False
+    if os.path.isdir(path) and 'output' in os.listdir(path) and 'input' in os.listdir(path):
+        if os.path.isfile(path+'/output/job_'+str(job)+'.log'):
+            cmd = 'mv '+path+'/output/job_'+str(job)+'.log '+path
+            os.system(cmd)
+        cmd = 'bsub -q '+queue + ' -o ' +path+'/output/job_'+str(job)+'.log'+' source '+path+'/input/job_'+str(job)+'.sh' 
+        os.system(cmd)
+        doneResubmit=True
+
+    return doneResubmit
+
+
 ### * Main working func.
 def main():
 
@@ -137,8 +152,8 @@ def main():
         for i in options.resubmit.split(','):
             if i not in resubmitJobs:
                 resubmitJobs.append(int(i))
-        print resubmitJobs
-        sys.exit()
+        #print resubmitJobs
+        #sys.exit()
     else:
         print '>> ------------------------------------------------------- '
         print '>> [INFO] Checking jot status...' 
@@ -230,18 +245,19 @@ def main():
             print '> %-15s %s'%( 'Not found roots', str(sorted(noDoneRoot[name])).replace(" ", ""))
 
         # Resubmit all 
-        if options.resubmitAll and not options.resubmit:
-            print '> ReSubmiting all failed jobs %s '%( str(sorted(sumErrJobs)) )
-            originDir = os.getcwd()
-            for job in sumErrJobs:
-                path = originDir+'/'+options.workDir+'/'+name
-                if os.path.isfile(path+'/output/job_'+str(job)+'.log'):
-                    cmd = 'mv '+path+'/output/job_'+str(job)+'.log '+path
-                    os.system(cmd)
-                cmd = 'bsub -q '+options.queue + ' -o ' +path+'/output/job_'+str(job)+'.log'+' source '+path+'/input/job_'+str(job)+'.sh' 
-                os.system(cmd)
-                print ' --- %d resubmitted!'%(job)
-            
+        if options.resubmitAll or doOneResubmit:
+            if not doOneResubmit:
+                resubmitJobs = sumErrJobs 
+            print '> ReSubmiting all failed jobs %s '%( str(sorted(resubmitJobs)) )
+            for job in resubmitJobs:
+                if job in range(nJobs):
+                    originDir = os.getcwd()
+                    path = originDir+'/'+options.workDir+'/'+name
+                    resubmit( path, job, options.queue )
+                    print '  --- %d resubmitted!'%(job)         
+                else:
+                    print '  --- ERROR: %d out of [%d-%d]'%(job, 0, nJobs-1)         
+                
         print '>> ------------------------------------------------------- '
     
     # Simple summary
