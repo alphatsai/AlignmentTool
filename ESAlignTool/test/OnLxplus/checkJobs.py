@@ -20,8 +20,10 @@ usage = """
 
 ### * Assistant functions
 #
-# Check log and store the error according to 'errorMsg'
+# 1. Check log and store the error according to 'errorMsg'
 def checkError( logsDir, failJobDetail ):
+
+    hasError=False
     for errType in errorMsg:
         failJobDetail[errType] = {} 
         for err in errorMsg[errType]:
@@ -32,35 +34,58 @@ def checkError( logsDir, failJobDetail ):
                 for errJob in errInJobs.split('\n'):
                     if errJob == '':
                         continue
-                    job = re.search('\d', re.search('job_\d',errJob).group(0)).group(0)
+                    job = re.search('\d+', re.search('job_\d+.',errJob).group(0)).group(0)
                     if int(job) not in failJobDetail[errType][err]:
                         failJobDetail[errType][err].append(int(job))
+                        hasError=True
+    return hasError
 
-# Check not done roots
-def checkRoots( outputDir, nJobs, rootName, noDoneRootList ):
+
+# 2. Check not done roots
+def checkRoots( outputDir, nJobs, list_noDoneRoot, rootName ):
+
     originDir = os.getcwd()
     os.chdir(outputDir)
     roots = glob.glob( rootName+'_*.root' )
     i = 0
     while ( i < nJobs ):
         if rootName+'_'+str(i)+'.root' not in roots:
-            noDoneRootList.append(i) 
+            list_noDoneRoot.append(i) 
         i+=1
     os.chdir(originDir)
-    return len(noDoneRootList)
 
-# Check not done logs
-def checkLogs( outputDir, nJobs, noDoneLogList ):
+    return len(list_noDoneRoot)
+
+
+# 3. Check not done logs
+def checkLogs( outputDir, nJobs, list_noDoneLogs ):
+
     originDir = os.getcwd()
     os.chdir(outputDir)
     logs = glob.glob( 'job_*.log' )
     i = 0
     while ( i < nJobs ):
         if 'job_'+str(i)+'.log' not in logs:
-            noDoneLogList.append(i) 
+            list_noDoneLogs.append(i) 
         i+=1
     os.chdir(originDir)
-    return len(noDoneLogList)
+
+    return len(list_noDoneLogs)
+
+
+# 4. Fill infomations 
+def storeInfo( dataPath, list_datasetDir, dict_failedInfo, list_noDoneRoot, list_noDoneLogs, rootName ):
+
+    list_datasetDir.append( len(glob.glob(dataPath+'/input/job_*.sh'))             )
+    list_datasetDir.append( len(glob.glob(dataPath+'/output/job_*.log'))           )
+    list_datasetDir.append( len(glob.glob(dataPath+'/output/'+rootName+'_*.root')) )
+
+    checkRoots( dataPath+'/output', list_datasetDir[0], list_noDoneRoot, rootName )
+    checkLogs(  dataPath+'/output', list_datasetDir[0], list_noDoneLogs )
+    checkError( dataPath+'/output', dict_failedInfo )
+
+    return list_datasetDir[0]
+
 
 ### * Main working func.
 def main():
@@ -80,20 +105,25 @@ def main():
         print usage
         sys.exit()
 
-    datasets=os.listdir(options.workDir)
+    allFiles=os.listdir(options.workDir)
 
+    checkOneData=False
     doOneResubmit=False
     if options.resubmit and options.dataset=='':
-        print '>> [INFO] Please add dataset for resubmitting'
+        print '>> [ERROR] Please add dataset for resubmitting'
         print '>>        ./checkJob.py -w [workDir] -d [datasetName] -r [1 or 1,2,5...] (-q [queue])'
         sys.exit()
-    elif options.resubmit and options.dataset != '':
-        if options.dataset in datasets:
-            doOneResubmit=True
-        else:
-            print '>> [INFO] Not found %s '%( options.dataset )
-            print '>>        ./checkJob.py -w [workDir] -d [datasetName] -r [1 or 1,2,5...] (-q [queue])'
-            sys.exit()
+    elif options.resubmit:
+        doOneResubmit=True
+
+    if options.dataset != '':
+        checkOneData=True
+        if options.dataset in allFiles:
+            f=options.workDir+'/'+options.dataset
+            if not os.path.isdir(f) or 'output' not in os.listdir(f) or 'input' not in os.listdir(f):
+                print '>> [ERROR] Not a work dataset dir : %s '%( options.dataset )
+                print '>>        ./checkJob.py -w [workDir] -d [datasetName]'
+                sys.exit()
 
     ## * Enter infomation
     resubmitJobs=[]
@@ -101,7 +131,7 @@ def main():
         print '>> ------------------------------------------------------- '
         print '>> [INFO] Resubmitting...' 
         print '>>        Workspace : %s '%( options.workDir )
-        print '>>        Dataset   : %s '%( options.dataset )
+        print '>>        Data name : %s '%( options.dataset )
         print '>>        Job list  : %s '%( str(options.resubmit) )
         print '>> ------------------------------------------------------- '
         for i in options.resubmit.split(','):
@@ -113,6 +143,8 @@ def main():
         print '>> ------------------------------------------------------- '
         print '>> [INFO] Checking jot status...' 
         print '>>        Workspace : %s '%( options.workDir )
+        if checkOneData:
+            print '>>        Data name : %s '%( options.dataset )
         print '>>        Root name : %s '%( options.outRoot )
         print '>> ------------------------------------------------------- '
 
@@ -121,25 +153,28 @@ def main():
     noDoneRoot={}
     noDoneLogs={}
     failedInfo={}
-    for data in datasets:
-        f=options.workDir+'/'+data
-        if os.path.isdir(f):
-            if 'output' in os.listdir(f) and 'input' in os.listdir(f):
-                nJobs = len(glob.glob(f+'/input/job_*.sh'))
-                noDoneRoot[data] = []
-                noDoneLogs[data] = []
-                failedInfo[data] = {}
-                datasetDir[data] = [ 
-                                      len(glob.glob(f+'/input/job_*.sh')),
-                                      len(glob.glob(f+'/output/job_*.log')),
-                                      len(glob.glob(f+'/output/'+options.outRoot+'_*.root'))
-                                    ]
-                checkRoots(f+'/output', datasetDir[data][0], options.outRoot,  noDoneRoot[data] )
-                checkLogs( f+'/output', datasetDir[data][0], noDoneLogs[data] )
-                checkError(f+'/output', failedInfo[data] )
+
+    if doOneResubmit or checkOneData:
+        # Only check one percific dataset
+        fname=options.dataset
+        datasetDir[fname] = [] 
+        failedInfo[fname] = {}
+        noDoneRoot[fname] = []
+        noDoneLogs[fname] = []
+        storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], options.outRoot )
+    else:
+        # Check all datasets
+        for fname in allFiles:
+            f=options.workDir+'/'+fname
+            if os.path.isdir(f) and 'output' in os.listdir(f) and 'input' in os.listdir(f):
+                datasetDir[fname] = [] 
+                failedInfo[fname] = {}
+                noDoneRoot[fname] = []
+                noDoneLogs[fname] = []
+                storeInfo( f, datasetDir[fname], failedInfo[fname], noDoneRoot[fname], noDoneLogs[fname], options.outRoot )
     
     ## * Print and summerize all information
-    nData=len(datasets)
+    nData=len(datasetDir)
     nDone=0
 
     # Go through each dataset
@@ -202,7 +237,7 @@ def main():
                 path = originDir+'/'+options.workDir+'/'+name
                 if os.path.isfile(path+'/output/job_'+str(job)+'.log'):
                     cmd = 'mv '+path+'/output/job_'+str(job)+'.log '+path
-                    os.system(cmd1)
+                    os.system(cmd)
                 cmd = 'bsub -q '+options.queue + ' -o ' +path+'/output/job_'+str(job)+'.log'+' source '+path+'/input/job_'+str(job)+'.sh' 
                 os.system(cmd)
                 print ' --- %d resubmitted!'%(job)
@@ -212,7 +247,11 @@ def main():
     # Simple summary
     print '>> [INFO] Workspace  : %s   '%( options.workDir )
     print '>>        Root name  : %s   '%( options.outRoot )
-    print '>>        Done/Total : %d/%d'%( nDone, nData )
+    if checkOneData:
+        print '>>        Data name  : %s '%( options.dataset )
+        print '>>        Done/Total : %d/1'%( nDone )
+    else:
+        print '>>        Done/Total : %d/%d'%( nDone, nData )
 
 if __name__ == "__main__":
   main()
