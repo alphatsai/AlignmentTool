@@ -1,6 +1,7 @@
 # [Algorithm] Preshower Detector Alignment
 
 *<div style="text-align: center;" markdown="1">`minimum chi-squared` `gradient decent` `rotation matrix` `statistics`</div>*
+Same article : https://hackmd.io/s/B1DKRSJNb
 
 ## Introduction
 [Preshower detector (ES)](http://cms.web.cern.ch/news/ecal-preshower)  detector is built in the endcaps of the [CMS](http://cms.web.cern.ch/news/what-cms) detector between [tracker](http://cms.web.cern.ch/news/tracker-detector) (before ES, close to collision spot) and [Electromagnetic calorimeter (ECAL)](http://cms.web.cern.ch/news/electromagnetic-calorimeter) (behind ES, far from collision spot) for increasing the precision of position reconstruction of photon and electron. There are four donut-shape planes distributed in each endcap, i.e. two in each endcap which are called the *front* and *rear* planes in the endcap.
