@@ -67,23 +67,28 @@ $$
 
 and the variance of all parameters is denoted as $\delta p=[\Delta x,\,\Delta y,\,\Delta z,\,\Delta\alpha,\,\Delta\beta,\,\Delta\gamma]^T$. The residual thus is as function of $p$, i.e. $\epsilon(p)$.
 
-The parameter updating is used ***gradient descent*** method, which finds the best parameters to reach the minimum of $\chi^2$. The iteration for the $\chi^2$ is expected to climb down the hill until the valley. Acoording to this concept, the step to reach the minimum can be obtained by the *chain rule of differential* as like:
+The parameter updating is using ***gradient descent method***, which is finding the best parameters to reach the minimum of $\chi^2$. The iteration for the $\chi^2$ is expected to climb down the hill until the valley. Acoording to this concept, the step to reach the minimum can be obtained by the *chain rule of differential* as like:
 
 $$
 \begin{split}
 \Delta x &= \frac{\Delta f(x)}{\Delta x}\frac{\Delta x}{\Delta f(x)}\Delta x \\
 &=\dot{f}\times\ddot{f}^{-1}\\
-&=\frac{g}{a}\ ,
+&=gc^{-1}\ ,
 \end{split}
 $$
 
-where $f(x)$ is a certain function having the minimum point as function of $x$; $g$ is the first-order-differential term $\dot{f}$ w.r.t $x$, called ***gradient (slope)*** ; and $a$ is the second-order-differential term $\ddot{f}$ w.r.t $x$, called ***second derivative (curvature)*** . Since the $f(x)$ has the minimum point, e.g. $f(x)=ax^2+bx+c$, the direction of updating $x$ (movement) is opposite from the sign of $g$, e.g. going down hill by increasing $x$, the $g$ is supposed to be negative. In the meanwhile, the $a$ term can ensure the $x$ is in the valley instead of the summit. Thus, the $x$ updating in $t$ iteration becomes as 
+where $f(x)$ is a certain function having the minimum point as function of $x$; $g$ is the first-order-differential term $\dot{f}$ w.r.t $x$, called ***gradient (slope)*** ; and $c$ is the second-order-differential term $\ddot{f}$ w.r.t $x$, called ***second derivative (curvature)*** . Since the $f(x)$ has the minimum point, e.g. $f(x)=ax^2+bx+k$, the direction of updating $x$ (movement) is opposite from the sign of $g$, e.g. going down hill by increasing $x$, the $g$ is supposed to be negative. In the meanwhile, the $c$ term can ensure the $x$ is in the valley instead of the summit. As the two cases shown in following figures, the algorithm can ensure the $x$ update is going to reach the minimum. 
+
+[<div style="text-align: center;" markdown="1"><img src="https://i.imgur.com/cLEUV9A.png" width="500"></div>](https://i.imgur.com/cLEUV9A.png)
+
+
+Thus, the $x$ updating in $t$ iteration becomes as 
 
 $$
 x_t=x_{t-1}-\Delta x_t\ .
 $$
 
-By replace the $f(x)$ to $\chi^2$ as function of $\epsilon_i(p)$
+For the alignment case, by replace the $f(x)$ to $\chi^2$ as function of $\epsilon_i(p)$
 
 $$
 \begin{split}
@@ -124,6 +129,12 @@ where $\frac{1}{\sqrt{12}}$ is obtained by assuming the hit probability of slico
 The validation is done by checking the residual distribution. Since the sensitivitly difference in front and rear planes, the residual distributions are shown in the particular direction, i.e. the residual of $x$ direction for front plane, and the residual of $y$ direction for rear plane. AS shown in following figures, the residual distribution of the misaligned ES-plane is away from zero (first figure), while the mean of the aligned ES-plane (second figure) is zero within the resolution $\sigma_x=0.055\,\text{cm}$.
 
 <div style="text-align: center;" markdown="1"><img src="http://hep1.phys.ntu.edu.tw/~alpha78718/cv/esbefor.png" height="250"><img src="http://hep1.phys.ntu.edu.tw/~alpha78718/cv/esafter.png" height="250"></div>
+
+## References
+- Github : <https://github.com/juifa-tsai/AlignmentTool>
+- [**Sensor Alignment by Tracks**, *arXiv:physics/0306034*](https://arxiv.org/abs/physics/0306034v2)
+- Conference note : <https://doi.org/10.1016/j.nima.2012.04.007> by Dr. K.Y. Kao
+- Related Machine learning course : https://www.youtube.com/watch?v=yKKNr-QKz2Q
 
 ## Usage
 CMSSW_8_0_8
